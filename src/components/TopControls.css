@@ -1,0 +1,52 @@
+.top-controls {
+ display: flex;
+ align-items: center;
+ column-gap: 20px;
+}
+
+.control-btn {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+/* Music Bars */
+.music-bars {
+  display: flex;
+  align-items: end;
+  gap: 0.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+}
+
+.bar {
+  width: 0.25rem;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.1s ease;
+  height: 0.5rem;
+  animation:none
+}
+
+.bar.playing {
+  animation: musicBars 0.8s ease-in-out infinite alternate;
+  animation-delay: var(--delay);
+}
+
+@keyframes musicBars {
+  0% {
+    height: 0.5rem;
+  }
+  100% {
+    height: 2rem;
+  }
+}

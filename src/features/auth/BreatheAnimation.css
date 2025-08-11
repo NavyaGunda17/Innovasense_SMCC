@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'TheFont';
+  src: url('https://garet.typeforward.com/assets/fonts/shared/TFMixVF.woff2') format('woff2');
+}
+
+/* .breathe-animation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  height: 100vh;
+} */
+
+.breathe-animation p {
+  font-family: 'TheFont';
+  font-size: clamp(30px, 40px, 40px);
+  color: white;
+  text-align: center;
+  animation: letter-breathe 3s ease-in-out infinite;
+}
+
+@keyframes letter-breathe {
+  from,
+  to {
+    font-variation-settings: 'wght' 100;
+  }
+
+  50% {
+    font-variation-settings: 'wght' 900;
+  }
+}

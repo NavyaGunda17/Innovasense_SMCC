@@ -1,0 +1,107 @@
+
+/* Hamburger Button */
+.hamburger-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem;
+}
+
+.hamburger-line {
+  width: 1.5rem;
+  height: 2px;
+  background: white;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+}
+
+.hamburger-line.open:nth-child(1) {
+  transform: rotate(45deg) translateY(6px);
+}
+
+.hamburger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+  transform: rotate(-45deg) translateY(-6px);
+}
+
+/* Menu Content */
+.menu-content {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 1rem);
+  width: 280px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 6px;
+  padding: 0.5rem 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: slideIn 0.2s ease-out;
+  z-index: 22;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Menu Items */
+.menu-item {
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  border-radius: 6px;
+  margin: 0.125rem 0.75rem;
+}
+
+.menu-item.active {
+  color: white;
+  background: transparent;
+  font-weight: 600;
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.menu-item.active::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid white;
+  opacity: 0.9;
+}
+
+.menu-item.inactive {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.menu-item.inactive:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(2px);
+}

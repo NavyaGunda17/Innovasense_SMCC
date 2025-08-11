@@ -1,13 +1,722 @@
 body {
-  margin: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #2f2f2f;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+
+
+
+/* CSS-based Dynamic Outline - Exact recreation of the design */
+.overlay-outline {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100vw - 4rem);
+  height: calc(100vh - 4rem);
+  opacity: 0.3;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.overlay-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    /* Main outer border frame */
+    linear-gradient(white, white) 0 0 / 100% 1px no-repeat,
+    linear-gradient(white, white) 0 0 / 1px 100% no-repeat,
+    linear-gradient(white, white) 0 100% / 100% 1px no-repeat,
+    linear-gradient(white, white) 100% 0 / 1px 100% no-repeat,
+    
+    /* Top segmented lines */
+    linear-gradient(white, white) 8% 2px / 12% 1px no-repeat,
+    linear-gradient(white, white) 25% 2px / 8% 1px no-repeat,
+    linear-gradient(white, white) 38% 2px / 15% 1px no-repeat,
+    linear-gradient(white, white) 58% 2px / 10% 1px no-repeat,
+    linear-gradient(white, white) 72% 2px / 12% 1px no-repeat,
+    linear-gradient(white, white) 88% 2px / 8% 1px no-repeat,
+    
+    /* Bottom segmented lines */
+    linear-gradient(white, white) 8% calc(100% - 2px) / 12% 1px no-repeat,
+    linear-gradient(white, white) 25% calc(100% - 2px) / 8% 1px no-repeat,
+    linear-gradient(white, white) 38% calc(100% - 2px) / 15% 1px no-repeat,
+    linear-gradient(white, white) 58% calc(100% - 2px) / 10% 1px no-repeat,
+    linear-gradient(white, white) 72% calc(100% - 2px) / 12% 1px no-repeat,
+    linear-gradient(white, white) 88% calc(100% - 2px) / 8% 1px no-repeat,
+    
+    /* Left segmented lines */
+    linear-gradient(90deg, white, white) 2px 8% / 1px 12% no-repeat,
+    linear-gradient(90deg, white, white) 2px 25% / 1px 8% no-repeat,
+    linear-gradient(90deg, white, white) 2px 38% / 1px 15% no-repeat,
+    linear-gradient(90deg, white, white) 2px 58% / 1px 10% no-repeat,
+    linear-gradient(90deg, white, white) 2px 72% / 1px 12% no-repeat,
+    linear-gradient(90deg, white, white) 2px 88% / 1px 8% no-repeat,
+    
+    /* Right segmented lines */
+    linear-gradient(90deg, white, white) calc(100% - 2px) 8% / 1px 12% no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 25% / 1px 8% no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 38% / 1px 15% no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 58% / 1px 10% no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 72% / 1px 12% no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 88% / 1px 8% no-repeat,
+    
+    /* Small rectangular indicators along borders */
+    linear-gradient(white, white) 15% 0 / 3px 6px no-repeat,
+    linear-gradient(white, white) 35% 0 / 3px 6px no-repeat,
+    linear-gradient(white, white) 65% 0 / 3px 6px no-repeat,
+    linear-gradient(white, white) 85% 0 / 3px 6px no-repeat,
+    
+    linear-gradient(white, white) 15% 100% / 3px 6px no-repeat,
+    linear-gradient(white, white) 35% 100% / 3px 6px no-repeat,
+    linear-gradient(white, white) 65% 100% / 3px 6px no-repeat,
+    linear-gradient(white, white) 85% 100% / 3px 6px no-repeat,
+    
+    linear-gradient(white, white) 0 15% / 6px 3px no-repeat,
+    linear-gradient(white, white) 0 35% / 6px 3px no-repeat,
+    linear-gradient(white, white) 0 65% / 6px 3px no-repeat,
+    linear-gradient(white, white) 0 85% / 6px 3px no-repeat,
+    
+    linear-gradient(white, white) 100% 15% / 6px 3px no-repeat,
+    linear-gradient(white, white) 100% 35% / 6px 3px no-repeat,
+    linear-gradient(white, white) 100% 65% / 6px 3px no-repeat,
+    linear-gradient(white, white) 100% 85% / 6px 3px no-repeat;
+}
+
+.overlay-outline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    /* Corner bracket decorations - Top Left */
+    linear-gradient(white, white) 0 0 / 25px 2px no-repeat,
+    linear-gradient(white, white) 0 0 / 2px 25px no-repeat,
+    linear-gradient(white, white) 8px 8px / 15px 1px no-repeat,
+    linear-gradient(white, white) 8px 8px / 1px 15px no-repeat,
+    linear-gradient(white, white) 15px 15px / 8px 1px no-repeat,
+    linear-gradient(white, white) 15px 15px / 1px 8px no-repeat,
+    
+    /* Corner bracket decorations - Top Right */
+    linear-gradient(white, white) calc(100% - 25px) 0 / 25px 2px no-repeat,
+    linear-gradient(white, white) calc(100% - 2px) 0 / 2px 25px no-repeat,
+    linear-gradient(white, white) calc(100% - 23px) 8px / 15px 1px no-repeat,
+    linear-gradient(white, white) calc(100% - 9px) 8px / 1px 15px no-repeat,
+    linear-gradient(white, white) calc(100% - 23px) 15px / 8px 1px no-repeat,
+    linear-gradient(white, white) calc(100% - 16px) 15px / 1px 8px no-repeat,
+    
+    /* Corner bracket decorations - Bottom Left */
+    linear-gradient(white, white) 0 calc(100% - 2px) / 25px 2px no-repeat,
+    linear-gradient(white, white) 0 calc(100% - 25px) / 2px 25px no-repeat,
+    linear-gradient(white, white) 8px calc(100% - 9px) / 15px 1px no-repeat,
+    linear-gradient(white, white) 8px calc(100% - 23px) / 1px 15px no-repeat,
+    linear-gradient(white, white) 15px calc(100% - 16px) / 8px 1px no-repeat,
+    linear-gradient(white, white) 15px calc(100% - 23px) / 1px 8px no-repeat,
+    
+    /* Corner bracket decorations - Bottom Right */
+    linear-gradient(white, white) calc(100% - 25px) calc(100% - 2px) / 25px 2px no-repeat,
+    linear-gradient(white, white) calc(100% - 2px) calc(100% - 25px) / 2px 25px no-repeat,
+    linear-gradient(white, white) calc(100% - 23px) calc(100% - 9px) / 15px 1px no-repeat,
+    linear-gradient(white, white) calc(100% - 9px) calc(100% - 23px) / 1px 15px no-repeat,
+    linear-gradient(white, white) calc(100% - 23px) calc(100% - 16px) / 8px 1px no-repeat,
+    linear-gradient(white, white) calc(100% - 16px) calc(100% - 23px) / 1px 8px no-repeat,
+    
+    /* Additional corner details and small squares */
+    linear-gradient(white, white) 5px 5px / 4px 4px no-repeat,
+    linear-gradient(white, white) calc(100% - 9px) 5px / 4px 4px no-repeat,
+    linear-gradient(white, white) 5px calc(100% - 9px) / 4px 4px no-repeat,
+    linear-gradient(white, white) calc(100% - 9px) calc(100% - 9px) / 4px 4px no-repeat,
+    
+    /* Mid-section connector elements */
+    linear-gradient(white, white) calc(50% - 1px) 5px / 2px 8px no-repeat,
+    linear-gradient(white, white) calc(50% - 1px) calc(100% - 13px) / 2px 8px no-repeat,
+    linear-gradient(white, white) 5px calc(50% - 1px) / 8px 2px no-repeat,
+    linear-gradient(white, white) calc(100% - 13px) calc(50% - 1px) / 8px 2px no-repeat;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .overlay-outline::before {
+    background: 
+      /* Simplified border for mobile */
+      linear-gradient(white, white) 0 0 / 100% 1px no-repeat,
+      linear-gradient(white, white) 0 0 / 1px 100% no-repeat,
+      linear-gradient(white, white) 0 100% / 100% 1px no-repeat,
+      linear-gradient(white, white) 100% 0 / 1px 100% no-repeat,
+      
+      /* Key segments only */
+      linear-gradient(white, white) 20% 1px / 15% 1px no-repeat,
+      linear-gradient(white, white) 40% 1px / 15% 1px no-repeat,
+      linear-gradient(white, white) 65% 1px / 15% 1px no-repeat,
+      linear-gradient(white, white) 20% calc(100% - 1px) / 15% 1px no-repeat,
+      linear-gradient(white, white) 40% calc(100% - 1px) / 15% 1px no-repeat,
+      linear-gradient(white, white) 65% calc(100% - 1px) / 15% 1px no-repeat;
+  }
+  
+  .overlay-outline::after {
+    background: 
+      /* Simplified corners for mobile */
+      linear-gradient(white, white) 0 0 / 15px 1px no-repeat,
+      linear-gradient(white, white) 0 0 / 1px 15px no-repeat,
+      linear-gradient(white, white) 100% 0 / 15px 1px no-repeat,
+      linear-gradient(white, white) 100% 0 / 1px 15px no-repeat,
+      linear-gradient(white, white) 0 100% / 15px 1px no-repeat,
+      linear-gradient(white, white) 0 100% / 1px 15px no-repeat,
+      linear-gradient(white, white) 100% 100% / 15px 1px no-repeat,
+      linear-gradient(white, white) 100% 100% / 1px 15px no-repeat;
+  }
+}
+
+
+
+
+
+.login-screen, .main-app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.login-screen.slide-out-left {
+  transform: translateX(-100vw);
+}
+.login-screen.slide-in-from-left {
+  transform: translateX(0);
+}
+
+.main-app.slide-in-from-right {
+  transform: translateX(0);
+}
+.main-app.slide-out-right {
+  transform: translateX(100vw);
+}
+
+
+
+.objective-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.objective-option {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(10px);
+  transform-origin: center;
+  transform: scale(1) translateZ(0);
+  pointer-events: auto;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Liquid effect overlay for hovered option */
+.objective-option.hover-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+    linear-gradient(45deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.1));
+  border-radius: 6px;
+  opacity: 0;
+  animation: liquidFlow 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.objective-option.hover-active::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: 
+    radial-gradient(circle at 60% 40%, rgba(139, 92, 246, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.15) 0%, transparent 40%);
+  animation: liquidBlob 3s ease-in-out infinite reverse;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@keyframes liquidFlow {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%) scale(0.8);
+  }
+  30% {
+    opacity: 0.8;
+    transform: translateX(-20%) scale(1.1);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(20%) scale(1.05);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateX(100%) scale(0.9);
+  }
+}
+
+@keyframes liquidBlob {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: rotate(120deg) scale(1.2);
+    opacity: 0.6;
+  }
+  66% {
+    transform: rotate(240deg) scale(0.9);
+    opacity: 0.4;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.3;
+  }
+}
+
+/* 3D Transition Keyframes - Container Effects */
+@keyframes container3DShrink {
+  0% {
+    transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg) scale(1) translateX(0) translateY(0);
+    filter: blur(0px);
+    opacity: 1;
+  }
+  25% {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-1deg) scale(0.7) translateX(-20px) translateY(-15px);
+    filter: blur(2px);
+    opacity: 0.9;
+  }
+  50% {
+    transform: perspective(1000px) rotateX(5deg) rotateY(-3deg) scale(0.4) translateX(-60px) translateY(-45px);
+    filter: blur(8px);
+    opacity: 0.7;
+  }
+  75% {
+    transform: perspective(1000px) rotateX(8deg) rotateY(-5deg) scale(0.15) translateX(-120px) translateY(-90px);
+    filter: blur(15px);
+    opacity: 0.4;
+  }
+  100% {
+    transform: perspective(1000px) rotateX(10deg) rotateY(-7deg) scale(0.05) translateX(-200px) translateY(-150px);
+    filter: blur(25px);
+    opacity: 0.1;
+  }
+}
+
+@keyframes container3DGrow {
+  0% {
+    transform: perspective(1000px) rotateX(10deg) rotateY(7deg) scale(0.05) translateX(200px) translateY(150px);
+    filter: blur(25px);
+    opacity: 0.1;
+  }
+  25% {
+    transform: perspective(1000px) rotateX(8deg) rotateY(5deg) scale(0.15) translateX(120px) translateY(90px);
+    filter: blur(15px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: perspective(1000px) rotateX(5deg) rotateY(3deg) scale(0.4) translateX(60px) translateY(45px);
+    filter: blur(8px);
+    opacity: 0.7;
+  }
+  75% {
+    transform: perspective(1000px) rotateX(2deg) rotateY(1deg) scale(0.7) translateX(20px) translateY(15px);
+    filter: blur(2px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg) scale(1) translateX(0) translateY(0);
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+/* 3D Transition Keyframes - Arrow Effects */
+@keyframes arrow3DShrink {
+  0% {
+    transform: scale(1) rotateX(0deg) rotateY(0deg) translateX(0) translateY(0);
+    filter: blur(0px);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0.8) rotateX(15deg) rotateY(-10deg) translateX(-8px) translateY(-6px);
+    filter: blur(1px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(0.5) rotateX(30deg) rotateY(-20deg) translateX(-24px) translateY(-18px);
+    filter: blur(3px);
+    opacity: 0.6;
+  }
+  75% {
+    transform: scale(0.2) rotateX(45deg) rotateY(-30deg) translateX(-48px) translateY(-36px);
+    filter: blur(6px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.05) rotateX(60deg) rotateY(-40deg) translateX(-80px) translateY(-60px);
+    filter: blur(10px);
+    opacity: 0.1;
+  }
+}
+
+@keyframes arrow3DGrow {
+  0% {
+    transform: scale(0.05) rotateX(60deg) rotateY(40deg) translateX(80px) translateY(60px);
+    filter: blur(10px);
+    opacity: 0.1;
+  }
+  25% {
+    transform: scale(0.2) rotateX(45deg) rotateY(30deg) translateX(48px) translateY(36px);
+    filter: blur(6px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(0.5) rotateX(30deg) rotateY(20deg) translateX(24px) translateY(18px);
+    filter: blur(3px);
+    opacity: 0.6;
+  }
+  75% {
+    transform: scale(0.8) rotateX(15deg) rotateY(10deg) translateX(8px) translateY(6px);
+    filter: blur(1px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) rotateX(0deg) rotateY(0deg) translateX(0) translateY(0);
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+
+.objective-option.hover-neighbor {
+  transform: scale(1) translateZ(0);
+  z-index: 1;
+}
+
+.objective-option.hover-distant {
+  transform: scale(0.95) translateZ(-10px);
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.objective-option.selected {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  color: white;
+}
+
+
+.custom-objective-section {
+  margin-top: 0.5rem;
+}
+
+.custom-objective-input {
+  width: -webkit-fill-available;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  resize: none;
+  min-height: 80px;
+  max-height: 80px; /* Limit to approximately 3 lines */
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  overflow-y: auto;
+}
+
+.custom-objective-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-objective-input:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+
+.campaign-detail-rectangle {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  width: 55vw; /* Responsive width - 55% of viewport width */
+  max-width: 90vw; /* Keep max constraint for very wide screens */
+  min-width: 600px; /* Minimum width for small screens */
+  
+  /* max-height: 90vh; 
+  min-height: 480px;  */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: none;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg);
+  transform-origin: center;
+  position: relative;
+}
+
+/* 3D Transition Effects for Main Container */
+.campaign-detail-rectangle.transitioning-3d.phase-shrinking {
+  animation: container3DShrink 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  /* transform-style: preserve-3d; */
+  pointer-events: none;
+  z-index: 5;
+}
+
+.campaign-detail-rectangle.transitioning-3d.phase-growing {
+  animation: container3DGrow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Disable interactions and conflicting animations during transition */
+.campaign-detail-rectangle.transitioning-3d * {
+  pointer-events: none;
+  user-select: none;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Ensure no animations run on segments during transition */
+.campaign-detail-rectangle.transitioning-3d .segments-options,
+.campaign-detail-rectangle.transitioning-3d .segments-grid,
+.campaign-detail-rectangle.transitioning-3d .segment-column,
+.campaign-detail-rectangle.transitioning-3d .segment-option,
+.campaign-detail-rectangle.transitioning-3d .objective-options,
+.campaign-detail-rectangle.transitioning-3d .objective-option {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Navigation Arrows */
+.nav-arrow {
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 0.5rem;
+  animation: none;
+  transform-origin: center;
+}
+
+/* 3D Transition Effects for Navigation Arrows */
+.nav-arrow.transitioning-3d.phase-shrinking {
+  animation: arrow3DShrink 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+.nav-arrow.transitioning-3d.phase-growing {
+  animation: arrow3DGrow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+.nav-arrow:hover {
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-arrow.enabled {
+  color: rgba(139, 92, 246, 1);
+}
+
+.nav-arrow.enabled:hover {
+  color: rgba(139, 92, 246, 0.8);
+  transform: scale(1.1);
+}
+
+.nav-arrow svg {
+  width: 3rem;
+  height: 3rem;
+}
+
+.nav-arrow-up {
+  order: -1;
+  margin-bottom: 0.1rem;
+}
+
+.nav-arrow-down {
+  order: 1;
+  margin-top: 0.1rem;
+}
+.fill-available {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: stretch;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* for white icon on dark background */
+  /* Or use: filter: brightness(0) saturate(100%) hue-rotate(200deg); */
+  cursor: pointer;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* File Upload Styles */
+.file-upload-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.file-upload-area {
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(10px);
+  transform-origin: center;
+  transform: scale(1) translateZ(0);
+  pointer-events: auto;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.file-upload-area:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: scale(1.02) translateZ(10px);
+}
+
+.file-upload-area.dragging {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: scale(1.05) translateZ(20px);
+}
+
+.file-upload-area.uploading {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.4);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+.file-display {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* min-height: 100px; */
+}
+
+.file-display:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.file-actions .MuiIconButton-root {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.file-actions .MuiIconButton-root:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }

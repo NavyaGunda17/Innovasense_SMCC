@@ -1,0 +1,106 @@
+
+/* Campaign Cards Grid */
+.campaigns-grid {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+  gap: 1.5rem;
+  width: 80vw;
+  /* height: 70vh; */
+  max-width: 1200px;
+  max-height: 700px;
+  z-index: 11;
+  align-content: start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1rem;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+/* Hide Scrollbar for Campaigns Grid */
+.campaigns-grid::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.campaigns-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.campaigns-grid::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Firefox Scrollbar */
+.campaigns-grid {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+
+/* Campaign Form */
+.campaign-form-container {
+  position: absolute;
+  top: calc(100% + 1rem);
+  left: 0;
+  width: 650px;
+  z-index: 100;
+  animation: slideDown 0.2s ease-out;
+}
+
+.campaign-form {
+  position: relative;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.campaign-form {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 101;
+}
+
+.submit-check {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+}
+
+.submit-check:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: white;
+}
+
+.submit-check svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
