@@ -216,7 +216,7 @@ setSelectedContentType('')
   const canSubmit = selectedPlatforms.length > 0 && selectedEvents.length > 0 && selectedContentType && command.trim().length > 0;
 
   return (
-    <Box sx={{ position: 'fixed', top: '30px', right: '0',left:0,margin:"auto", zIndex: 1000, display:"inline-table" }}>
+    <Box sx={{ position: 'fixed', top: '30px', right: '0',left:0,margin:"auto", zIndex: 1000, display:"flex",justifyContent:"center" }}>
       <Fade in={true} timeout={1000}>
         <GlassCard sx={{ maxWidth: '400px', minWidth: '350px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
