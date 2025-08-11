@@ -143,7 +143,7 @@ export const CalendarComponent1: React.FC<Props> = ({
         showErrorToast("Error in generating the campaign Master article");
         // showErrorToast('Failed to trigger webhook');
         setShowLoader(false);
-        return 
+        return false 
       }
       // showSuccessToast('Webhook triggered successfully');
 

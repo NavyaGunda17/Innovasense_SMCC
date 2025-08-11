@@ -311,6 +311,7 @@ const combineScheduleWithPosts = (
   }) => {
     console.log("Regenerating:", data);
     setShowAssistant(false);
+     showInfoToast("Be mindful that image & video generation might take few moments.")
         try {
       const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",

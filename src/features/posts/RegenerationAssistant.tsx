@@ -197,6 +197,7 @@ setSelectedContentType('')
 
 
   const handleSubmit = async () => {
+    setIsExpanded(false)
     if (!selectedPlatforms.length || !selectedDate  || !command.trim()) return;
 
     setIsTyping(true);

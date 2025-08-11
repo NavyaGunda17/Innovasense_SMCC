@@ -223,7 +223,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
        if (result[0].output.status == "fail") {
         showErrorToast('Error uploading files');
          setShowLoader(false)
-         return
+         return false
       }
        setShowLoader(false)
       navigate(`/creatCampaign/${id}#FileSummary`);
