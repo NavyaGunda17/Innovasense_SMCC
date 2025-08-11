@@ -170,6 +170,7 @@ useEffect(()=>{
   },[generateGoal])
 
   const handleSaveModifedGoal = () =>{
+    setShowLoader(true)
     setGeneratedGoal(generateGoal);
     setEditGoal(true);
      dispatch(setGeneratedCampaignGoal({ generatedCampaignGoal:generateGoal }));
@@ -195,9 +196,11 @@ useEffect(()=>{
 
 
       if (result[0].output.status == "fail") {
+         setShowLoader(false)
          showErrorToast('Error in generating the campaign goal');
          return false
       };
+       setShowLoader(false)
       // showSuccessToast('Webhook triggered successfully');
       renderData();
     } catch {
