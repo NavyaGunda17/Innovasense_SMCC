@@ -166,7 +166,7 @@ useEffect(()=>{
 
 
   useEffect(()=>{
-
+    console.log("generateGoal",generateGoal)
   },[generateGoal])
 
   const handleSaveModifedGoal = () =>{
@@ -233,7 +233,7 @@ useEffect(()=>{
        }}>
       <AnimatePresence mode="wait">
       
-        {false  && (
+        { (
           <motion.div
             key="generated"
             initial={{ opacity: 0, y: 10 }}
