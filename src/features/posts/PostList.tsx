@@ -16,6 +16,7 @@ import HamburgerMenu from "../../components/HamburgerMenu";
 import { AnimatePresence, motion } from "framer-motion";
 import AppButton from "../../components/AppButton";
 import RegenerateAssistant from "./RegenerationAssistant";
+import { useInfo } from "../../context/InfoToastContext";
 
 // Types here (or import from separate file)
 type Post = {
@@ -70,6 +71,8 @@ const PostList: React.FC = () => {
     (state: RootState) => state.campaign.campaignMasterArticleJson
   );
 
+  const { showInfoToast } = useInfo()
+
   useEffect(()=>{
 transformMasterArtickeJSON()
   },[campaignStateMarticleJson])
@@ -120,6 +123,7 @@ const transformMasterArtickeJSON = () => {
  
 
   const handleGeneratePost = (platform: string) => {
+    showInfoToast("Be mindful that image & video generation might take few moments.")
     handleGeneratePostForPlatform(platform);
   };
 
@@ -185,53 +189,68 @@ const transformMasterArtickeJSON = () => {
     }
   };
 
+useEffect(()=>{
+
+},[weekDetails])
 
 
 
 
 
 
+useEffect(() => {
+  let channel: any;
+  let isSubscribed = false;
 
-  useEffect(() => {
-    let channel: any;
+  const subscribeRole = async () => {
+    if (campaignId && !isSubscribed) {
+      channel = supabase
+        .channel("row-listener")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "postList",
+          },
+          (payload) => {
+            console.log("Realtime event:", payload);
+            // Optional: check payload before updating
+            renderData();
+          }
+        );
 
-    const subscribeRole = () => {
-      if (campaignId) {
-        channel = supabase
-          .channel("row-listener")
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "postList",
-              filter: `campaignId=eq.${campaignId}`,
-            },
-            (payload) => {
-              console.log("Realtime event:", payload);
-              renderData();
-            }
-          )
-          .subscribe();
-      }
-    };
+      await channel.subscribe();
+      isSubscribed = true;
+    }
+  };
 
-    subscribeRole();
+  const unsubscribeRole = () => {
+    if (channel && isSubscribed) {
+      supabase.removeChannel(channel);
+      isSubscribed = false;
+    }
+  };
 
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        if (channel) supabase.removeChannel(channel);
-        subscribeRole();
-      }
-    };
+  const handleVisibility = () => {
+    if (document.visibilityState === "visible") {
+      unsubscribeRole();
+      subscribeRole();
+    }
+  };
 
-    document.addEventListener("visibilitychange", handleVisibility);
+  // Initial subscribe
+  subscribeRole();
 
-    return () => {
-      if (channel) supabase.removeChannel(channel);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, []);
+  // Attach listener
+  document.addEventListener("visibilitychange", handleVisibility);
+
+  return () => {
+    unsubscribeRole();
+    document.removeEventListener("visibilitychange", handleVisibility);
+  };
+}, []);
+
 
 
 
@@ -262,7 +281,7 @@ const combineScheduleWithPosts = (
     }
 
     const mergedPosts = scheduledPosts.map((scheduledPost: any) => {
-      const index = Number(scheduledPost?.index) - 1;
+      const index = Number(scheduledPost?.index ? scheduledPost?.index : scheduledPost?.indexType) - 1;
       const generated = index >= 0 ? generatedPosts[index] : undefined;
 
       return {
