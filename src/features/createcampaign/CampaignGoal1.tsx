@@ -300,7 +300,7 @@ useEffect(()=>{
         },
           }}
         >
-          <ReactMarkdown>{generateGoal}</ReactMarkdown>
+          <ReactMarkdown>{generateGoal.replace(/<br\s*\/?>/gi, "\n\n")}</ReactMarkdown>
         </Box>
             }
            

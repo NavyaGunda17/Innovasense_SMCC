@@ -16,6 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import AnimatedLoader from "../../components/AnimatedLoader";
 
+
 const CampaignStructure = () => {
   let campaignState: any = useSelector((state: RootState) => state.campaign);
  
@@ -152,7 +153,8 @@ const CampaignStructure = () => {
             }}
           >
             <ReactMarkdown>
-              {campaignState?.campaignStructureSummary}
+              {campaignState?.campaignStructureSummary.replace(/<br\s*\/?>/gi, "\n\n")}
+             
             </ReactMarkdown>
           </Box>
         </Box>

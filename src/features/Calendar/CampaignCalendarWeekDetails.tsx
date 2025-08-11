@@ -502,7 +502,7 @@ const handleApproveMasterArticle1 = () =>{
         },
       }}
     >
-      <ReactMarkdown>{weekDetailsArticle}</ReactMarkdown>
+      <ReactMarkdown>{weekDetailsArticle.replace(/<br\s*\/?>/gi, "\n\n")}</ReactMarkdown>
     </Box>
   }
 /> {/* ✅ Removed children block */}

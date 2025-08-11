@@ -156,7 +156,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                           borderColor: "#444",
                         },
                       }}>
-                        <ReactMarkdown>{generatedFileSummary}</ReactMarkdown>
+                        <ReactMarkdown>{generatedFileSummary.replace(/<br\s*\/?>/gi, "\n\n")}</ReactMarkdown>
                       </Box>
                     </motion.div>
                  
