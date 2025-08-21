@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+src-1/
+
+
 # production
 /build
 

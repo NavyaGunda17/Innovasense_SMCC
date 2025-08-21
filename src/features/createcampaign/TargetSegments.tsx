@@ -1,7 +1,4 @@
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, {
   forwardRef,
   useEffect,
@@ -12,27 +9,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useError } from "../../context/ErrorToastContext";
 import { segments } from "../../reducer/campaignSlice";
-import loader from "../../assests/loading-v2.gif"
+import loader from "../../assests/loading-v2.gif";
 type SegmentOption = { id: number; option: string };
-type TargetSegmentsProps = { next: () => void,  is3DTransitioning?:boolean, transitionPhase?:string };
+type TargetSegmentsProps = {
+  next: () => void;
+  is3DTransitioning?: boolean;
+  transitionPhase?: string;
+};
 export type TargetSegmentsHandle = {
   save: () => void;
 };
 
 const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
-  ({ next,transitionPhase,is3DTransitioning }, ref) => {
+  ({ next, transitionPhase, is3DTransitioning }, ref) => {
     const dispatch = useDispatch<AppDispatch>();
-    const campaign = useSelector((state: RootState) => state.campaign.enumerations);
+    const campaign = useSelector(
+      (state: RootState) => state.campaign.enumerations
+    );
     const campaignState = useSelector((state: RootState) => state.campaign);
     const { showErrorToast } = useError();
 
     const [segmentList, setSegmentList] = useState<SegmentOption[]>([]);
-    const [demographicsList, setDemographicsList] = useState<SegmentOption[]>([]);
-    const [psychographicsList, setPsychographicsList] = useState<SegmentOption[]>([]);
+    const [demographicsList, setDemographicsList] = useState<SegmentOption[]>(
+      []
+    );
+    const [psychographicsList, setPsychographicsList] = useState<
+      SegmentOption[]
+    >([]);
 
     const [segmentValue, setSegmentValue] = useState<SegmentOption[]>([]);
-    const [demographicsValue, setDemographicsValue] = useState<SegmentOption[]>([]);
-    const [psychographicsValue, setPsychographicsValue] = useState<SegmentOption[]>([]);
+    const [demographicsValue, setDemographicsValue] = useState<SegmentOption[]>(
+      []
+    );
+    const [psychographicsValue, setPsychographicsValue] = useState<
+      SegmentOption[]
+    >([]);
 
     const formatData = (data: any): SegmentOption[] =>
       data.map((item: any, index: number) => {
@@ -51,12 +62,17 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
     useEffect(() => {
       if (campaign && campaign.length > 0) {
         const segment = campaign.find((c) => c.enumName === "segment");
-        const demographics = campaign.find((c) => c.enumName === "demographics");
-        const psychographics = campaign.find((c) => c.enumName === "psychographics");
+        const demographics = campaign.find(
+          (c) => c.enumName === "demographics"
+        );
+        const psychographics = campaign.find(
+          (c) => c.enumName === "psychographics"
+        );
 
         if (segment) setSegmentList(formatData(segment.options));
         if (demographics) setDemographicsList(formatData(demographics.options));
-        if (psychographics) setPsychographicsList(formatData(psychographics.options));
+        if (psychographics)
+          setPsychographicsList(formatData(psychographics.options));
 
         setSegmentValue(fromReduxFormat(campaignState.segment));
         setDemographicsValue(fromReduxFormat(campaignState.demographics));
@@ -83,27 +99,31 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
         dispatch(
           segments({
             segment: segmentValue.map((val) => ({ option: val.option })),
-            demographics: demographicsValue.map((val) => ({ option: val.option })),
-            psychographics: psychographicsValue.map((val) => ({ option: val.option })),
+            demographics: demographicsValue.map((val) => ({
+              option: val.option,
+            })),
+            psychographics: psychographicsValue.map((val) => ({
+              option: val.option,
+            })),
           })
         );
 
-       return true
+        return true;
       },
     }));
 
-   const toggleSelect = (
-  item: SegmentOption,
-  selectedList: SegmentOption[],
-  setter: React.Dispatch<React.SetStateAction<SegmentOption[]>>
-) => {
-  const exists = selectedList.find((val) => val.option === item.option);
-  if (exists) {
-    setter(selectedList.filter((val) => val.option !== item.option));
-  } else {
-    setter([...selectedList, item]);
-  }
-};
+    const toggleSelect = (
+      item: SegmentOption,
+      selectedList: SegmentOption[],
+      setter: React.Dispatch<React.SetStateAction<SegmentOption[]>>
+    ) => {
+      const exists = selectedList.find((val) => val.option === item.option);
+      if (exists) {
+        setter(selectedList.filter((val) => val.option !== item.option));
+      } else {
+        setter([...selectedList, item]);
+      }
+    };
 
     // Hover handlers scoped to each container
     const handleOptionHover = (
@@ -115,7 +135,11 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
       const options = container.querySelectorAll(".objective-option");
 
       options.forEach((option, index) => {
-        option.classList.remove("hover-active", "hover-neighbor", "hover-distant");
+        option.classList.remove(
+          "hover-active",
+          "hover-neighbor",
+          "hover-distant"
+        );
 
         if (index === hoveredIndex) {
           option.classList.add("hover-active");
@@ -133,97 +157,151 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
       const options = container.querySelectorAll(".objective-option");
 
       options.forEach((option) =>
-        option.classList.remove("hover-active", "hover-neighbor", "hover-distant")
+        option.classList.remove(
+          "hover-active",
+          "hover-neighbor",
+          "hover-distant"
+        )
       );
     };
 
     return (
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 4,alignItems:"center" }}>
-       
-
- <Box sx={{display:"flex",flexDirection:"column"}}>
-         <Typography sx={{
-          color: 'white',
-          fontSize: '2.75rem',
-          fontWeight: '500',
-          margin: '0 0 2rem 0',
-          letterSpacing: '0.02em',
-          lineHeight: '1.1',
-          textShadow: 'none',
-          textAlign: 'left',
-          fontFamily: 'Orbitron, sans-serif'
-        }}>
-        Segments
-        </Typography>
-        <img src={loader} style={{width:"200px"}} />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 4,
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography
+            sx={{
+              color: "white",
+              fontSize: "2.75rem",
+              fontWeight: "500",
+              margin: "0 0 2rem 0",
+              letterSpacing: "0.02em",
+              lineHeight: "1.1",
+              textShadow: "none",
+              textAlign: "left",
+              fontFamily: "Orbitron, sans-serif",
+            }}
+          >
+            Segments
+          </Typography>
+          <img
+            src={loader}
+            style={{
+              width: "200px",
+              height: "auto",
+              maxWidth: "100%",
+              objectFit: "contain",
+              display: "block",
+            }}
+          />
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
           {/* Segment List */}
-          <Box className={`campaign-detail-rectangle ${is3DTransitioning ? 'transitioning-3d' : ''} ${transitionPhase !== 'idle' ? `phase-${transitionPhase}` : ''} `} sx={{width:"auto !important",minWidth:"auto !important",maxWidth:"auto !important",display:'flex',flexDirection:"row",gap:4}}>
+          <Box
+            className={`campaign-detail-rectangle ${
+              is3DTransitioning ? "transitioning-3d" : ""
+            } ${transitionPhase !== "idle" ? `phase-${transitionPhase}` : ""} `}
+            sx={{
+              width: "auto !important",
+              minWidth: "auto !important",
+              maxWidth: "auto !important",
+              display: "flex",
+              flexDirection: "row",
+              gap: 4,
+              maxHeight: "45vh",
+              overflowY: "auto",
+            }}
+          >
             <Box>
-              <Typography sx={{fontSize:"18px",textAlign:"center",mb:2}}>Segment</Typography>
-            
-            <div className="objective-options">
-              {segmentList.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`objective-option ${
-                    segmentValue.find((v) => v.option === item.option) ? "selected" : ""
-                  }`}
-                  onClick={() => toggleSelect(item, segmentValue, setSegmentValue)}
-                  onMouseEnter={(e) => handleOptionHover(e, idx)}
-                  onMouseLeave={(e) => handleOptionLeave(e)}
-                >
-                  {item.option}
-                </div>
-              ))}
-            </div>
+              <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
+                Segment
+              </Typography>
+
+              <div className="objective-options">
+                {segmentList.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className={`objective-option ${
+                      segmentValue.find((v) => v.option === item.option)
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      toggleSelect(item, segmentValue, setSegmentValue)
+                    }
+                    onMouseEnter={(e) => handleOptionHover(e, idx)}
+                    onMouseLeave={(e) => handleOptionLeave(e)}
+                  >
+                    {item.option}
+                  </div>
+                ))}
+              </div>
             </Box>
             <Box>
-               <Typography sx={{fontSize:"18px",textAlign:"center",mb:2}}>Demographics</Typography>
-           
-             <div className="objective-options">
-              {demographicsList.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`objective-option ${
-                    demographicsValue.find((v) => v.option === item.option)
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => toggleSelect(item, demographicsValue, setDemographicsValue)}
-                  onMouseEnter={(e) => handleOptionHover(e, idx)}
-                  onMouseLeave={(e) => handleOptionLeave(e)}
-                >
-                  {item.option}
-                </div>
-              ))}
-            </div>
-             </Box>
-             <Box>
-                <Typography sx={{fontSize:"18px",textAlign:"center",mb:2}}>Psychographics</Typography>
-            
-              <div className="objective-options">
-              {psychographicsList.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`objective-option ${
-                    psychographicsValue.find((v) => v.option === item.option)
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => toggleSelect(item, psychographicsValue, setPsychographicsValue)}
-                  onMouseEnter={(e) => handleOptionHover(e, idx)}
-                  onMouseLeave={(e) => handleOptionLeave(e)}
-                >
-                  {item.option}
-                </div>
-              ))}
-            </div>
-             </Box>
-          </Box>
+              <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
+                Demographics
+              </Typography>
 
-         
+              <div className="objective-options">
+                {demographicsList.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className={`objective-option ${
+                      demographicsValue.find((v) => v.option === item.option)
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      toggleSelect(
+                        item,
+                        demographicsValue,
+                        setDemographicsValue
+                      )
+                    }
+                    onMouseEnter={(e) => handleOptionHover(e, idx)}
+                    onMouseLeave={(e) => handleOptionLeave(e)}
+                  >
+                    {item.option}
+                  </div>
+                ))}
+              </div>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
+                Psychographics
+              </Typography>
+
+              <div className="objective-options">
+                {psychographicsList.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className={`objective-option ${
+                      psychographicsValue.find((v) => v.option === item.option)
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      toggleSelect(
+                        item,
+                        psychographicsValue,
+                        setPsychographicsValue
+                      )
+                    }
+                    onMouseEnter={(e) => handleOptionHover(e, idx)}
+                    onMouseLeave={(e) => handleOptionLeave(e)}
+                  >
+                    {item.option}
+                  </div>
+                ))}
+              </div>
+            </Box>
+          </Box>
         </Box>
       </Box>
     );

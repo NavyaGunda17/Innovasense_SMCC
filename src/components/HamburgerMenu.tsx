@@ -29,12 +29,12 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       objectiveName: "Campaigns",
       active: activeItem === "Campaigns",
     },
-     {
+    {
       name: "File Upload",
       objectiveName: "FileUpload",
       active: activeItem === "File Upload",
     },
-     {
+    {
       name: "File Summary",
       objectiveName: "FileSummary",
       active: activeItem === "File Summary",
@@ -92,7 +92,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
 
   useEffect(() => {
     const hash = location.hash?.replace("#", "");
-     const pathname = location.pathname;
+    const pathname = location.pathname;
 
     // Match hash with menu item’s objectiveName
     const matchedItem = menuItems.find(
@@ -102,25 +102,24 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
     if (matchedItem) {
       setActiveItem(matchedItem.name); // ✅ Update menu highlight
     }
-     // Fallback: Match path-based routes like Calendar or Master Article
-  if (pathname.includes("/campaignCalendar")) {
-    setActiveItem("Calendar");
-  } else if (pathname.includes("/campaignWeekDetails")) {
-    setActiveItem("Master Article");
-  } else if (pathname.includes("/campaignList")) {
-    setActiveItem("Campaigns");
-  }
-  else if (pathname.includes("/posts")) {
-    setActiveItem("Posts");
-  }
+    // Fallback: Match path-based routes like Calendar or Master Article
+    if (pathname.includes("/campaignCalendar")) {
+      setActiveItem("Calendar");
+    } else if (pathname.includes("/campaignWeekDetails")) {
+      setActiveItem("Master Article");
+    } else if (pathname.includes("/campaignList")) {
+      setActiveItem("Campaigns");
+    } else if (pathname.includes("/posts")) {
+      setActiveItem("Posts");
+    }
   }, [location.hash]);
 
   const isItemEnabled = (itemName: string) => {
-  const pathname = location.pathname;
+    const pathname = location.pathname;
     // 🚫 Disable everything except "Campaigns" on /campaignList
-  if (pathname === "/campaignList") {
-    return itemName === "Campaigns";
-  }
+    if (pathname === "/campaignList") {
+      return itemName === "Campaigns";
+    }
 
     const alwaysEnabled = [
       "Campaigns",
@@ -134,7 +133,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       return !!campaignState?.brandTone;
     }
 
-     if (itemName === "File Summary") {
+    if (itemName === "File Summary") {
       return !!campaignState?.generatedFileSummary;
     }
 
@@ -179,14 +178,15 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
     (state: RootState) => state.campaign.campaignId
   );
   const companyId = useSelector((state: RootState) => state.auth.companyId);
-    const weekId = useSelector((state: RootState) => state.campaign.weekId);
+  const weekId = useSelector((state: RootState) => state.campaign.weekId);
 
   const handleItemClick = (itemName: any): void => {
     setActiveItem(itemName.name); // ✅ Set clicked item as active
 
     console.log(`Clicked: ${itemName}`);
     if (
-      itemName.name == "File Upload" || itemName.name == "File Summary" ||
+      itemName.name == "File Upload" ||
+      itemName.name == "File Summary" ||
       itemName.name == "Strategic Objective" ||
       itemName.name == "Target Segments" ||
       itemName.name == "Goal" ||

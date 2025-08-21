@@ -1,8 +1,21 @@
+:root,
+html,
 body {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -10,13 +23,9 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-
-
-
 
 /* CSS-based Dynamic Outline - Exact recreation of the design */
 .overlay-outline {
@@ -32,67 +41,62 @@ code {
 }
 
 .overlay-outline::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: 
-    /* Main outer border frame */
-    linear-gradient(white, white) 0 0 / 100% 1px no-repeat,
+    /* Main outer border frame */ linear-gradient(white, white) 0
+      0 / 100% 1px no-repeat,
     linear-gradient(white, white) 0 0 / 1px 100% no-repeat,
     linear-gradient(white, white) 0 100% / 100% 1px no-repeat,
     linear-gradient(white, white) 100% 0 / 1px 100% no-repeat,
-    
-    /* Top segmented lines */
-    linear-gradient(white, white) 8% 2px / 12% 1px no-repeat,
+    /* Top segmented lines */ linear-gradient(white, white) 8% 2px / 12% 1px
+      no-repeat,
     linear-gradient(white, white) 25% 2px / 8% 1px no-repeat,
     linear-gradient(white, white) 38% 2px / 15% 1px no-repeat,
     linear-gradient(white, white) 58% 2px / 10% 1px no-repeat,
     linear-gradient(white, white) 72% 2px / 12% 1px no-repeat,
     linear-gradient(white, white) 88% 2px / 8% 1px no-repeat,
-    
-    /* Bottom segmented lines */
-    linear-gradient(white, white) 8% calc(100% - 2px) / 12% 1px no-repeat,
+    /* Bottom segmented lines */ linear-gradient(white, white) 8%
+      calc(100% - 2px) / 12% 1px no-repeat,
     linear-gradient(white, white) 25% calc(100% - 2px) / 8% 1px no-repeat,
     linear-gradient(white, white) 38% calc(100% - 2px) / 15% 1px no-repeat,
     linear-gradient(white, white) 58% calc(100% - 2px) / 10% 1px no-repeat,
     linear-gradient(white, white) 72% calc(100% - 2px) / 12% 1px no-repeat,
     linear-gradient(white, white) 88% calc(100% - 2px) / 8% 1px no-repeat,
-    
-    /* Left segmented lines */
-    linear-gradient(90deg, white, white) 2px 8% / 1px 12% no-repeat,
+    /* Left segmented lines */ linear-gradient(90deg, white, white) 2px 8% / 1px
+      12% no-repeat,
     linear-gradient(90deg, white, white) 2px 25% / 1px 8% no-repeat,
     linear-gradient(90deg, white, white) 2px 38% / 1px 15% no-repeat,
     linear-gradient(90deg, white, white) 2px 58% / 1px 10% no-repeat,
     linear-gradient(90deg, white, white) 2px 72% / 1px 12% no-repeat,
     linear-gradient(90deg, white, white) 2px 88% / 1px 8% no-repeat,
-    
-    /* Right segmented lines */
-    linear-gradient(90deg, white, white) calc(100% - 2px) 8% / 1px 12% no-repeat,
+    /* Right segmented lines */ linear-gradient(90deg, white, white)
+      calc(100% - 2px) 8% / 1px 12% no-repeat,
     linear-gradient(90deg, white, white) calc(100% - 2px) 25% / 1px 8% no-repeat,
-    linear-gradient(90deg, white, white) calc(100% - 2px) 38% / 1px 15% no-repeat,
-    linear-gradient(90deg, white, white) calc(100% - 2px) 58% / 1px 10% no-repeat,
-    linear-gradient(90deg, white, white) calc(100% - 2px) 72% / 1px 12% no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 38% / 1px 15%
+      no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 58% / 1px 10%
+      no-repeat,
+    linear-gradient(90deg, white, white) calc(100% - 2px) 72% / 1px 12%
+      no-repeat,
     linear-gradient(90deg, white, white) calc(100% - 2px) 88% / 1px 8% no-repeat,
-    
     /* Small rectangular indicators along borders */
-    linear-gradient(white, white) 15% 0 / 3px 6px no-repeat,
+      linear-gradient(white, white) 15% 0 / 3px 6px no-repeat,
     linear-gradient(white, white) 35% 0 / 3px 6px no-repeat,
     linear-gradient(white, white) 65% 0 / 3px 6px no-repeat,
     linear-gradient(white, white) 85% 0 / 3px 6px no-repeat,
-    
     linear-gradient(white, white) 15% 100% / 3px 6px no-repeat,
     linear-gradient(white, white) 35% 100% / 3px 6px no-repeat,
     linear-gradient(white, white) 65% 100% / 3px 6px no-repeat,
     linear-gradient(white, white) 85% 100% / 3px 6px no-repeat,
-    
     linear-gradient(white, white) 0 15% / 6px 3px no-repeat,
     linear-gradient(white, white) 0 35% / 6px 3px no-repeat,
     linear-gradient(white, white) 0 65% / 6px 3px no-repeat,
     linear-gradient(white, white) 0 85% / 6px 3px no-repeat,
-    
     linear-gradient(white, white) 100% 15% / 6px 3px no-repeat,
     linear-gradient(white, white) 100% 35% / 6px 3px no-repeat,
     linear-gradient(white, white) 100% 65% / 6px 3px no-repeat,
@@ -100,81 +104,93 @@ code {
 }
 
 .overlay-outline::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: 
-    /* Corner bracket decorations - Top Left */
-    linear-gradient(white, white) 0 0 / 25px 2px no-repeat,
+    /* Corner bracket decorations - Top Left */ linear-gradient(
+        white,
+        white
+      )
+      0 0 / 25px 2px no-repeat,
     linear-gradient(white, white) 0 0 / 2px 25px no-repeat,
     linear-gradient(white, white) 8px 8px / 15px 1px no-repeat,
     linear-gradient(white, white) 8px 8px / 1px 15px no-repeat,
     linear-gradient(white, white) 15px 15px / 8px 1px no-repeat,
     linear-gradient(white, white) 15px 15px / 1px 8px no-repeat,
-    
-    /* Corner bracket decorations - Top Right */
-    linear-gradient(white, white) calc(100% - 25px) 0 / 25px 2px no-repeat,
+    /* Corner bracket decorations - Top Right */ linear-gradient(white, white)
+      calc(100% - 25px) 0 / 25px 2px no-repeat,
     linear-gradient(white, white) calc(100% - 2px) 0 / 2px 25px no-repeat,
     linear-gradient(white, white) calc(100% - 23px) 8px / 15px 1px no-repeat,
     linear-gradient(white, white) calc(100% - 9px) 8px / 1px 15px no-repeat,
     linear-gradient(white, white) calc(100% - 23px) 15px / 8px 1px no-repeat,
     linear-gradient(white, white) calc(100% - 16px) 15px / 1px 8px no-repeat,
-    
-    /* Corner bracket decorations - Bottom Left */
-    linear-gradient(white, white) 0 calc(100% - 2px) / 25px 2px no-repeat,
+    /* Corner bracket decorations - Bottom Left */ linear-gradient(white, white)
+      0 calc(100% - 2px) / 25px 2px no-repeat,
     linear-gradient(white, white) 0 calc(100% - 25px) / 2px 25px no-repeat,
     linear-gradient(white, white) 8px calc(100% - 9px) / 15px 1px no-repeat,
     linear-gradient(white, white) 8px calc(100% - 23px) / 1px 15px no-repeat,
     linear-gradient(white, white) 15px calc(100% - 16px) / 8px 1px no-repeat,
     linear-gradient(white, white) 15px calc(100% - 23px) / 1px 8px no-repeat,
-    
     /* Corner bracket decorations - Bottom Right */
-    linear-gradient(white, white) calc(100% - 25px) calc(100% - 2px) / 25px 2px no-repeat,
-    linear-gradient(white, white) calc(100% - 2px) calc(100% - 25px) / 2px 25px no-repeat,
-    linear-gradient(white, white) calc(100% - 23px) calc(100% - 9px) / 15px 1px no-repeat,
-    linear-gradient(white, white) calc(100% - 9px) calc(100% - 23px) / 1px 15px no-repeat,
-    linear-gradient(white, white) calc(100% - 23px) calc(100% - 16px) / 8px 1px no-repeat,
-    linear-gradient(white, white) calc(100% - 16px) calc(100% - 23px) / 1px 8px no-repeat,
-    
+      linear-gradient(white, white) calc(100% - 25px) calc(100% - 2px) / 25px
+      2px no-repeat,
+    linear-gradient(white, white) calc(100% - 2px) calc(100% - 25px) / 2px 25px
+      no-repeat,
+    linear-gradient(white, white) calc(100% - 23px) calc(100% - 9px) / 15px 1px
+      no-repeat,
+    linear-gradient(white, white) calc(100% - 9px) calc(100% - 23px) / 1px 15px
+      no-repeat,
+    linear-gradient(white, white) calc(100% - 23px) calc(100% - 16px) / 8px 1px
+      no-repeat,
+    linear-gradient(white, white) calc(100% - 16px) calc(100% - 23px) / 1px 8px
+      no-repeat,
     /* Additional corner details and small squares */
-    linear-gradient(white, white) 5px 5px / 4px 4px no-repeat,
+      linear-gradient(white, white) 5px 5px / 4px 4px no-repeat,
     linear-gradient(white, white) calc(100% - 9px) 5px / 4px 4px no-repeat,
     linear-gradient(white, white) 5px calc(100% - 9px) / 4px 4px no-repeat,
-    linear-gradient(white, white) calc(100% - 9px) calc(100% - 9px) / 4px 4px no-repeat,
-    
-    /* Mid-section connector elements */
-    linear-gradient(white, white) calc(50% - 1px) 5px / 2px 8px no-repeat,
-    linear-gradient(white, white) calc(50% - 1px) calc(100% - 13px) / 2px 8px no-repeat,
+    linear-gradient(white, white) calc(100% - 9px) calc(100% - 9px) / 4px 4px
+      no-repeat,
+    /* Mid-section connector elements */ linear-gradient(white, white)
+      calc(50% - 1px) 5px / 2px 8px no-repeat,
+    linear-gradient(white, white) calc(50% - 1px) calc(100% - 13px) / 2px 8px
+      no-repeat,
     linear-gradient(white, white) 5px calc(50% - 1px) / 8px 2px no-repeat,
-    linear-gradient(white, white) calc(100% - 13px) calc(50% - 1px) / 8px 2px no-repeat;
+    linear-gradient(white, white) calc(100% - 13px) calc(50% - 1px) / 8px 2px
+      no-repeat;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .overlay-outline::before {
     background: 
-      /* Simplified border for mobile */
-      linear-gradient(white, white) 0 0 / 100% 1px no-repeat,
+      /* Simplified border for mobile */ linear-gradient(
+          white,
+          white
+        )
+        0 0 / 100% 1px no-repeat,
       linear-gradient(white, white) 0 0 / 1px 100% no-repeat,
       linear-gradient(white, white) 0 100% / 100% 1px no-repeat,
       linear-gradient(white, white) 100% 0 / 1px 100% no-repeat,
-      
-      /* Key segments only */
-      linear-gradient(white, white) 20% 1px / 15% 1px no-repeat,
+      /* Key segments only */ linear-gradient(white, white) 20% 1px / 15% 1px
+        no-repeat,
       linear-gradient(white, white) 40% 1px / 15% 1px no-repeat,
       linear-gradient(white, white) 65% 1px / 15% 1px no-repeat,
       linear-gradient(white, white) 20% calc(100% - 1px) / 15% 1px no-repeat,
       linear-gradient(white, white) 40% calc(100% - 1px) / 15% 1px no-repeat,
       linear-gradient(white, white) 65% calc(100% - 1px) / 15% 1px no-repeat;
   }
-  
+
   .overlay-outline::after {
     background: 
-      /* Simplified corners for mobile */
-      linear-gradient(white, white) 0 0 / 15px 1px no-repeat,
+      /* Simplified corners for mobile */ linear-gradient(
+          white,
+          white
+        )
+        0 0 / 15px 1px no-repeat,
       linear-gradient(white, white) 0 0 / 1px 15px no-repeat,
       linear-gradient(white, white) 100% 0 / 15px 1px no-repeat,
       linear-gradient(white, white) 100% 0 / 1px 15px no-repeat,
@@ -185,11 +201,8 @@ code {
   }
 }
 
-
-
-
-
-.login-screen, .main-app {
+.login-screen,
+.main-app {
   position: fixed;
   top: 0;
   left: 0;
@@ -213,24 +226,23 @@ code {
   transform: translateX(100vw);
 }
 
-
-
 .objective-options {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  height: 100%;
+  gap: 0.75rem;
   perspective: 1000px;
   transform-style: preserve-3d;
+  padding: 0.5rem;
 }
 
 .objective-option {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   color: rgba(255, 255, 255, 0.9);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
   font-size: 0.9rem;
   line-height: 1.4;
   cursor: pointer;
@@ -246,16 +258,27 @@ code {
 
 /* Liquid effect overlay for hovered option */
 .objective-option.hover-active::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+  background: radial-gradient(
+      circle at 20% 50%,
+      rgba(139, 92, 246, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(99, 102, 241, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(168, 85, 247, 0.3) 0%,
+      transparent 50%
+    ),
     linear-gradient(45deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.1));
   border-radius: 6px;
   opacity: 0;
@@ -264,15 +287,22 @@ code {
 }
 
 .objective-option.hover-active::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   right: -50%;
   bottom: -50%;
-  background: 
-    radial-gradient(circle at 60% 40%, rgba(139, 92, 246, 0.2) 0%, transparent 40%),
-    radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.15) 0%, transparent 40%);
+  background: radial-gradient(
+      circle at 60% 40%,
+      rgba(139, 92, 246, 0.2) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 30% 70%,
+      rgba(99, 102, 241, 0.15) 0%,
+      transparent 40%
+    );
   animation: liquidBlob 3s ease-in-out infinite reverse;
   pointer-events: none;
   mix-blend-mode: screen;
@@ -319,27 +349,32 @@ code {
 /* 3D Transition Keyframes - Container Effects */
 @keyframes container3DShrink {
   0% {
-    transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg) scale(1) translateX(0) translateY(0);
+    transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg) scale(1)
+      translateX(0) translateY(0);
     filter: blur(0px);
     opacity: 1;
   }
   25% {
-    transform: perspective(1000px) rotateX(2deg) rotateY(-1deg) scale(0.7) translateX(-20px) translateY(-15px);
+    transform: perspective(1000px) rotateX(2deg) rotateY(-1deg) scale(0.7)
+      translateX(-20px) translateY(-15px);
     filter: blur(2px);
     opacity: 0.9;
   }
   50% {
-    transform: perspective(1000px) rotateX(5deg) rotateY(-3deg) scale(0.4) translateX(-60px) translateY(-45px);
+    transform: perspective(1000px) rotateX(5deg) rotateY(-3deg) scale(0.4)
+      translateX(-60px) translateY(-45px);
     filter: blur(8px);
     opacity: 0.7;
   }
   75% {
-    transform: perspective(1000px) rotateX(8deg) rotateY(-5deg) scale(0.15) translateX(-120px) translateY(-90px);
+    transform: perspective(1000px) rotateX(8deg) rotateY(-5deg) scale(0.15)
+      translateX(-120px) translateY(-90px);
     filter: blur(15px);
     opacity: 0.4;
   }
   100% {
-    transform: perspective(1000px) rotateX(10deg) rotateY(-7deg) scale(0.05) translateX(-200px) translateY(-150px);
+    transform: perspective(1000px) rotateX(10deg) rotateY(-7deg) scale(0.05)
+      translateX(-200px) translateY(-150px);
     filter: blur(25px);
     opacity: 0.1;
   }
@@ -347,27 +382,32 @@ code {
 
 @keyframes container3DGrow {
   0% {
-    transform: perspective(1000px) rotateX(10deg) rotateY(7deg) scale(0.05) translateX(200px) translateY(150px);
+    transform: perspective(1000px) rotateX(10deg) rotateY(7deg) scale(0.05)
+      translateX(200px) translateY(150px);
     filter: blur(25px);
     opacity: 0.1;
   }
   25% {
-    transform: perspective(1000px) rotateX(8deg) rotateY(5deg) scale(0.15) translateX(120px) translateY(90px);
+    transform: perspective(1000px) rotateX(8deg) rotateY(5deg) scale(0.15)
+      translateX(120px) translateY(90px);
     filter: blur(15px);
     opacity: 0.4;
   }
   50% {
-    transform: perspective(1000px) rotateX(5deg) rotateY(3deg) scale(0.4) translateX(60px) translateY(45px);
+    transform: perspective(1000px) rotateX(5deg) rotateY(3deg) scale(0.4)
+      translateX(60px) translateY(45px);
     filter: blur(8px);
     opacity: 0.7;
   }
   75% {
-    transform: perspective(1000px) rotateX(2deg) rotateY(1deg) scale(0.7) translateX(20px) translateY(15px);
+    transform: perspective(1000px) rotateX(2deg) rotateY(1deg) scale(0.7)
+      translateX(20px) translateY(15px);
     filter: blur(2px);
     opacity: 0.9;
   }
   100% {
-    transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg) scale(1) translateX(0) translateY(0);
+    transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg) scale(1)
+      translateX(0) translateY(0);
     filter: blur(0px);
     opacity: 1;
   }
@@ -381,22 +421,26 @@ code {
     opacity: 1;
   }
   25% {
-    transform: scale(0.8) rotateX(15deg) rotateY(-10deg) translateX(-8px) translateY(-6px);
+    transform: scale(0.8) rotateX(15deg) rotateY(-10deg) translateX(-8px)
+      translateY(-6px);
     filter: blur(1px);
     opacity: 0.8;
   }
   50% {
-    transform: scale(0.5) rotateX(30deg) rotateY(-20deg) translateX(-24px) translateY(-18px);
+    transform: scale(0.5) rotateX(30deg) rotateY(-20deg) translateX(-24px)
+      translateY(-18px);
     filter: blur(3px);
     opacity: 0.6;
   }
   75% {
-    transform: scale(0.2) rotateX(45deg) rotateY(-30deg) translateX(-48px) translateY(-36px);
+    transform: scale(0.2) rotateX(45deg) rotateY(-30deg) translateX(-48px)
+      translateY(-36px);
     filter: blur(6px);
     opacity: 0.3;
   }
   100% {
-    transform: scale(0.05) rotateX(60deg) rotateY(-40deg) translateX(-80px) translateY(-60px);
+    transform: scale(0.05) rotateX(60deg) rotateY(-40deg) translateX(-80px)
+      translateY(-60px);
     filter: blur(10px);
     opacity: 0.1;
   }
@@ -404,22 +448,26 @@ code {
 
 @keyframes arrow3DGrow {
   0% {
-    transform: scale(0.05) rotateX(60deg) rotateY(40deg) translateX(80px) translateY(60px);
+    transform: scale(0.05) rotateX(60deg) rotateY(40deg) translateX(80px)
+      translateY(60px);
     filter: blur(10px);
     opacity: 0.1;
   }
   25% {
-    transform: scale(0.2) rotateX(45deg) rotateY(30deg) translateX(48px) translateY(36px);
+    transform: scale(0.2) rotateX(45deg) rotateY(30deg) translateX(48px)
+      translateY(36px);
     filter: blur(6px);
     opacity: 0.3;
   }
   50% {
-    transform: scale(0.5) rotateX(30deg) rotateY(20deg) translateX(24px) translateY(18px);
+    transform: scale(0.5) rotateX(30deg) rotateY(20deg) translateX(24px)
+      translateY(18px);
     filter: blur(3px);
     opacity: 0.6;
   }
   75% {
-    transform: scale(0.8) rotateX(15deg) rotateY(10deg) translateX(8px) translateY(6px);
+    transform: scale(0.8) rotateX(15deg) rotateY(10deg) translateX(8px)
+      translateY(6px);
     filter: blur(1px);
     opacity: 0.8;
   }
@@ -429,7 +477,6 @@ code {
     opacity: 1;
   }
 }
-
 
 .objective-option.hover-neighbor {
   transform: scale(1) translateZ(0);
@@ -448,19 +495,22 @@ code {
   color: white;
 }
 
-
 .custom-objective-section {
   margin-top: 0.5rem;
 }
 
 .custom-objective-input {
+  width: 100%;
   width: -webkit-fill-available;
+  width: -moz-available;
+  width: stretch;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   padding: 1rem 1.5rem;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
   font-size: 0.9rem;
   line-height: 1.4;
   resize: none;
@@ -469,6 +519,7 @@ code {
   backdrop-filter: blur(10px);
   transition: all 0.2s ease;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .custom-objective-input::placeholder {
@@ -481,7 +532,6 @@ code {
   background: rgba(255, 255, 255, 0.05);
 }
 
-
 .campaign-detail-rectangle {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(20px);
@@ -490,9 +540,7 @@ code {
   width: 55vw; /* Responsive width - 55% of viewport width */
   max-width: 90vw; /* Keep max constraint for very wide screens */
   min-width: 600px; /* Minimum width for small screens */
-  
-  /* max-height: 90vh; 
-  min-height: 480px;  */
+  height: 100vh;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: none;
   padding: 2rem;
@@ -501,11 +549,13 @@ code {
   transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.3deg);
   transform-origin: center;
   position: relative;
+  z-index: 2;
 }
 
 /* 3D Transition Effects for Main Container */
 .campaign-detail-rectangle.transitioning-3d.phase-shrinking {
-  animation: container3DShrink 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  animation: container3DShrink 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    forwards !important;
   /* transform-style: preserve-3d; */
   pointer-events: none;
   z-index: 5;
@@ -621,7 +671,8 @@ input[type="number"]::-webkit-outer-spin-button {
   border-radius: 12px;
   padding: 3rem 2rem;
   color: rgba(255, 255, 255, 0.9);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
   font-size: 0.9rem;
   line-height: 1.4;
   cursor: pointer;
@@ -676,7 +727,8 @@ input[type="number"]::-webkit-outer-spin-button {
   border-radius: 12px;
   padding: 10px;
   color: rgba(255, 255, 255, 0.9);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
   font-size: 0.9rem;
   line-height: 1.4;
   transition: all 0.3s ease;
@@ -719,4 +771,32 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   transform: scale(1.1);
+}
+
+/* Global loading image styles */
+img[src*="loading-v2.gif"] {
+  width: 200px;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  padding: 0;
+  z-index: 3;
+}
+
+/* Ensure loading image containers stretch properly */
+div:has(> img[src*="loading-v2.gif"]) {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  z-index: 3;
+  position: relative;
+}
+
+/* Fix Firefox-specific height issues */
+@-moz-document url-prefix() {
+  div:has(> img[src*="loading-v2.gif"]) {
+    height: 100vh;
+  }
 }

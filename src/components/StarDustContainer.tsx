@@ -1,8 +1,8 @@
-import React from 'react';
-import Ocean from "../assests/ocean.jpg"
-import sky from "../assests/sky.jpg"
-import "./StarDustContainer.css"
-import { useLocation } from 'react-router-dom';
+import React from "react";
+import Ocean from "../assests/ocean.jpg";
+import sky from "../assests/sky.jpg";
+import "./StarDustContainer.css";
+import { useLocation } from "react-router-dom";
 
 type StarData = {
   class: string;
@@ -16,11 +16,11 @@ type StarData = {
 };
 
 type StarDustProps = {
-    isAuthPage:any
-}
-const StarDustContainer: React.FC <StarDustProps>= ({isAuthPage}) => {
+  isAuthPage: any;
+};
+const StarDustContainer: React.FC<StarDustProps> = ({ isAuthPage }) => {
   const generateStarData = (index: number): StarData => {
-    const sizes = ['star-small', 'star-medium', 'star-large'];
+    const sizes = ["star-small", "star-medium", "star-large"];
     const weights = [0.6, 0.3, 0.1];
     const rand = Math.random();
 
@@ -74,51 +74,48 @@ const StarDustContainer: React.FC <StarDustProps>= ({isAuthPage}) => {
     };
   };
 
-    const location = useLocation();
+  const location = useLocation();
   const { pathname } = location;
 
-  const isAuthPage1 = pathname === '/login' || pathname === '/signup' || pathname === '/campaignList';
-
-
-  
+  const isAuthPage1 =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/campaignList";
 
   return (
-    <div>
-
-        <div className="background-container">
-        <img 
-          src={isAuthPage1 ? sky : Ocean}
-          alt={isAuthPage1 ? "Ocean background" : "Sky background"}
-          className="background-image"
-        />
-      </div>
-   
-    <div className="star-dust-container">
-      {Array.from({ length: 60 }, (_, i) => {
-        const starData = generateStarData(i);
-
-        const style: React.CSSProperties & { [key: string]: any } = {
-          '--start-x': starData.startX,
-          '--start-y': starData.startY,
-          '--end-x': starData.endX,
-          '--end-y': starData.endY,
-          '--duration': `${starData.duration}s`,
-          '--delay': `${starData.delay}s`,
-          '--rotation': `${starData.rotation}deg`,
-          animation: `randomFloat var(--duration) infinite linear`,
-          animationDelay: `var(--delay)`,
-        };
-
-        return (
-          <div
-            key={i}
-            className={`star ${starData.class}`}
-            style={style}
+    <div className="stardust-wrapper">
+      <div className="background-container">
+        <div className="background-image-wrapper">
+          <img
+            src={isAuthPage1 ? sky : Ocean}
+            alt={isAuthPage1 ? "Ocean background" : "Sky background"}
+            className="background-image"
           />
-        );
-      })}
+        </div>
+      </div>
+
+      <div className="star-dust-container">
+        {Array.from({ length: 60 }, (_, i) => {
+          const starData = generateStarData(i);
+
+          const style: React.CSSProperties & { [key: string]: any } = {
+            "--start-x": starData.startX,
+            "--start-y": starData.startY,
+            "--end-x": starData.endX,
+            "--end-y": starData.endY,
+            "--duration": `${starData.duration}s`,
+            "--delay": `${starData.delay}s`,
+            "--rotation": `${starData.rotation}deg`,
+            animation: `randomFloat var(--duration) infinite linear`,
+            animationDelay: `var(--delay)`,
+          };
+
+          return (
+            <div key={i} className={`star ${starData.class}`} style={style} />
+          );
+        })}
+      </div>
     </div>
-     </div>
   );
 };
 
