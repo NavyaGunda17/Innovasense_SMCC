@@ -275,6 +275,43 @@ const PostList: React.FC = () => {
     }
   };
 
+
+  const publishPerPost = async(
+      platform: string,
+    postIndex?: number
+  ) =>{
+try{
+    const response = await fetch(
+        "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            companyId,
+            campaignId: campaignId,
+            intent: "Schedule Post",
+            content: {
+            
+              weekNumber: weekId,
+              platform: platform,
+              postIndexes: [postIndex || 1]
+            },
+          }),
+        }
+      );
+       const result = await response.json();
+
+      if (result[0].output.status === "fail") {
+        showErrorToast("Failed to Publish post");
+        return false;
+      }
+
+      showSuccessToast("Publishing post initiated successfully");
+}catch(error){
+ console.error("Error triggering webhook:", error);
+      showErrorToast("Error in publishing post");
+}
+  }
   const renderData = async () => {
     const { data } = await supabase
       .from("postList")
@@ -695,6 +732,7 @@ const PostList: React.FC = () => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 // TODO: Implement publish functionality
+                                publishPerPost(platformKey,idx + 1)
                                 showInfoToast(
                                   "Publishing feature coming soon!"
                                 );
