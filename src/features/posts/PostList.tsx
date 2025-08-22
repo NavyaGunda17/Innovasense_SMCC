@@ -280,6 +280,9 @@ const PostList: React.FC = () => {
       platform: string,
     postIndex?: number
   ) =>{
+     showInfoToast(
+      "Initated the process to publish the post"
+    );
 try{
     const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
@@ -733,9 +736,6 @@ try{
                                 e.stopPropagation();
                                 // TODO: Implement publish functionality
                                 publishPerPost(platformKey,idx + 1)
-                                showInfoToast(
-                                  "Publishing feature coming soon!"
-                                );
                                 setAnchorEl({ ...anchorEl, [postKey]: null });
                               }}
                             >
