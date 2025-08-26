@@ -11,7 +11,8 @@ import {
   gaurdRails,
   setCampaignID,
   setGeneratedCampaignDetails,
-  setGeneretedFileSummary
+  setGeneretedFileSummary,
+  setFileUploads
 } from '../reducer/campaignSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -43,6 +44,10 @@ interface GlobalCampaignDataProviderProps {
         }));
 
         dispatch(setCampaignGoal({ campaignGoal: data.campaignGoalUser }));
+        if(data.clientFileName != null){
+ dispatch(setFileUploads({ fileUpload: [data.clientFileName] }));
+        }
+        
         dispatch(setGeneretedFileSummary({ generatedFileSummary: data.clientFiles }));
         dispatch(setGeneratedCampaignGoal({ generatedCampaignGoal: data.campaignGoal }));
         dispatch(setGeneratedCampaignstructure({

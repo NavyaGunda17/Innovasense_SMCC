@@ -33,6 +33,7 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import AiVariablesCards from "./AiVariable";
 import { useNavigate } from "react-router-dom";
 import AnimatedLoader from "../../components/AnimatedLoader";
+import AI_lgo from "../../assests/AI_logo.png"
 
 type CampaignStructureDetailsProps = {
   handleShowCampaoignGoal: () => void;
@@ -209,6 +210,7 @@ const CampaignStructureDetails: React.FC<CampaignStructureDetailsProps> = ({
           gap: 2,
         }}
       >
+         
         <Typography
           sx={{
             color: "white",
@@ -222,8 +224,10 @@ const CampaignStructureDetails: React.FC<CampaignStructureDetailsProps> = ({
             fontFamily: "Orbitron, sans-serif",
           }}
         >
+          {/* <img src={AI_lgo} style={{width:"40px",marginRight:"20px"}}/> */}
           AI Generated <br />
           Brand Strategy
+         
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <AiVariablesCards />
@@ -245,15 +249,55 @@ const CampaignStructureDetails: React.FC<CampaignStructureDetailsProps> = ({
               >
                 Regenrate Brand Strategy
               </AppButton>
-              <AppButton
+              {/* <AppButton
                 variantType="secondary"
-                endIcon={<SendIcon />}
+                // endIcon={<SendIcon />}
                 onClick={handleNextStep}
-                sx={{ height: "56px", mt: 3 }} // match TextField height
+                sx={{  mt: 3 , padding: "10px 32px",
+        backgroundColor: "rgba(0, 123, 255, 0.2)",
+        color: "white",
+        border: "1px solid rgba(0, 123, 255, 0.3)",
+        borderRadius: "8px",
+       
+        fontSize: "16px",
+        transition: "all 0.3s ease",
+      
+        backdropFilter: "blur(8px)",
+        boxShadow:
+          "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+        letterSpacing: "0.5px",
+        fontWeight: "500",}} // match TextField height
                 className="next-button"
               >
                 Next
-              </AppButton>
+              </AppButton> */}
+
+
+                 <button
+      onClick={handleNextStep}
+      style={{
+        height:"max-content",
+        marginTop:"20px",
+        padding: "10px 32px",
+        backgroundColor: "rgba(0, 123, 255, 0.2)",
+        color: "white",
+        border: "1px solid rgba(0, 123, 255, 0.3)",
+        borderRadius: "8px",
+        cursor: "pointer",
+        fontSize: "16px",
+        transition: "all 0.3s ease",
+        opacity:1,
+        pointerEvents: "auto",
+        backdropFilter: "blur(8px)",
+        boxShadow:
+          "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+        letterSpacing: "0.5px",
+        fontWeight: "500",
+      }}
+    >
+      Next
+    </button>
+
             </Box>
           </Box>
         </Box>

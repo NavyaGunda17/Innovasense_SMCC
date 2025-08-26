@@ -44,10 +44,10 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
     {
       is3DTransitioning,
       transitionPhase,
-      acceptedFileTypes = [".pdf", ".docx"],
-      maxFileSize = 5, // 5MB default
+      acceptedFileTypes = [".pdf"],
+      maxFileSize = 50, // 5MB default
       onFileChange,
-      title = "File Upload",
+      title = "Upload Guidelines",
       description = "Upload your files here",
     },
     ref
@@ -65,9 +65,12 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
 
     const campaignState = useSelector((state: RootState) => state.campaign);
 
-    // useEffect(()=>{
-    //   setUploadedFiles(campaignState.fileUpload)
-    // },[campaignState.fileUpload])
+    useEffect(()=>{
+      if(campaignState.fileUpload){
+setUploadedFiles(campaignState.fileUpload)
+      }
+      
+    },[campaignState.fileUpload])
 
     useImperativeHandle(ref, () => ({
       save: async () => {
@@ -90,7 +93,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
         showErrorToast(`File size must be less than ${maxFileSize}MB`);
         return false;
       }
-      const fileExtension = "." + file.name.split(".").pop()?.toLowerCase();
+      const fileExtension = "." + file?.name.split(".").pop()?.toLowerCase();
       if (!acceptedFileTypes.includes(fileExtension)) {
         showErrorToast(
           `File type not supported. Accepted types: ${acceptedFileTypes.join(
@@ -111,10 +114,13 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
 
       const files = Array.from(event.target.files || []);
       const validFiles = files.filter(validateFile);
+      console.log("validFiles",validFiles)
+
       if (validFiles.length) {
         setIsUploading(true);
         setTimeout(() => {
           setUploadedFiles((prev) => [...prev, ...validFiles]);
+            dispatch(setFileUploads({ fileUpload: validFiles }));
           if (onFileChange) onFileChange(validFiles);
           setIsUploading(false);
           showSuccessToast("Files uploaded successfully!");
@@ -212,7 +218,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
         // For demonstration, we'll just log the binary sizes
         binaries.forEach((bin, idx) => {
           console.log(
-            `File: ${uploadedFiles[idx].name}, Binary size: ${bin.byteLength}`
+            `File: ${uploadedFiles[idx]?.name}, Binary size: ${bin.byteLength}`
           );
         });
         const base64Files = binaries.map(arrayBufferToBase64);
@@ -230,7 +236,8 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
               campaignId: id,
               intent: "Extract info from file",
               content: {
-                fileNames: base64Files,
+                fileData: base64Files,
+                fileName:uploadedFiles[0]?.name
               },
             }),
           }
@@ -358,10 +365,10 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
                 ) : (
                   <div style={{ width: "100%" }}>
                     {uploadedFiles &&
-                      uploadedFiles.map((file, idx) => (
+                      uploadedFiles.map((file:any, idx) => (
                         <div
                           className="file-display"
-                          key={file.name + idx}
+                          key={file?.name + idx}
                           style={{ marginBottom: "20px" }}
                         >
                           <div className="file-info">
@@ -380,7 +387,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
                                   mb: 0.5,
                                 }}
                               >
-                                {file.name}
+                                {file?.name || file}
                               </Typography>
                               <Typography
                                 sx={{
@@ -388,8 +395,8 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
                                   fontSize: "0.8rem",
                                 }}
                               >
-                                {formatFileSize(file.size)} •{" "}
-                                {file.type || "Unknown type"}
+                                {/* {formatFileSize(file.size)} •{" "} */}
+                                {file?.type || "pdf"}
                               </Typography>
                             </div>
                           </div>
@@ -414,14 +421,14 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
                           />
                         </div>
                       ))}
-                    <AppButton
+                    {/* <AppButton
                       variant="contained"
                       color="primary"
                       onClick={handleReupload}
                       sx={{ mt: 2 }}
                     >
                       Add More Files
-                    </AppButton>
+                    </AppButton> */}
                   </div>
                 )}
               </div>

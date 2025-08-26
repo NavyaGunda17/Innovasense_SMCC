@@ -31,6 +31,7 @@ import SendIcon from "@mui/icons-material/Send";
 import FileUpload, { FileUploadHandle } from "./FileUpload";
 import FileUploadSummary from "../features/createcampaign/FileUploadSummary";
 import { useError } from "../context/ErrorToastContext";
+import { selectIsGenerateEnabled } from "../selectors/campaignSelectors";
 const items = [
   {
     title: "File Upload",
@@ -69,6 +70,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [showLoader, setShowLoader] = useState(false);
+  const [calendarModified, setCalendarModified] = useState(false);
 
   const nodeRef = useRef(null);
   const { showErrorToast } = useError();
@@ -191,7 +193,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
       }
       showCampaignKnowledgeBase();
       setShowLoader(false);
-      showErrorToast("Error in craeting the knowledge base");
+      // showErrorToast("Error in craeting the knowledge base");
       navigate(`/creatCampaign/${campaignId}#AIGeneratedBase`);
     } catch (error) {
       setShowLoader(false);
@@ -217,6 +219,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
     let saveRetunValue;
     if (items[index].title === "File Upload") {
       // For File Upload, we don't need to enforce saving if there are no files
+      
       if (campaignState?.fileUpload?.length > 0) {
         saveRetunValue = await fileUploadRef.current?.save(); // call child's exposed method
         setCurrentStep("File Summary");
@@ -302,6 +305,33 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
     });
   };
 
+  const handleFormWizardClick = (title:string) =>{
+    console.log("handleFormWizardClick",title)
+    if(title == "File Upload" ){
+setIndex(0)
+    }else if(title == "File Summary" && campaignState?.generatedFileSummary){
+setIndex(1)
+    }else if(title =="Stragtegic Objective" && campaignState?.strategicObjective){
+setIndex(2)
+    }else if(title =="Target Segments"  && campaignState?.segment){
+setIndex(3)
+    }else if(title =="Campaign Calendar"  && campaignState?.campaignDuration){
+setIndex(4)
+    }
+    
+  }
+
+
+useEffect(()=>{
+  console.log("calendarModified",calendarModified)
+},[calendarModified])
+
+
+
+const isGenerateEnabled = useSelector((state: RootState) =>
+    selectIsGenerateEnabled(state)
+  );
+
   return (
     <Box
       sx={{
@@ -325,11 +355,11 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            // backgroundColor: "rgba(255, 255, 255, 0.1)",
             padding: "12px 24px",
             borderRadius: "12px",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            // backdropFilter: "blur(8px)",
+            // boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           }}
         >
           {items.map((item, idx) => (
@@ -338,7 +368,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  color: idx === index ? "#007bff" : "rgba(255, 255, 255, 0.6)",
+                  color: idx === index ? "#fff" : "rgba(255, 255, 255, 0.6)",
                   transition: "all 0.3s ease",
                 }}
               >
@@ -347,7 +377,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
                     width: "24px",
                     height: "24px",
                     borderRadius: "50%",
-                    backgroundColor: idx === index ? "#007bff" : "transparent",
+                    backgroundColor: idx === index ? "#00000075" : "transparent",
                     border:
                       idx === index
                         ? "none"
@@ -367,6 +397,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
                     flexDirection: "column",
                     alignItems: "flex-start",
                   }}
+                  onClick={()=>handleFormWizardClick(item.title)}
                 >
                   <Typography
                     sx={{
@@ -441,6 +472,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
             <CampaignCalendar
               ref={campaignCalendarRef}
               closeDrodpownOpen={closeDrodpownOpen}
+                onModifiedChange={setCalendarModified}
             />
           </>
         )}
@@ -455,6 +487,18 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
             paddingRight: "100px",
           }}
         >
+          {/* <button
+      style={{
+        padding: "10px 20px",
+        backgroundColor: isGenerateEnabled ? "#4CAF50" : "#2196F3",
+        color: "#fff",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer"
+      }}
+    >
+      {isGenerateEnabled ? "Generate" : "Next"}
+    </button> */}
           <button
             onClick={prev}
             style={{
@@ -493,7 +537,58 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
           >
             Back
           </button>
-          <button
+        
+{items[index].title === "Campaign Calendar" ? (
+    <button
+      onClick={
+        campaignState?.messagingPillars ? next : next
+      }
+      style={{
+        padding: "10px 32px",
+        backgroundColor: "rgba(0, 123, 255, 0.2)",
+        color: "white",
+        border: "1px solid rgba(0, 123, 255, 0.3)",
+        borderRadius: "8px",
+        cursor: is3DTransitioning ? "not-allowed" : "pointer",
+        fontSize: "16px",
+        transition: "all 0.3s ease",
+        opacity: is3DTransitioning ? 0.3 : 1,
+        pointerEvents: is3DTransitioning ? "none" : "auto",
+        backdropFilter: "blur(8px)",
+        boxShadow:
+          "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+        letterSpacing: "0.5px",
+        fontWeight: "500",
+      }}
+    >
+      {campaignState?.messagingPillars  ? "Next" : "Generate"}
+    </button>
+  ) : (
+    <button
+      onClick={next}
+      style={{
+        padding: "10px 32px",
+        backgroundColor: "rgba(0, 123, 255, 0.2)",
+        color: "white",
+        border: "1px solid rgba(0, 123, 255, 0.3)",
+        borderRadius: "8px",
+        cursor: is3DTransitioning ? "not-allowed" : "pointer",
+        fontSize: "16px",
+        transition: "all 0.3s ease",
+        opacity: is3DTransitioning ? 0.3 : 1,
+        pointerEvents: is3DTransitioning ? "none" : "auto",
+        backdropFilter: "blur(8px)",
+        boxShadow:
+          "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+        letterSpacing: "0.5px",
+        fontWeight: "500",
+      }}
+    >
+      Next
+    </button>
+  )}
+        
+ {/* <button
             onClick={next}
             style={{
               padding: "10px 32px",
@@ -528,8 +623,10 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
                 "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)";
             }}
           >
-            Next
-          </button>
+           Next
+          </button> */}
+       
+         
         </Box>
         {/* {items[index].title == "Campaign Calendar" &&
           campaignState?.brandTone && (

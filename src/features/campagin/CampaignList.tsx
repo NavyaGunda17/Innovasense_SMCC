@@ -141,14 +141,14 @@ const CampaignList = () => {
     setCampaignList(data || []);
 
     // Wait for DOM update, then scroll
-    setTimeout(() => {
-      if (highlightId && lastCampaignRef.current) {
-        lastCampaignRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    }, 100);
+    // setTimeout(() => {
+    //   if (highlightId && lastCampaignRef.current) {
+    //     lastCampaignRef.current.scrollIntoView({
+    //       behavior: "smooth",
+    //       block: "center",
+    //     });
+    //   }
+    // }, 100);
   };
 
   const handleCreate = (values: {
@@ -187,10 +187,11 @@ const CampaignList = () => {
   }, [open, connectOpen]);
 
   const gradientInputSx = {
-    background: "rgba(255, 255, 255, 0.08)",
+    // background: "rgba(255, 255, 255, 0.08)",
+     background:"transparent",
     border: "1px solid rgba(255, 255, 255, 0.2)",
     color: "white",
-    borderRadius: 8,
+    borderRadius: 2,
     transition: "all 0.2s ease",
     fontWeight: 400,
     fontSize: 16,
@@ -297,20 +298,20 @@ const CampaignList = () => {
           p: "10px 20px",
         }}
       >
-        <Box sx={{ display: "flex", gap: 10, position: "relative" }}>
+        <Box sx={{ display: "flex", gap: 3, position: "relative" }}>
           <Box
             sx={{
               display: "flex",
               gap: 1,
               alignItems: "center",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
+              // border: "1px solid rgba(255, 255, 255, 0.3)",
               borderRadius: "8px",
               padding: "8px 12px",
               cursor: "pointer",
               transition: "all 0.2s ease",
               "&:hover": {
-                border: "1px solid rgba(255, 255, 255, 0.6)",
-                background: "rgba(255, 255, 255, 0.1)",
+                // border: "1px solid rgba(255, 255, 255, 0.6)",
+                // background: "rgba(255, 255, 255, 0.1)",
               },
             }}
             onClick={handleCreateNew}
@@ -351,7 +352,8 @@ const CampaignList = () => {
               Connect
             </Typography>
           </Box>
-          <HamburgerMenu />
+          {/* Not required in campaign page */}
+          {/* <HamburgerMenu /> */}
           {connectOpen && (
             <div className="campaign-form-container">
               <Box
@@ -626,6 +628,7 @@ const CampaignList = () => {
                 borderRadius: 4,
                 position: "relative",
                 display: "flex",
+                cursor:"pointer",
                 flexDirection: viewMode === "list" ? "row" : "column",
                 gap: viewMode === "list" ? 3 : 1,
                 width: "auto",

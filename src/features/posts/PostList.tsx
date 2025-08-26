@@ -161,6 +161,11 @@ const PostList: React.FC = () => {
     }
   }, [campaignStateWeekEvent, campaignStateMarticleJson]);
 
+
+  useEffect(()=>{
+
+  },[weekDetails])
+
   const transformMasterArtickeJSON = () => {
     if (weekId) {
       const index = parseInt(weekId, 10);
@@ -269,6 +274,7 @@ const PostList: React.FC = () => {
       }
 
       showSuccessToast("Post generation initiated successfully");
+      renderData()
     } catch (error) {
       console.error("Error triggering webhook:", error);
       showErrorToast("Error generating post");
@@ -324,6 +330,7 @@ try{
       .eq("week", weekId)
       .single();
 
+      console.log("change in table",data)
     if (data) {
       setPostList(data);
 
@@ -340,52 +347,108 @@ try{
     }
   };
 
-  useEffect(() => {
-    let channel: any;
-    let isSubscribed = false;
+//  useEffect(() => {
+//   let channel: any;
 
-    const subscribeRole = async () => {
-      if (campaignId && !isSubscribed) {
-        channel = supabase.channel("row-listener").on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "postList",
-          },
-          (payload) => {
-            console.log("Realtime event:", payload);
-            renderData();
-          }
-        );
+//   const subscribeRole = async () => {
+//     if (!campaignId) return;
 
-        await channel.subscribe();
-        isSubscribed = true;
-      }
-    };
+//     channel = supabase
+//       .channel("row-listener")
+//       .on(
+//         "postgres_changes",
+//         {
+//           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
+//           schema: "public",
+//           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
+//           // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
+//         },
+//         (payload) => {
+//           console.log("Realtime event:", payload);
+//           renderData(); // refresh data
+//         }
+//       )
+//       .subscribe((status) => {
+//         if (status === "SUBSCRIBED") {
+//           console.log("✅ Realtime subscription active on postlist");
+//         }
+//       });
+//   };
 
-    const unsubscribeRole = () => {
-      if (channel && isSubscribed) {
-        supabase.removeChannel(channel);
-        isSubscribed = false;
-      }
-    };
+//   // const unsubscribeRole = () => {
+//   //   if (channel) {
+//   //     supabase.removeChannel(channel);
+//   //     console.log("❌ Realtime unsubscribed");
+//   //   }
+//   // };
 
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        unsubscribeRole();
-        subscribeRole();
-      }
-    };
+//   const handleVisibility = () => {
+//     if (document.visibilityState === "visible") {
+//       // unsubscribeRole();
+//       subscribeRole();
+//     }
+//   };
 
-    subscribeRole();
-    document.addEventListener("visibilitychange", handleVisibility);
+//   subscribeRole();
+//   document.addEventListener("visibilitychange", handleVisibility);
 
-    return () => {
-      unsubscribeRole();
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, []);
+//   return () => {
+//     // unsubscribeRole();
+//     document.removeEventListener("visibilitychange", handleVisibility);
+//   };
+// }, []); // re-run if campaignId changes
+
+
+useEffect(() => {
+      let channel: any;
+  
+      const subscribeRole = () => {
+        if (campaignId) {
+          channel = supabase
+            .channel("row-listener")
+           
+            .on(
+        "postgres_changes",
+        {
+          event: "*", // can be INSERT, UPDATE, DELETE, or "*"
+          schema: "public",
+          table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
+          // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
+        },
+        (payload) => {
+          console.log("Realtime event:", payload);
+          renderData(); // refresh data
+        }
+      )
+            .subscribe((status) => {
+              if (status === "SUBSCRIBED") {
+                console.log("✅ Subscribed to row changes");
+                 renderData(); // refresh data
+              } else if (status === "CHANNEL_ERROR") {
+                console.error("❌ Error subscribing to row");
+              }
+            });
+        }
+      };
+  
+      subscribeRole();
+  
+      const handleVisibility = () => {
+        if (document.visibilityState === "visible") {
+          console.log("🔄 Tab activated — refreshing connection");
+          if (channel) supabase.removeChannel(channel);
+          subscribeRole();
+        }
+      };
+  
+      document.addEventListener("visibilitychange", handleVisibility);
+  
+      return () => {
+        if (channel) supabase.removeChannel(channel);
+        document.removeEventListener("visibilitychange", handleVisibility);
+      };
+    }, []);
+
 
   const toCamelCase = (str: string): string => {
     return str
@@ -418,7 +481,11 @@ try{
               ? scheduledPost?.index
               : scheduledPost?.indexType
           ) - 1;
-        const generated = index >= 0 ? generatedPosts[index] : undefined;
+
+
+           const generated = generatedPosts.find((gen: any) => gen.post == Number(scheduledPost.index));
+           
+        // const generated = index >= 0 ? generatedPosts[index] : undefined;
 
         return {
           ...scheduledPost,
@@ -731,7 +798,7 @@ try{
                             >
                               🔄 Regenerate Text
                             </MenuItem>
-                            <MenuItem
+                            {/* <MenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
                                 // TODO: Implement publish functionality
@@ -740,7 +807,7 @@ try{
                               }}
                             >
                               📤 Publish
-                            </MenuItem>
+                            </MenuItem> */}
                           </Menu>
                         </Box>
                         <Box
@@ -763,7 +830,8 @@ try{
                                 style={{
                                   width: "100%",
                                   borderRadius: "8px",
-                                  height: "200px",
+                                  // height: "200px",
+                                    aspectRatio:"2/3",
                                   objectFit: "cover",
                                 }}
                               />
@@ -771,10 +839,12 @@ try{
                               <img
                                 src={post.url}
                                 alt={post.caption || ""}
-                                height="200px"
+                                // height="200px"
                                 style={{
+                                  //  height: "200px",
                                   width: "100%",
                                   borderRadius: "8px",
+                                  aspectRatio:"2/3",
                                   objectFit: "cover",
                                 }}
                               />
@@ -788,7 +858,14 @@ try{
                           )}
 
                           {post.caption ? (
-                            <Typography variant="body2" mt={1}>
+                            <Typography variant="body2" mt={1}  sx={{fontSize: "14px",
+            opacity: 0.8,
+            lineHeight: "1.4em",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: "vertical",}}>
                               {post.caption}
                             </Typography>
                           ) : (
@@ -831,6 +908,23 @@ try{
                               ))}
                             </Box>
                           )}
+
+                          {post.url && 
+   <AppButton
+   sx={{mt:2}}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // TODO: Implement publish functionality
+                                publishPerPost(platformKey,idx + 1)
+                                setAnchorEl({ ...anchorEl, [postKey]: null });
+                              }}
+                            >
+                             Publish
+                            </AppButton>
+                          }
+
+                          
+
                         </Box>
                       </Box>
                     );
@@ -887,6 +981,7 @@ try{
                     width: "100%",
                     borderRadius: "12px",
                     height: "auto",
+                     aspectRatio:"2/3",
                     maxHeight: "400px",
                     objectFit: "cover",
                   }}
@@ -899,6 +994,7 @@ try{
                     width: "100%",
                     borderRadius: "12px",
                     height: "auto",
+                     aspectRatio:"2/3",
                     maxHeight: "400px",
                     objectFit: "cover",
                   }}

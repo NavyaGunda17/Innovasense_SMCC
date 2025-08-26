@@ -16,11 +16,12 @@ import AppButton from "./AppButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { supabase } from "../lib/supabaseClient";
-import { setGeneratedCampaignstructure } from "../reducer/campaignSlice";
+import { setGeneratedCampaignstructure, setWeekId } from "../reducer/campaignSlice";
 import { useDispatch } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 import AnimatedLoader from "./AnimatedLoader";
 import { useError } from "../context/ErrorToastContext";
+import { useInfo } from "../context/InfoToastContext";
 
 const DAYS_ORDER = [
   "Sunday",
@@ -97,22 +98,60 @@ export const CalendarComponent1: React.FC<Props> = ({
   const campaignState: any = useSelector((state: RootState) => state.campaign);
 
   const companyId = useSelector((state: RootState) => state.auth.companyId);
+    const [inProgressMap, setInProgressMap] = useState<Record<string, boolean>>({});
+
+
+    const handleGenerateClick = async (week_number:any) => {
+
+       setInProgressMap(prev => ({ ...prev, [week_number]: true }));
+      await handleViewCampaignParent(week_number); // triggers webhook
+      //  setInProgressMap(prev => ({ ...prev, [week_number]: false }));
+    };
+  const { showInfoToast } = useInfo();
+
+  useEffect(()=>{
+
+  },[inProgressMap])
+  useEffect(()=>{
+
+},[campaignState])
+
   const handleViewCampaignParent = async (weekNumber: any) => {
+     showInfoToast(
+      "Initated the process to generate the master article for week."
+    );
     // renderData()
     setShowLoader(true);
     const keyToFind = `week_${weekNumber}`;
     console.log("keyToFind", keyToFind);
-    if (campaignState?.campaignMasterArticle.length > 0) {
-      const index = campaignState?.campaignMasterArticle.findIndex(
+  //   if (campaignState?.campaignMasterArticle.length > 0) {
+  //     const index = campaignState?.campaignMasterArticle.findIndex(
+  //       (obj: any) => keyToFind in obj
+  //     );
+  //     if (index >= 0) {
+  //       // handleViewCampaign(weekNumber);
+  //       setShowLoader(false);
+  //       renderData();
+  // return;
+  //     }
+  //   }
+
+
+     if (campaignState?.campaignMasterArticleJson.length > 0) {
+      const index = campaignState?.campaignMasterArticleJson.findIndex(
         (obj: any) => keyToFind in obj
       );
       if (index >= 0) {
-        handleViewCampaign(weekNumber);
+        // handleViewCampaign(weekNumber);
         setShowLoader(false);
-        return false;
+        renderData();
+  return;
       }
     }
 
+    setTimeout(() =>{
+       setShowLoader(false);
+    },2000)
     try {
       const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
@@ -146,13 +185,15 @@ export const CalendarComponent1: React.FC<Props> = ({
         return false 
       }
       // showSuccessToast('Webhook triggered successfully');
-
-      handleViewCampaign(weekNumber);
+ dispatch(setWeekId({weekId:weekNumber}))
+      // handleViewCampaign(weekNumber);
       setShowLoader(false);
+      renderData()
       //   setShowCampaignGoal(true)
     } catch (error) {
       showErrorToast("Error in generating the campaign Master article");
       setShowLoader(false);
+      renderData()
       // showErrorToast('Error triggering webhook:');
     }
   };
@@ -179,11 +220,78 @@ export const CalendarComponent1: React.FC<Props> = ({
         campaignMasterArticleJson: data?.data?.campaignMasterArticleJson,
       })
     );
+    // if (data?.data?.campaignMasterArticle?.length > 0) {
+    //   data?.data?.campaignMasterArticle.forEach((article: any) => {
+    //     const weekKey = Object.keys(article)[0]; // e.g., "week_2"
+    //     const weekNum = weekKey.replace("week_", "");
+    //     setInProgressMap(prev => ({ ...prev, [weekNum]: false }));
+    //   });
+    // }
+      if (data?.data?.campaignMasterArticleJson?.length > 0) {
+      data?.data?.campaignMasterArticleJson.forEach((article: any) => {
+        const weekKey = Object.keys(article)[0]; // e.g., "week_2"
+        const weekNum = weekKey.replace("week_", "");
+        setInProgressMap(prev => ({ ...prev, [weekNum]: false }));
+      });
+    }
   };
   useEffect(() => {
     renderData();
     console.log("calendar componet", campaignWeeks);
   }, []);
+
+
+  useEffect(() => {
+      let channel: any;
+  
+      const subscribeRole = () => {
+        if (campaignState?.campaignId) {
+          channel = supabase
+            .channel("row-listener")
+            .on(
+              "postgres_changes",
+              {
+                event: "*", // or 'UPDATE' if you want specific
+                schema: "public",
+                table: "campaignInput", // change this to your table name
+                filter: `campaignId=${campaignState?.campaignId}`,
+              },
+              (payload) => {
+                console.log("Row updated:", payload);
+                const updatedData: any = payload.new;
+                renderData();
+               
+                
+              }
+            )
+            .subscribe((status) => {
+              if (status === "SUBSCRIBED") {
+                console.log("✅ Subscribed to row changes");
+              } else if (status === "CHANNEL_ERROR") {
+                console.error("❌ Error subscribing to row");
+              }
+            });
+        }
+      };
+  
+      subscribeRole();
+  
+      const handleVisibility = () => {
+        if (document.visibilityState === "visible") {
+          console.log("🔄 Tab activated — refreshing connection");
+          if (channel) supabase.removeChannel(channel);
+          subscribeRole();
+        }
+      };
+  
+      document.addEventListener("visibilitychange", handleVisibility);
+  
+      return () => {
+        if (channel) supabase.removeChannel(channel);
+        document.removeEventListener("visibilitychange", handleVisibility);
+      };
+    }, []);
+
   return (
     <div
       style={{
@@ -199,13 +307,22 @@ export const CalendarComponent1: React.FC<Props> = ({
         {campaignWeeks &&
           campaignWeeks.map((week, index) => {
             const keyToFind = `week_${week.week_number}`;
-
+  
             // Check if master article exists for this week
-            const articleExists =
-              campaignState?.campaignMasterArticle?.length > 0 &&
-              campaignState.campaignMasterArticle.findIndex(
+            // const articleExists =
+            //   campaignState?.campaignMasterArticle?.length > 0 &&
+            //   campaignState.campaignMasterArticle.findIndex(
+            //     (obj: any) => keyToFind in obj
+            //   ) >= 0;
+const articleExists =
+              campaignState?.campaignMasterArticleJson?.length > 0 &&
+              campaignState.campaignMasterArticleJson.findIndex(
                 (obj: any) => keyToFind in obj
               ) >= 0;
+
+              
+                const inProgress = inProgressMap[week.week_number] || false; // per-week
+
             return (
               <Box
                 key={week.week_number}
@@ -235,7 +352,21 @@ export const CalendarComponent1: React.FC<Props> = ({
                   {/* <Typography variant="body2" sx={{ color: '#ccc', mb: 2 }}>
         {week.content_focus}
       </Typography> */}
-
+  {/* {inProgress && (
+            <Box
+              sx={{
+                px: 2,
+                py: 0.5,
+                borderRadius: 2,
+                backgroundColor: "#f39c12",
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              In Progress
+            </Box>
+          )}
                   <AppButton
                     sx={{
                       mb: 2,
@@ -246,12 +377,52 @@ export const CalendarComponent1: React.FC<Props> = ({
                         borderColor: "#6B73FF",
                       },
                     }}
-                    onClick={() => handleViewCampaignParent(week.week_number)}
+                    onClick={() => handleGenerateClick(week.week_number)}
                   >
                     {articleExists
                       ? "View Master Article"
                       : "Generate Master Article"}
                   </AppButton>
+ */}
+
+{!inProgress && (
+    <AppButton
+                    sx={{
+                      mb: 2,
+                      background: "transparent",
+                      border: "1px solid white",
+                      "&:hover": {
+                        background: "#6B73FF",
+                        borderColor: "#6B73FF",
+                      },
+                    }}
+                    onClick={() => articleExists ? handleViewCampaign(week.week_number) : handleGenerateClick(week.week_number)}
+                  >
+                    {articleExists
+                      ? "View Master Article"
+                      : "Generate Master Article"}
+                  </AppButton>
+
+)}
+    
+
+                 
+          {inProgress && !articleExists && (
+            <Box
+              sx={{
+                px: 2,
+                py: 0.5,
+                borderRadius: 2,
+                backgroundColor: "#573705",
+                color: "#ec9c1f",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              In Progress
+            </Box>
+          )}
+       
                 </Box>
 
                 <Divider sx={{ border: "0.5px solid #404040", mb: 3 }} />

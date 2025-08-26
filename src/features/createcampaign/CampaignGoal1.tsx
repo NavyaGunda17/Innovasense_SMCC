@@ -307,7 +307,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                           "& strong": { color: "#2e2e2e" },
                           "& h1, & h2, & h3": { color: "#1d34a0" },
                           "& ul, & ol": { color: "#2e2e2e" },
-                          "& p": { color: "#2e2e2e" },
+                          "& p": { color: "#2e2e2e" ,margin:"0px"},
                           "& li strong": { color: "#1d34a0" },
                           "& blockquote": {
                             borderLeft: "4px solid #ccc",
@@ -321,7 +321,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                         }}
                       >
                         <ReactMarkdown>
-                          {generateGoal.replace(/<br\s*\/?>/gi, "\n\n")}
+                          {generateGoal.replace(/br\s*\/?/gi, "\n\n")}
                         </ReactMarkdown>
                       </Box>
                     )}
@@ -340,6 +340,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                     position: "absolute",
                     right: "20px",
                     top: "20px",
+                    zIndex:9,
                     "&.MuiIconButton-root:hover": {
                       background: "#6B73FF",
                     },
@@ -358,6 +359,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                   top: "20px",
                   display: "flex",
                   gap: 1,
+                  zIndex:9
                 }}
               >
                 <Tooltip title="save">

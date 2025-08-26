@@ -4,6 +4,7 @@ import { fetchCampaignEnumerations } from './campaignThunk';
 
 
 export interface CampaignState {
+   initialCampaignValues?: Partial<CampaignState>; // track initial values
   campaignName: string | null;
   targetMarket: string | null;
   brandIndustry: string | null;
@@ -45,6 +46,18 @@ const campaignSlice = createSlice({
   name: 'campaignCreate',
   initialState,
   reducers: {
+    setInitialCampaignValues: (state) => {
+      state.initialCampaignValues = {
+        startDate: state.startDate,
+        campaignDuration: state.campaignDuration,
+        strategicObjective: state.strategicObjective,
+        segment: state.segment,
+        campaignName: state.campaignName,
+        targetMarket: state.targetMarket,
+        brandIndustry: state.brandIndustry,
+        brandName: state.brandName,
+      };
+    },
     campaignDetails: (
       state,
       action: PayloadAction<{ campaignName: string; targetMarket: string,brandIndustry:string ,brandName:string}>
@@ -176,5 +189,5 @@ const campaignSlice = createSlice({
   },
 });
 
-export const { campaignDetails,setGeneratedXTwitter,setWeekId,resetCampaign, setFileUploads,setGeneretedFileSummary, setCampaignMasterArticleWeekevent, stretegyObjectives,segments,calendar,gaurdRails,setCampaignID,setCampaignGoal,setGeneratedCampaignGoal,setGeneratedCampaignstructure,setGeneratedCampaignDetails,setCampaignWeeksEvent} = campaignSlice.actions;
+export const { campaignDetails,setGeneratedXTwitter,setWeekId,resetCampaign, setFileUploads,setGeneretedFileSummary, setInitialCampaignValues,setCampaignMasterArticleWeekevent, stretegyObjectives,segments,calendar,gaurdRails,setCampaignID,setCampaignGoal,setGeneratedCampaignGoal,setGeneratedCampaignstructure,setGeneratedCampaignDetails,setCampaignWeeksEvent} = campaignSlice.actions;
 export default campaignSlice.reducer;

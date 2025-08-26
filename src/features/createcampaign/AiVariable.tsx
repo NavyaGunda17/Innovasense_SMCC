@@ -12,7 +12,7 @@ import { setGeneratedCampaignDetails } from "../../reducer/campaignSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useSelector } from "react-redux";
-
+import AI_lgo from "../../assests/AI_logo.png"
 
 const TriangleCardLayout: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<string | null>("brand");
@@ -179,6 +179,11 @@ const TriangleCardLayout: React.FC = () => {
             fontFamily: 'Orbitron, sans-serif'
 
         }}>
+           {!isSelected && (
+           <img src={AI_lgo} style={{width:"30px",marginRight:"5px",verticalAlign:"middle",position:"absolute",top:"7px",right:"7px"}}/>
+        )}
+
+         
           {variable.title}
         </Typography>
 
@@ -221,6 +226,7 @@ const TriangleCardLayout: React.FC = () => {
             }}
             sx={{ position: "absolute", top: 8, right: 8, color: "white" }}
           >
+             <img src={AI_lgo} style={{width:"30px",marginRight:"5px",verticalAlign:"middle",position:"absolute",top:"7px",right:"28px"}}/>
             <CloseIcon />
           </IconButton>
         )}

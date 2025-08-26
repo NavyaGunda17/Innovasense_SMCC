@@ -30,6 +30,7 @@ import AnimatedLoader from "../../components/AnimatedLoader";
 import { useNavigate } from "react-router-dom";
 
 import SendIcon from "@mui/icons-material/Send";
+import CloseIcon from "@mui/icons-material/Close";
 
 type CamapignGoal1Props = {
   handleShowCampaignstrure: () => void;
@@ -37,7 +38,6 @@ type CamapignGoal1Props = {
 const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
   handleShowCampaignstrure,
 }) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [templateText, setTemplateText] = useState("");
   const [rawTemplate, setRawTemplate] = useState("");
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -49,38 +49,22 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
   const template = useSelector(
     (state: RootState) => state.campaign.enumerations
   );
-  console.log("template", template);
   const [templateList, setTemplateList] = useState<any>([]);
   const dispatch = useDispatch<AppDispatch>();
   const campaignState: any = useSelector((state: RootState) => state.campaign);
   const companyId = useSelector((state: RootState) => state.auth.companyId);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
-  const handleTemplateSelect = (template: string) => {
+  const handleTemplateSelect = (template: string, key: string) => {
     setRawTemplate(template);
     setTemplateText(template);
-    setDialogOpen(false);
+
+    setSelectedKey(key);
   };
 
   useEffect(() => {
     dispatch(fetchCampaignEnumerations());
   }, [dispatch]);
-
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const userInput = e.target.value;
-    const protectedPattern = /\{\{.*?\}\}/g;
-    const originalVars = rawTemplate.match(protectedPattern) || [];
-    const currentVars = userInput.match(protectedPattern) || [];
-
-    let newText = userInput;
-    originalVars.forEach((originalVar, index) => {
-      const currentVar = currentVars[index];
-      if (currentVar !== originalVar) {
-        newText = newText.replace(currentVar || "", originalVar);
-      }
-    });
-
-    setTemplateText(newText);
-  };
 
   useEffect(() => {
     const templatelisy: any = template?.filter(
@@ -91,7 +75,27 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
     }
   }, [template]);
 
+  useEffect(() => {
+    if (campaignState?.campaignGoal && templateList.length > 0) {
+      const index = templateList.findIndex(
+        (obj: any) => Object.values(obj)[0] === campaignState?.campaignGoal
+      );
+      if (index !== -1) {
+        const matchedObj = templateList[index];
+        const [key, value] = Object.entries(matchedObj)[0];
+        setSelectedKey(key);
+      }
+    }
+  }, [templateList, campaignState]);
+
+  useEffect(() => {}, [selectedKey]);
+
   const handleGeneraeGoal = (structure: any) => {
+    console.log("templateText",templateText)
+    if(!templateText){
+      showErrorToast("Please select the one of camapign goal. ")
+      return;
+    }
     dispatch(setCampaignGoal({ campaignGoal: templateText }));
     handleSaveKnowledge(templateText);
     setShowLoader(true);
@@ -162,18 +166,75 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
 
   useEffect(() => {
     setTemplateText(campaignState?.campaignGoal);
+
     setGeneratedGoal(campaignState?.generatedCampaignGoal);
   }, []);
 
-  const handleClosePopup = () => {
-    setDialogOpen(true);
-  };
-
   const hanldeNextCalendar = () => {
-    console.log("sds");
     navigate(`/creatCampaign/${campaignId}#AIGneeratedGoal`, {
       replace: false,
     });
+  };
+
+  const [selectedCard, setSelectedCard] = useState<string | null>(null);
+
+  const renderCard = (tpl: any) => {
+    const [key, value] = Object.entries(tpl)[0];
+
+    return (
+      <Box
+        key={key}
+        component={motion.div}
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.3 }}
+        sx={{
+          width: 300,
+          height: 200,
+          borderRadius: 2,
+          background:
+            selectedKey === key
+              ? "rgba(0, 0, 53, 0.5)"
+              : "rgba(255, 255, 255, 0.05)",
+          color: "white",
+          cursor: "pointer",
+          padding: "1rem",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          position: "relative",
+          overflow: "hidden",
+          "&:hover": {
+            background: "rgba(0, 0, 53, 0.12)",
+          },
+        }}
+        // onClick={() => setSelectedCard(key)}
+        onClick={() => handleTemplateSelect(value as string, key)}
+      >
+        <Typography
+          sx={{ fontFamily: "Orbitron, sans-serif", fontWeight: 600, mb: 1 }}
+        >
+          {key.toUpperCase()}
+        </Typography>
+        <Box
+          sx={{
+            fontSize: "14px",
+            opacity: 0.8,
+            lineHeight: "1.4em",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: "vertical",
+          }}
+        >
+          {value as string}
+        </Box>
+        <Typography sx={{ mt: 1 }} onClick={() => setSelectedCard(key)}>
+          Click to expand
+        </Typography>
+      </Box>
+    );
   };
 
   return (
@@ -207,130 +268,21 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
             {!hasGenerated ? "Campaign Goal" : "Generated Campaign Goal"}
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          {true && (
-            <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-              <AppButton
-                variantType="primary"
-                onClick={() => setDialogOpen(true)}
-                sx={{ mb: 2, width: "max-content" }}
-              >
-                Select Templates
-              </AppButton>
-            </Box>
-          )}
-          <Box sx={{ position: "relative", overflow: "hidden" }}>
-            <Box
-              className="campaign-detail-rectangle"
-              sx={{
-                maxHeight: "200px",
-                padding: "16px",
-                overflowY: "auto",
-                scrollbarWidth: "none",
-                background: "#ffffffbd !important",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <AnimatePresence mode="wait">
-                {true && (
-                  <>
-                    <motion.div
-                      key="input"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <TextField
-                        multiline
-                        minRows={4}
-                        maxRows={4}
-                        fullWidth
-                        value={templateText}
-                        disabled
-                        placeholder="Select campaign goal from the template...."
-                        InputProps={{
-                          sx: {
-                            color: "#2e2e2e !important",
-                            fontSize: "0.9rem",
-                            lineHeight: "1.5",
-                            padding: "12px 16px",
-                            "& input": { color: "#2e2e2e" },
-                            "& .Mui-disabled": {
-                              WebkitTextFillColor: "#2e2e2e",
-                            },
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              border: "none",
-                            },
-                          },
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            minHeight: "120px",
-                            maxHeight: "120px",
-                            overflow: "auto",
-                          },
-                          "& .Mui-disabled": {
-                            WebkitTextFillColor: "#2e2e2e !important",
-                            opacity: 1,
-                          },
-                          "& .MuiInputBase-multiline": {
-                            padding: "0",
-                          },
-                        }}
-                      />
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </Box>
-          </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 3,
+            justifyContent: "center",
+            width: "70vw",
+            mt: 4,
+          }}
+        >
+          {templateList.map(renderCard)}
         </Box>
       </Box>
 
-      <CustomModal
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        title="Select a Campaign Template"
-        onConfirm={handleClosePopup}
-        confirmText="Close"
-        titleColor="black"
-        showCancel={false}
-        customcolor={{
-          background: "rgb(210 201 201 / 71%)!important",
-        }}
-        body={
-          <List>
-            {templateList.map((tpl: any, index: any) => {
-              const [key, value] = Object.entries(tpl)[0];
-              return (
-                <ListItemButton
-                  key={index}
-                  onClick={() => handleTemplateSelect(value as string)}
-                  sx={{
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#1019462e", // <-- your custom hover color here
-                    },
-                  }}
-                >
-                  <ListItemText
-                    primary={key.charAt(0).toUpperCase() + key.slice(1)}
-                    secondary={value as string}
-                    primaryTypographyProps={{ sx: { color: "#2e2e2e" } }}
-                    secondaryTypographyProps={{
-                      sx: { color: "#2e2e2e", opacity: 0.7 },
-                    }}
-                  />
-                </ListItemButton>
-              );
-            })}
-          </List>
-        }
-      />
-
-      <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+      <Box sx={{ display: "flex", gap: 2, mt: 6, justifyContent: "center" }}>
         <AppButton
           variantType="primary"
           sx={{ mt: 2 }}
@@ -340,35 +292,101 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
         >
           Generate Campaign Goals
         </AppButton>
-        {/* <AppButton
-             variantType="secondary"
-              endIcon={<SendIcon />}
-              onClick={hanldeNextCalendar}
-              disabled={campaignState?.generatedCampaignGoal ? false :  true}
-              sx={{ height: "56px" ,mt:3,float:"right",}} // match TextField height
-            >
-              Next</AppButton> */}
+        {campaignState?.generatedCampaignGoal && (
+          <button
+            onClick={hanldeNextCalendar}
+            style={{
+              height: "max-content",
+              marginTop: "20px",
+              padding: "10px 32px",
+              backgroundColor: "rgba(0, 123, 255, 0.2)",
+              color: "white",
+              border: "1px solid rgba(0, 123, 255, 0.3)",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "16px",
+              transition: "all 0.3s ease",
+              opacity: 1,
+              pointerEvents: "auto",
+              backdropFilter: "blur(8px)",
+              boxShadow:
+                "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+              letterSpacing: "0.5px",
+              fontWeight: "500",
+            }}
+          >
+            Next
+          </button>
+        )}
       </Box>
 
       {showLoader && <AnimatedLoader />}
 
-      {campaignState?.generatedCampaignGoal && (
-        <AppButton
-          variantType="secondary"
-          endIcon={<SendIcon />}
-          onClick={hanldeNextCalendar}
-          sx={{
-            height: "56px",
-            mt: 3,
-            float: "right",
-            position: "fixed",
-            bottom: "100px",
-            right: "100px",
-          }} // match TextField height
-        >
-          Continue
-        </AppButton>
-      )}
+      <AnimatePresence>
+        {selectedCard && (
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              // backgroundColor: "rgba(0,0,0,0.7)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 2000,
+              padding: "20px",
+            }}
+            onClick={() => setSelectedCard(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: "rgba(0,0,53,0.9)",
+                borderRadius: "16px",
+                padding: "2rem",
+                maxWidth: "600px",
+                width: "100%",
+                maxHeight: "80vh",
+                overflowY: "auto",
+                color: "white",
+                position: "relative",
+              }}
+            >
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                {selectedCard.toUpperCase()}
+              </Typography>
+              <Typography>
+                {
+                  templateList.find(
+                    (t: any) => Object.keys(t)[0] === selectedCard
+                  )?.[selectedCard]
+                }
+              </Typography>
+              <IconButton
+                onClick={() => setSelectedCard(null)}
+                sx={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  color: "white",
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Box>
   );
 };

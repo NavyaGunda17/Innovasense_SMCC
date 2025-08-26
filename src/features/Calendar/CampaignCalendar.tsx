@@ -159,7 +159,7 @@ const CampaignCalendar: React.FC = () => {
             }}
           >
           
-            Camapign Calendar
+             {campaignState.campaignName}
           </Typography>
         </Box>
          <HamburgerMenu />

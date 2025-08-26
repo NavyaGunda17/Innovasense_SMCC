@@ -59,7 +59,7 @@ const gradientInputSx = {
   },
 };
 
-type CampaignCalendarProps = { closeDrodpownOpen: () => void };
+type CampaignCalendarProps = { closeDrodpownOpen: () => void ,onModifiedChange?: (modified: boolean) => void};
 export type CampaignCalendarHandle = {
   save: () => void;
 };
@@ -67,7 +67,7 @@ export type CampaignCalendarHandle = {
 const CampaignCalendar = forwardRef<
   CampaignCalendarHandle,
   CampaignCalendarProps
->(({ closeDrodpownOpen }, ref) => {
+>(({ closeDrodpownOpen,onModifiedChange }, ref) => {
   const { showErrorToast } = useError();
   // const formik = useFormik({
   //   initialValues: {
@@ -83,11 +83,23 @@ const CampaignCalendar = forwardRef<
   const [startDate, setStartDate] = useState<any>("");
   const [campaignDuration, setCampaignDuration] = useState<any>(0);
 
+  
   useEffect(() => {
     if (startDate && campaignDuration) {
       dispatch(calendar({ startDate, campaignDuration }));
     }
   }, [startDate, campaignDuration]);
+  const camapaignState = useSelector((state: RootState) => state.campaign);
+
+  useEffect(() => {
+    const modified =
+      camapaignState?.startDate !== startDate ||
+      Number(camapaignState?.campaignDuration) !== Number(campaignDuration);
+   
+    console.log("modified",modified)
+    onModifiedChange?.(modified); // 🔥 bubble up
+  }, [startDate, campaignDuration]);
+
 
   const dispatch = useDispatch<AppDispatch>();
   useImperativeHandle(ref, () => ({
@@ -97,10 +109,10 @@ const CampaignCalendar = forwardRef<
         return false;
       }
       return true; // Return values!
-    },
+    }
   }));
 
-  const camapaignState = useSelector((state: RootState) => state.campaign);
+
   useEffect(() => {
     if (camapaignState?.startDate) {
       const formattedDate = new Date(camapaignState.startDate)
@@ -117,6 +129,9 @@ const CampaignCalendar = forwardRef<
 
   useEffect(() => {}, [startDate, campaignDuration]);
 
+
+  
+    
   return (
     <>
       <Box

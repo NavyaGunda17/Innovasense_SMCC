@@ -171,7 +171,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                         "& strong": { color: "#2e2e2e" },
                         "& h1, & h2, & h3": { color: "#1d34a0" },
                         "& ul, & ol": { color: "#2e2e2e" },
-                        "& p": { color: "#2e2e2e" },
+                        "& p": { color: "#2e2e2e",margin:"0px" },
                         "& li strong": { color: "#1d34a0" },
                         "& blockquote": {
                           borderLeft: "4px solid #ccc",
@@ -197,29 +197,6 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
           </Box>
         </Box>
 
-        {!(hasGenerated && campaignState?.generatedCampaignGoal) ? (
-          <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}></Box>
-        ) : (
-          <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
-            {campaignState?.campaignStructureSummary && (
-              <AppButton
-                variantType="secondary"
-                endIcon={<SendIcon />}
-                onClick={handleNext}
-                sx={{
-                  height: "56px",
-                  mt: 3,
-                  float: "right",
-                  position: "fixed",
-                  bottom: "100px",
-                  right: "100px",
-                }}
-              >
-                Continue
-              </AppButton>
-            )}
-          </Box>
-        )}
 
         {showLoader && <AnimatedLoader />}
       </Box>

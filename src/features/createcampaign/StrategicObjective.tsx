@@ -58,10 +58,23 @@ const StrategicObjective = forwardRef<
   // Expose save handler to parent
   useImperativeHandle(ref, () => ({
     save: () => {
-      if (value.length == 0) {
-        showErrorToast("Strategic Objective is required");
-        return false;
-      }
+      if (typeof value === "string") {
+  if (value.trim().length === 0) {
+    showErrorToast("Strategic Objective is required");
+    return false;
+  }
+} else if (Array.isArray(value)) {
+  if (value.length === 0) {
+    showErrorToast("Strategic Objective is required");
+    return false;
+  }
+}
+
+
+      // if (value.length == 0) {
+      //   showErrorToast("Strategic Objective is required");
+      //   return false;
+      // }
       dispatch(
         stretegyObjectives({
           strategicObjective: typeof value === "string" ? value : value.option,
@@ -96,6 +109,9 @@ const StrategicObjective = forwardRef<
       if (selected) {
         setSelectedObjective(selected);
         setValue(selected);
+      }else{
+        setCustomObjective(camapaignState?.strategicObjective)
+         setValue(camapaignState?.strategicObjective);
       }
     }
   }, [camapaignState?.strategicObjective, enumerators]);
