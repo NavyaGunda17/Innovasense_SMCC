@@ -541,7 +541,7 @@ const isGenerateEnabled = useSelector((state: RootState) =>
 {items[index].title === "Campaign Calendar" ? (
     <button
       onClick={
-        campaignState?.messagingPillars ? next : next
+        campaignState?.messagingPillars ? hanldeNextCalendar : next
       }
       style={{
         padding: "10px 32px",

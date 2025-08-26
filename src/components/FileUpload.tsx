@@ -52,7 +52,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
     },
     ref
   ) => {
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const [uploadedFiles, setUploadedFiles] = useState<any>();
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,10 +74,24 @@ setUploadedFiles(campaignState.fileUpload)
 
     useImperativeHandle(ref, () => ({
       save: async () => {
-        if (uploadedFiles.length === 0) {
-          showErrorToast("Please upload at least one file");
-          return false;
-        }
+
+
+             if (typeof uploadedFiles === "string") {
+  if (uploadedFiles.trim().length === 0) {
+    showErrorToast("Please upload at least one file");
+    return false;
+  }
+} else if (Array.isArray(uploadedFiles)) {
+  if (uploadedFiles.length === 0) {
+    showErrorToast("Please upload at least one file");
+    return false;
+  }
+}
+
+        // if (uploadedFiles.length === 0) {
+        //   showErrorToast("Please upload at least one file");
+        //   return false;
+        // }
         await handleFileUpload();
         return true;
       },
@@ -119,7 +133,7 @@ setUploadedFiles(campaignState.fileUpload)
       if (validFiles.length) {
         setIsUploading(true);
         setTimeout(() => {
-          setUploadedFiles((prev) => [...prev, ...validFiles]);
+          setUploadedFiles((prev:any) => [...prev, ...validFiles]);
             dispatch(setFileUploads({ fileUpload: validFiles }));
           if (onFileChange) onFileChange(validFiles);
           setIsUploading(false);
@@ -155,7 +169,7 @@ setUploadedFiles(campaignState.fileUpload)
     };
 
     const handleDeleteFile = (index: number) => {
-      const newFiles = uploadedFiles.filter((_, idx) => idx !== index);
+      const newFiles = uploadedFiles.filter((_:any, idx:any) => idx !== index);
       setUploadedFiles(newFiles);
       if (onFileChange) onFileChange(newFiles);
       if (fileInputRef.current) {
@@ -208,6 +222,10 @@ setUploadedFiles(campaignState.fileUpload)
     const dispatch = useDispatch<AppDispatch>();
     // Upload all files as binary
     const handleFileUpload = async () => {
+      if(campaignState?.generatedFileSummary){
+         navigate(`/creatCampaign/${id}#FileSummary`);
+         return;
+      }
       setShowLoader(true);
       try {
         const binaries = await Promise.all(
@@ -365,7 +383,7 @@ setUploadedFiles(campaignState.fileUpload)
                 ) : (
                   <div style={{ width: "100%" }}>
                     {uploadedFiles &&
-                      uploadedFiles.map((file:any, idx) => (
+                      uploadedFiles.map((file:any, idx:any) => (
                         <div
                           className="file-display"
                           key={file?.name + idx}

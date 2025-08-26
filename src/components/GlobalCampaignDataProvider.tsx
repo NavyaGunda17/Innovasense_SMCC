@@ -95,7 +95,7 @@ interface GlobalCampaignDataProviderProps {
     
       fetchCampaignData();
    
-  }, [ location]);
+  }, [ campaignId, location, dispatch]);
 
  return <>{children}</>;
 };

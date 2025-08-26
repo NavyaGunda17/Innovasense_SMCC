@@ -411,21 +411,47 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
             Approve Campaign Goals
           </AppButton>
           {campaignState?.campaignStructureSummary && (
-            <AppButton
-              variantType="secondary"
-              endIcon={<SendIcon />}
-              onClick={handleNext}
-              sx={{
-                height: "56px",
-                mt: 3,
-                float: "right",
-                position: "fixed",
-                bottom: "100px",
-                right: "100px",
-              }} // match TextField height
-            >
-              Continue
-            </AppButton>
+            // <AppButton
+            //   variantType="secondary"
+            //   endIcon={<SendIcon />}
+            //   onClick={handleNext}
+            //   sx={{
+            //     height: "56px",
+            //     mt: 3,
+            //     float: "right",
+            //     position: "fixed",
+            //     bottom: "100px",
+            //     right: "100px",
+            //   }} // match TextField height
+            // >
+            //   Continue
+            // </AppButton>
+
+              <button
+            onClick={handleNext}
+            style={{
+              height: "max-content",
+              marginTop: "20px",
+              padding: "10px 32px",
+              backgroundColor: "rgba(0, 123, 255, 0.2)",
+              color: "white",
+              border: "1px solid rgba(0, 123, 255, 0.3)",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "16px",
+              transition: "all 0.3s ease",
+              opacity: 1,
+              pointerEvents: "auto",
+              backdropFilter: "blur(8px)",
+              boxShadow:
+                "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+              letterSpacing: "0.5px",
+              fontWeight: "500",
+            }}
+          >
+            Next
+          </button>
+
           )}
         </Box>
       )}
