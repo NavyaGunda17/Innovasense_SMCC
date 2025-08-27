@@ -328,7 +328,7 @@ try{
       .eq("campaignId", campaignId)
       .eq("companyId", companyId)
       .eq("week", weekId)
-      .single();
+     
 
       console.log("change in table",data)
     if (data) {
@@ -464,15 +464,18 @@ useEffect(() => {
 
     Object.entries(platforms).forEach(([platformKey, platformData]) => {
       const scheduledPosts = platformData["Post Schedule"] || [];
+
+    console.log("platformData",platformData)
+
       const postListKey = toCamelCase(platformKey);
       const generatedPosts = postListData?.[postListKey] || [];
 
-      if (generatedPosts.length === 0) {
-        result[platformKey] = {
-          ...platformData,
-        };
-        return;
-      }
+      // if (generatedPosts.length === 0) {
+      //   result[platformKey] = {
+      //     ...platformData,
+      //   };
+      //   return;
+      // }
 
       const mergedPosts = scheduledPosts.map((scheduledPost: any) => {
         const index =
@@ -483,15 +486,20 @@ useEffect(() => {
           ) - 1;
 
 
-           const generated = generatedPosts.find((gen: any) => gen.post == Number(scheduledPost.index));
-           
+           const generated = postListData.find((gen: any) => gen.postIndex == Number(scheduledPost.index));
+        
+if (!generated || Object.keys(generated).length === 0) {
+  return {
+      ...scheduledPost, // 👈 return instead of leaving `undefined`
+    };
+}
         // const generated = index >= 0 ? generatedPosts[index] : undefined;
 
         return {
           ...scheduledPost,
-          url: generated?.url ?? scheduledPost.url,
-          caption: generated?.caption ?? scheduledPost.caption,
-          hashtags: generated?.hashtags ?? scheduledPost.hashtags,
+          url: generated[`${postListKey}`]?.url || "",
+          caption: generated[`${postListKey}`]?.caption || "",
+          hashtags: generated[`${postListKey}`]?.hashtags || ""
         };
       });
 
