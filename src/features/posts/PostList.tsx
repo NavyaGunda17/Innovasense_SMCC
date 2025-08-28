@@ -819,12 +819,12 @@ if (!generated || Object.keys(generated).length === 0) {
                           </Menu>
                         </Box>
                         <Box
-                          onClick={() =>
-                            post?.url &&
-                            setExpandedPost({ post, platform: platformKey })
-                          }
+                          // onClick={() =>
+                          //   post?.url &&
+                          //   setExpandedPost({ post, platform: platformKey })
+                          // }
                           sx={{
-                            cursor: post?.url ? "pointer" : "default",
+                            // cursor: post?.url ? "pointer" : "default",
                             width: "100%",
                           }}
                         >
@@ -875,7 +875,7 @@ if (!generated || Object.keys(generated).length === 0) {
                           )}
 
                           {post.caption ? (
-                            <Typography variant="body2" mt={1}  sx={{fontSize: "14px",
+                           <> <Typography variant="body2" mt={1}  sx={{fontSize: "14px",
             opacity: 0.8,
             lineHeight: "1.4em",
             overflow: "hidden",
@@ -885,6 +885,11 @@ if (!generated || Object.keys(generated).length === 0) {
             WebkitBoxOrient: "vertical",}}>
                               {post.caption}
                             </Typography>
+                            <Typography sx={{color:"#8359e5",cursor:"pointer",width:"max-content"}}  onClick={() =>
+                            post?.url &&
+                            setExpandedPost({ post, platform: platformKey })
+                          }>Read More</Typography>
+                            </>
                           ) : (
                             <Skeleton
                               variant="rectangular"
@@ -989,7 +994,7 @@ if (!generated || Object.keys(generated).length === 0) {
                 color: "white",
               }}
             >
-              {expandedPost.post.mediaType === "video" ? (
+              {/* {expandedPost.post.mediaType === "video" ? (
                 <video
                   src={expandedPost.post.url}
                   autoPlay
@@ -1017,13 +1022,13 @@ if (!generated || Object.keys(generated).length === 0) {
                     objectFit: "cover",
                   }}
                 />
-              )}
+              )} */}
 
               <Typography variant="h6" mt={2}>
                 {expandedPost.post.caption}
               </Typography>
 
-              <Box mt={2}>
+              {/* <Box mt={2}>
                 <Typography variant="body2">
                   📅{" "}
                   <strong>
@@ -1036,7 +1041,7 @@ if (!generated || Object.keys(generated).length === 0) {
                 <Typography variant="body2">
                   📝 <strong>{expandedPost.post.type}</strong>
                 </Typography>
-              </Box>
+              </Box> */}
 
               {!!expandedPost.post.hashtags?.length && (
                 <Box mt={2} display="flex" flexWrap="wrap" gap={1}>
