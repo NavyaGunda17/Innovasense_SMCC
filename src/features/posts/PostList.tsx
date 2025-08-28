@@ -13,6 +13,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  FormGroup,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
@@ -115,6 +118,7 @@ const PostList: React.FC = () => {
     productImage: File | null;
     postIndex: number;
     prompt: string;
+    url?:string
   }>({
     open: false,
     platform: "",
@@ -512,6 +516,30 @@ if (!generated || Object.keys(generated).length === 0) {
     return result;
   };
 
+
+// Convert ArrayBuffer to Base64
+const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+
+  return btoa(binary);
+};
+
+
+// Complete example: fetch image URL → ArrayBuffer → Base64
+const convertImageUrlToBase64 = async (url: any): Promise<string> => {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Failed to fetch the image");
+  const buffer = await response.arrayBuffer();
+  return arrayBufferToBase64(buffer);
+};
+
+
   const handleRegenerate = async (data: {
     platforms: string[];
     events: string[];
@@ -519,6 +547,7 @@ if (!generated || Object.keys(generated).length === 0) {
     command: string;
     selectedPosts?: any;
     file?: string;
+    url?:string
   }) => {
     console.log("Regenerating:", data);
     showInfoToast(
@@ -534,6 +563,11 @@ if (!generated || Object.keys(generated).length === 0) {
         data.platforms[0],
         data.selectedPosts
       );
+  const imageUrl = "";
+
+          const binaryData = await convertImageUrlToBase64(data?.url);
+
+
       const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
         {
@@ -551,10 +585,10 @@ if (!generated || Object.keys(generated).length === 0) {
                   ? "regenerateText"
                   : "regenerateMedia",
               platform: data.platforms[0],
-              postIndex: Array.isArray(data.selectedPosts)
+              postIndex: Array.isArray(data?.selectedPosts)
                 ? data.selectedPosts
                 : [data.selectedPosts],
-              ...(data.file && { file: data.file }),
+              ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
             },
           }),
         }
@@ -579,6 +613,10 @@ if (!generated || Object.keys(generated).length === 0) {
   };
 
   const [showAssistant, setShowAssistant] = useState(false);
+  const [ useExisting , setExisting] = useState(false)
+  useEffect(()=>{
+
+  },[useExisting])
 
   return (
     <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px", p: 5 }}>
@@ -786,6 +824,7 @@ if (!generated || Object.keys(generated).length === 0) {
                                   postIndex: idx + 1,
                                   productImage: null,
                                   prompt: "",
+                                  url:post.url
                                 });
                                 setAnchorEl({ ...anchorEl, [postKey]: null });
                               }}
@@ -1335,9 +1374,19 @@ if (!generated || Object.keys(generated).length === 0) {
               }}
             />
 
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+<Box sx={{
+  display:'flex',
+  justifyContent:"space-between",
+  alignItems:"center"
+}}>
+ <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Reference Image (Optional)
             </Typography>
+            <FormGroup>
+  <FormControlLabel control={<Checkbox checked={useExisting} sx={{color:"white"}} onChange={()=> setExisting(!useExisting)}/>} label="Use the Existing image" />
+</FormGroup>
+</Box>
+           
             <Typography
               variant="body2"
               sx={{ mb: 2, color: "rgba(255,255,255,0.7)" }}
@@ -1346,7 +1395,7 @@ if (!generated || Object.keys(generated).length === 0) {
             </Typography>
 
             {!regenerateMediaModal.productImage ? (
-              <Box
+            !useExisting &&  <Box
                 sx={{
                   border: "2px dashed rgba(255, 255, 255, 0.3)",
                   borderRadius: "8px",
@@ -1386,7 +1435,9 @@ if (!generated || Object.keys(generated).length === 0) {
                 </Typography>
               </Box>
             ) : (
-              <Box
+            
+              <>  
+               <Box
                 sx={{
                   border: "2px solid rgba(255, 255, 255, 0.1)",
                   borderRadius: "8px",
@@ -1437,7 +1488,8 @@ if (!generated || Object.keys(generated).length === 0) {
                     <DeleteIcon />
                   </IconButton>
                 </Box>
-              </Box>
+              </Box></>
+           
             )}
 
             <input
@@ -1490,6 +1542,7 @@ if (!generated || Object.keys(generated).length === 0) {
                 command: regenerateMediaModal.prompt,
                 selectedPosts: [regenerateMediaModal.postIndex],
                 file: base64Image || undefined,
+                url:regenerateMediaModal?.url
               });
               setRegenerateMediaModal({ ...regenerateMediaModal, open: false });
             }}
