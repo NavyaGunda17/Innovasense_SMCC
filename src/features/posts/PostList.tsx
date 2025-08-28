@@ -763,7 +763,7 @@ if (!generated || Object.keys(generated).length === 0) {
                               },
                             }}
                           >
-                            <MenuItem
+                            {/* <MenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setGeneratePostModal({
@@ -776,7 +776,7 @@ if (!generated || Object.keys(generated).length === 0) {
                               }}
                             >
                               🎯 Generate Post
-                            </MenuItem>
+                            </MenuItem> */}
                             <MenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -859,10 +859,19 @@ if (!generated || Object.keys(generated).length === 0) {
                             )
                           ) : (
                             <Skeleton
+                            animation="wave"
                               variant="rectangular"
                               height={200}
                               width="100%"
-                            />
+                              sx={{
+                                textAlign:"center",
+                                display:"flex",
+                                justifyContent:"center",
+                                alignItems:"center"
+                              }}
+                            >
+                            <div className="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                            </Skeleton>
                           )}
 
                           {post.caption ? (
@@ -879,6 +888,7 @@ if (!generated || Object.keys(generated).length === 0) {
                           ) : (
                             <Skeleton
                               variant="rectangular"
+                              animation="wave"
                               height={30}
                               width="100%"
                               sx={{ mt: 1 }}

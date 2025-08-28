@@ -225,10 +225,69 @@ transformMasterArtickeJSON()
       console.error("Error triggering webhook:", error);
     }
   };
+  const campaignStateWeekEvent:any = useSelector(
+    (state: RootState) => state.campaign.campaignMasterWeekEvent
+  );
+// const handleApproveMasterArticle1 = () =>{
+//   console.log("campaignStateWeekEvent",campaignStateWeekEvent)
+//  const weekplatforms = campaignStateWeekEvent?.platforms;
 
-const handleApproveMasterArticle1 = () =>{
-   navigate(`/posts/${campaignId}/${weekId}`)
+//   if (weekplatforms) {
+//     Object.entries(weekplatforms).forEach(([platformKey, platformData]: [any, any]) => {
+//       platformData["Post Schedule"].forEach((post:any) => {
+//         // Handle each post here
+//         console.log(
+//           `Platform: ${platformKey}, Day: ${post.day}, Prompt: ${post.prompt}`
+//         );
+//       });
+//     });
+//   }
+
+//    navigate(`/posts/${campaignId}/${weekId}`)
+// }
+
+const handleApproveMasterArticle1 = () => {
+  if (!campaignStateWeekEvent?.platforms) return;
+
+  const weekPlatforms = campaignStateWeekEvent.platforms;
+
+  for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
+    const platform = platformKey;
+    const platformData1 = platformData as any;
+
+  for (const post of platformData1["Post Schedule"]) {
+  const postIndex = post.index;
+
+  const payload = {
+    companyId,
+    campaignId: campaignStateWeekEvent.campaignId,
+    intent: "Campaign post",
+    content: {
+      campaignPostComments: "",
+      weekNumber: weekId,
+      subTask: "generate",
+      platform,
+      postIndex: [postIndex || 1],
+    },
+  };
+
+  // Fire-and-forget fetch
+  fetch("https://innovasense.app.n8n.cloud/webhook/smcc/brain", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch((err) => console.error("Failed to send webhook", err));
 }
+
+// Navigate immediately
+navigate(`/posts/${campaignId}/${weekId}`);
+
+  }
+
+  // Navigate immediately
+  navigate(`/posts/${campaignId}/${weekId}`);
+};
+
 
   const [moreDetails, setMoreDetails] = useState(true)
   const handleCloseMoreDetails = () =>{
@@ -312,7 +371,7 @@ const handleApproveMasterArticle1 = () =>{
         onClick={handleApproveMasterArticle1}
         sx={{ minWidth:"fit-content",height:"max-content"}}
       >
-       View Post
+       Generate Post
       </AppButton>
         </Box>
        
