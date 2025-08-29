@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { setCampaignMasterArticleWeekevent } from "../../reducer/campaignSlice";
 import { useDispatch } from "react-redux";
@@ -619,6 +619,7 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
 
   },[useExisting])
 
+  const navigate = useNavigate()
   return (
     <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px", p: 5 }}>
       <Box
@@ -637,11 +638,40 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
             position: "relative",
           }}
         >
-          <Box sx={{ p: "20px" }}>
-            <Typography sx={{ fontSize: "16px", color: "white" }}>
-              Posts
-            </Typography>
-          </Box>
+
+
+            <Box
+                            sx={{
+                              // borderRight: "1px solid rgb(84 85 87)",
+                              p: "20px",
+                              pr:"0px",
+                              display:"flex",gap:6
+                            }}
+                  
+                          >
+                             <Typography
+                              sx={{
+                                fontSize: "16px",
+                                color: "white",
+                                cursor:"pointer"
+                              }}
+                              onClick={() => navigate('/campaignList')}
+                            >
+                            
+                              Campaign List
+                            </Typography>
+                  
+                            <Typography
+                              sx={{
+                                fontSize: "16px",
+                                color: "white",
+                              }}
+                            >
+                            
+                             Posts
+                            </Typography>
+                          </Box>
+
           <HamburgerMenu />
         </Box>
       </Box>

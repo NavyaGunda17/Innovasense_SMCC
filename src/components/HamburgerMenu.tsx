@@ -24,11 +24,11 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
   const [activeItem, setActiveItem] = useState<string>(currentPage);
 
   const menuItems: MenuItem[] = [
-    {
-      name: "Campaigns",
-      objectiveName: "Campaigns",
-      active: activeItem === "Campaigns",
-    },
+    // {
+    //   name: "Campaigns",
+    //   objectiveName: "Campaigns",
+    //   active: activeItem === "Campaigns",
+    // },
     {
       name: "File Upload",
       objectiveName: "FileUpload",

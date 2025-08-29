@@ -311,22 +311,39 @@ navigate(`/posts/${campaignId}/${weekId}`);
       >
         <Box sx={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative"}}>
         {/* campaign carete */}
-        <Box
-          sx={{
-            // borderRight: "1px solid rgb(84 85 87)",
-            p: "20px",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "16px",
-              color: "white",
-            }}
-          >
-           {campaignStateAll.campaignName}
-         
-          </Typography>
-        </Box>
+       
+
+         <Box
+                  sx={{
+                    // borderRight: "1px solid rgb(84 85 87)",
+                    p: "20px",
+                    pr:"0px",
+                    display:"flex",gap:6
+                  }}
+        
+                >
+                   <Typography
+                    sx={{
+                      fontSize: "16px",
+                      color: "white",
+                      cursor:"pointer"
+                    }}
+                    onClick={() => navigate('/campaignList')}
+                  >
+                  
+                    Campaign List
+                  </Typography>
+        
+                  <Typography
+                    sx={{
+                      fontSize: "16px",
+                      color: "white",
+                    }}
+                  >
+                  
+                   {campaignStateAll.campaignName}
+                  </Typography>
+                </Box>
          <HamburgerMenu />
 </Box>
 
