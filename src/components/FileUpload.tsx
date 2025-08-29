@@ -68,6 +68,8 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
     useEffect(()=>{
       if(campaignState.fileUpload){
 setUploadedFiles(campaignState.fileUpload)
+      }else{
+        setUploadedFiles([])
       }
       
     },[campaignState.fileUpload])
@@ -328,7 +330,9 @@ setUploadedFiles(campaignState.fileUpload)
               }`}
               sx={{
                 maxHeight: "32vh",
-                overflowY: "auto",
+                overflowY: "hidden",
+                height:"auto",
+                
               }}
             >
               <div className="file-upload-options">

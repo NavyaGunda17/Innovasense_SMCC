@@ -532,12 +532,16 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
 
 
 // Complete example: fetch image URL → ArrayBuffer → Base64
-const convertImageUrlToBase64 = async (url: any): Promise<string> => {
+const convertImageUrlToBase64 = async (url: string): Promise<string | false> => {
+  if (!url || url.length === 0) {
+    return false;
+  }
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch the image");
   const buffer = await response.arrayBuffer();
   return arrayBufferToBase64(buffer);
 };
+
 
 
   const handleRegenerate = async (data: {
@@ -564,8 +568,12 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
         data.selectedPosts
       );
   const imageUrl = "";
+let binaryData:any =""
+       if (data?.url) {
+   binaryData = await convertImageUrlToBase64(data.url);
+  // use binaryData...
+}
 
-          const binaryData = await convertImageUrlToBase64(data?.url);
 
 
       const response = await fetch(
@@ -605,10 +613,11 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
 
       // Wait a bit for the backend to process
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      await renderData();
+      renderData();
       showInfoToast("Content regeneration initiated successfully");
     } catch (error) {
       console.error("Error triggering webhook:", error);
+      renderData();
       showErrorToast("Error during regeneration");
     }
   };
@@ -621,68 +630,16 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
 
   const navigate = useNavigate()
   return (
-    <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px", p: 5 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          p: "10px 20px",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            position: "relative",
-          }}
-        >
-
-
-            <Box
-                            sx={{
-                              // borderRight: "1px solid rgb(84 85 87)",
-                              p: "20px",
-                              pr:"0px",
-                              display:"flex",gap:6
-                            }}
-                  
-                          >
-                             <Typography
-                              sx={{
-                                fontSize: "16px",
-                                color: "white",
-                                cursor:"pointer"
-                              }}
-                              onClick={() => navigate('/campaignList')}
-                            >
-                            
-                              Campaign List
-                            </Typography>
-                  
-                            <Typography
-                              sx={{
-                                fontSize: "16px",
-                                color: "white",
-                              }}
-                            >
-                            
-                             Posts
-                            </Typography>
-                          </Box>
-
-          <HamburgerMenu />
-        </Box>
-      </Box>
+    <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px", }}>
+     
 
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           gap: 4,
-          p: 4,
-          maxHeight: "75vh",
+          // p: 4,
+          maxHeight: "calc(85vh - 200px)",
           overflowY: "auto",
           scrollbarWidth: "none",
         }}
@@ -849,6 +806,7 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
                             <MenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
+                                setExisting(false)
                                 setRegenerateMediaModal({
                                   open: true,
                                   platform: platformKey,
@@ -909,7 +867,7 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
                                   width: "100%",
                                   borderRadius: "8px",
                                   // height: "200px",
-                                    aspectRatio:"2/3",
+                                    // aspectRatio:"2/3",
                                   objectFit: "cover",
                                 }}
                               />
@@ -922,7 +880,7 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
                                   //  height: "200px",
                                   width: "100%",
                                   borderRadius: "8px",
-                                  aspectRatio:"2/3",
+                                  // aspectRatio:"2/3",
                                   objectFit: "cover",
                                 }}
                               />
@@ -1073,9 +1031,9 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
                   style={{
                     width: "100%",
                     borderRadius: "12px",
-                    height: "auto",
-                     aspectRatio:"2/3",
-                    maxHeight: "400px",
+                    // height: "auto",
+                    //  aspectRatio:"2/3",
+                    // maxHeight: "400px",
                     objectFit: "cover",
                   }}
                 />
@@ -1086,9 +1044,9 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
                   style={{
                     width: "100%",
                     borderRadius: "12px",
-                    height: "auto",
-                     aspectRatio:"2/3",
-                    maxHeight: "400px",
+                    // height: "auto",
+                    //  aspectRatio:"2/3",
+                    // maxHeight: "400px",
                     objectFit: "cover",
                   }}
                 />

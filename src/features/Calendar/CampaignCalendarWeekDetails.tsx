@@ -23,6 +23,7 @@ import TopControls from "../../components/TopControl";
 import CustomModal from "../../components/CustomModal";
 import AnimatedLoader from "../../components/AnimatedLoader";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PostList from "../posts/PostList";
 
 type ContentItem = {
   day: string;
@@ -194,6 +195,7 @@ transformMasterArtickeJSON()
   const handleRegenerateKnowledge = async () => {
     setShowLoader(true)
     setCommand("")
+    handleCloseMoreDetails()
     try {
       const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
@@ -247,6 +249,52 @@ transformMasterArtickeJSON()
 //    navigate(`/posts/${campaignId}/${weekId}`)
 // }
 
+const [showViewPost, setShowPost] = useState(false)
+
+  const checkExisting = async () => {
+    const { data } = await supabase
+      .from("postList")
+      .select("*")
+      .eq("campaignId", campaignId)
+      .eq("companyId", companyId)
+      .eq("week", weekId)
+     
+
+      console.log("change in table",data)
+      if(data && data.length > 0){
+        setShowPost(true)
+      }else{
+          handleApproveMasterArticle1()
+      }
+    
+  };
+  const toCamelCase = (str: string): string => {
+    return str
+      .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
+      .replace(/^(.)/, (c) => c.toLowerCase());
+  };
+
+type PlatformData = {
+  "Platform name": string;
+  "The Narrative": string;
+  "Visual Prompt": string;
+  "Post Schedule": any[];
+};
+
+type Platforms = {
+  [platformKey: string]: PlatformData;
+};
+
+
+
+useEffect(()=>{
+  console.log("checkExisting")
+checkExisting()
+},[])
+
+// useEffect(()=>{
+//   handleApproveMasterArticle1()
+// },[])
 const handleApproveMasterArticle1 = () => {
   if (!campaignStateWeekEvent?.platforms) return;
 
@@ -281,16 +329,16 @@ const handleApproveMasterArticle1 = () => {
 }
 
 // Navigate immediately
-navigate(`/posts/${campaignId}/${weekId}`);
+// navigate(`/posts/${campaignId}/${weekId}`);
 
   }
 
   // Navigate immediately
-  navigate(`/posts/${campaignId}/${weekId}`);
+  // navigate(`/posts/${campaignId}/${weekId}`);
 };
 
 
-  const [moreDetails, setMoreDetails] = useState(true)
+  const [moreDetails, setMoreDetails] = useState(false)
   const handleCloseMoreDetails = () =>{
     setMoreDetails(false)
   }
@@ -360,7 +408,7 @@ navigate(`/posts/${campaignId}/${weekId}`);
       
 
       <Box sx={{
-        width:"70vw",justifyContent:"center",margin:"auto"
+        p:"10px 40px",justifyContent:"center",margin:"auto"
       }}>
 
     
@@ -387,9 +435,10 @@ navigate(`/posts/${campaignId}/${weekId}`);
         variant="contained"
         color="primary"
         onClick={handleApproveMasterArticle1}
-        sx={{ minWidth:"fit-content",height:"max-content"}}
+        sx={{ minWidth:"fit-content",height:"max-content",display:"none"}}
       >
-       Generate Post
+        {showViewPost ? "View Post": "Generate Post "}
+       
       </AppButton>
         </Box>
        
@@ -402,7 +451,11 @@ navigate(`/posts/${campaignId}/${weekId}`);
        
 
 
-        <Typography variant="body1" sx={{ color: "white",mb:2 }}>
+        <Typography variant="body1" sx={{ color: "white",mb:2,overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical", }}>
         {allWeeks['Campaign Strategy']}
         </Typography>
 
@@ -414,12 +467,15 @@ navigate(`/posts/${campaignId}/${weekId}`);
         {/* Regenerate Input Box */}
      
       </Box>
-
+<Box sx={{mt:2}}>
+  <PostList />
+</Box>
 
 <Box sx={{
        maxHeight: '50vh', // limit height
         overflowY: 'auto',  // enable scroll
-         scrollbarWidth: "none",mb:2
+         scrollbarWidth: "none",mb:2,
+         display:"none"
       }}>
          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4,  }}>
      {Object.entries(allWeeks?.platforms || {}).map(([key, value]) => {
@@ -555,16 +611,18 @@ navigate(`/posts/${campaignId}/${weekId}`);
             background:"rgb(210 201 201 / 71%)!important"
         }}
   body={
+    <Box>
     <Box
       sx={{
-        height: 'calc(65vh - 100px)',
+        height: 'calc(75vh - 100px)',
         overflowY: "auto",
         scrollbarWidth: "none",
+        pb:"20px",
         color: "white",
         borderRadius: 2,
         lineHeight: 1.7,
         '& strong': { color: '#2e2e2e' },
-        '& h1, & h2, & h3': { color: '#1d34a0' },
+        '& h1, & h2, & h3': { color: '#1d34a0',mt:0 },
         '& ul, & ol': { color: '#2e2e2e' },
         '& p': { color: '#2e2e2e' },
         '& li strong':{color:'#1d34a0'},
@@ -580,16 +638,9 @@ navigate(`/posts/${campaignId}/${weekId}`);
       }}
     >
       <ReactMarkdown>{weekDetailsArticle.replace(/<br\s*\/?>/gi, "\n\n")}</ReactMarkdown>
+      
     </Box>
-  }
-/> {/* ✅ Removed children block */}
-
-
-      {/* Markdown Article View */}
-   
-
-
-<Box sx={{display:"flex",flexDirection:"row",gap:2}}> 
+    <Box sx={{display:"flex",flexDirection:"row",gap:2,pt:2}}> 
   <textarea
   value={command}
  style={{
@@ -600,8 +651,10 @@ navigate(`/posts/${campaignId}/${weekId}`);
       padding: "10px",          // adjust for alignment
       fontSize: "14px",         // optional for better compactness
       borderRadius: "4px",      // optional for better style
-     
-      flex: 1,                  // allows it to grow
+     backdropFilter:"none",
+      flex: 1,    
+      border:"1px solid #171835",
+      color:"#171835"              // allows it to grow
     }}
    onChange={(e) => setCommand(e.target.value)}
                 
@@ -613,6 +666,16 @@ navigate(`/posts/${campaignId}/${weekId}`);
                    <AppButton sx={{width:"max-content",whiteSpace:"nowrap",minWidth:"fit-content"}} variantType="secondary"
                     onClick ={handleRegenerateKnowledge}>Regenerate Master Article</AppButton>
 </Box>
+    </Box>
+  }
+/> {/* ✅ Removed children block */}
+
+
+      {/* Markdown Article View */}
+   
+
+
+
 
   <Box sx={{display:"flex",justifyContent:"space-between",mt:1}}>
              {/* <AppButton

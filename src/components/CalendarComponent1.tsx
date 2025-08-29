@@ -561,7 +561,7 @@ const articleExists =
       </Popover>
 
       {showLoader && (
-        <Box sx={{ height: "100vh" }}>
+        <Box sx={{ height: "100vh" }} className="loader">
           <AnimatedLoader />
         </Box>
       )}

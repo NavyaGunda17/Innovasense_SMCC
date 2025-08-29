@@ -540,7 +540,7 @@ code {
   width: 55vw; /* Responsive width - 55% of viewport width */
   max-width: 90vw; /* Keep max constraint for very wide screens */
   min-width: 600px; /* Minimum width for small screens */
-  height: 100vh;
+  /* height: 100vh; */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: none;
   padding: 2rem;
