@@ -39,25 +39,23 @@ export interface CampaignState {
 const initialState: CampaignState =
 { campaignName: null, targetMarket: null,campaignId:null, brandIndustry: null,brandName:null,error:null,enumerations:null,strategicObjective:null,segment:null,demographics:null,psychographics:null,
   campaignDuration:null,startDate:null,guardrails:null,campaignGoal:null,generatedCampaignGoal:'',campaignStructureSummary:null,brandValue: null,brandSupport:null,brandTone:null,messagingPillars:[],constraints:[],
-  campaignStructureJson:{},campaignWeekEvent:[],campaignMasterArticle:[],xTwitterPostList:[],weekId:"",campaignMasterArticleJson:[],campaignMasterWeekEvent:{},fileUpload:[],generatedFileSummary:""
+  campaignStructureJson:{},campaignWeekEvent:[],campaignMasterArticle:[],xTwitterPostList:[],weekId:"",campaignMasterArticleJson:[],campaignMasterWeekEvent:{},fileUpload:[],generatedFileSummary:"",initialCampaignValues:{}
  };
 
 const campaignSlice = createSlice({
   name: 'campaignCreate',
   initialState,
   reducers: {
-    setInitialCampaignValues: (state) => {
-      state.initialCampaignValues = {
-        startDate: state.startDate,
-        campaignDuration: state.campaignDuration,
-        strategicObjective: state.strategicObjective,
-        segment: state.segment,
-        campaignName: state.campaignName,
-        targetMarket: state.targetMarket,
-        brandIndustry: state.brandIndustry,
-        brandName: state.brandName,
-      };
-    },
+setInitialCampaignValues: (state, action) => {
+  state.initialCampaignValues = {
+    startDate: action.payload.startDate,
+    campaignDuration: action.payload.campaignDuration,
+    strategicObjective:action.payload.strategicObjective,
+    segment: action.payload.segment,
+    demographics:action.payload.demographics,
+    psychographics: action.payload.psychographics,
+  };
+},
     campaignDetails: (
       state,
       action: PayloadAction<{ campaignName: string; targetMarket: string,brandIndustry:string ,brandName:string}>

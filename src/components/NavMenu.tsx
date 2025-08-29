@@ -322,15 +322,66 @@ setIndex(4)
   }
 
 
-useEffect(()=>{
-  console.log("calendarModified",calendarModified)
-},[calendarModified])
+
+
+useEffect(() => {
+  if (!campaignState || !campaignState.initialCampaignValues) return;
+
+  const reduxDate = campaignState.startDate?.split("T")[0];
+  const dbDate = campaignState.initialCampaignValues.startDate?.split("T")[0];
+
+  const reduxDuration = Number(campaignState.campaignDuration);
+  const dbDuration = Number(campaignState.initialCampaignValues.campaignDuration);
+
+    const reduxStrategic = campaignState.strategicObjective;
+  const dbStrategic = campaignState.initialCampaignValues.strategicObjective;
+
+      const reduxSegmnet = campaignState.segment;
+  const dbSegmnets = campaignState.initialCampaignValues.segment;
+
+     const reduxDemographics = campaignState.demographics;
+  const dbDemographics = campaignState.initialCampaignValues.demographics;
+
+    const reduxPsychographics = campaignState.psychographics;
+  const dbPsychographics = campaignState.initialCampaignValues.psychographics;
+
+  const messagingPillarsExist = Array.isArray(campaignState.messagingPillars) && campaignState.messagingPillars.length > 0;
+
+  // Determine if anything was modified
+  if (
+    !messagingPillarsExist || // messagingPillars missing
+    reduxDate !== dbDate ||   // startDate changed
+    reduxDuration !== dbDuration  ||
+      reduxStrategic !== dbStrategic  || // strategicObjective changed
+      JSON.stringify(reduxSegmnet) !== JSON.stringify(dbSegmnets) || 
+      JSON.stringify(reduxDemographics) !== JSON.stringify(dbDemographics) || 
+      JSON.stringify(reduxPsychographics) !== JSON.stringify(dbPsychographics) 
+
+  ) {
+    setCalendarModified(true);
+  } else {
+    setCalendarModified(false);
+  }
+}, [
+   campaignState?.strategicObjective,
+    campaignState?.segment,
+    campaignState?.demographics,
+     campaignState?.psychographics,
+  campaignState?.startDate,
+  campaignState?.campaignDuration,
+  campaignState?.messagingPillars,
+  campaignState?.initialCampaignValues?.startDate,
+  campaignState?.initialCampaignValues?.campaignDuration,
+  campaignState?.initialCampaignValues?.strategicObjective,
+]);
+
+
+// useEffect(()=>{
+//   console.log("calendarModified",calendarModified)
+// },[calendarModified])
 
 
 
-const isGenerateEnabled = useSelector((state: RootState) =>
-    selectIsGenerateEnabled(state)
-  );
 
   return (
     <Box
@@ -541,7 +592,7 @@ const isGenerateEnabled = useSelector((state: RootState) =>
 {items[index].title === "Campaign Calendar" ? (
     <button
       onClick={
-        campaignState?.messagingPillars ? hanldeNextCalendar : next
+       !calendarModified  ? hanldeNextCalendar : next
       }
       style={{
         padding: "10px 32px",
@@ -561,7 +612,8 @@ const isGenerateEnabled = useSelector((state: RootState) =>
         fontWeight: "500",
       }}
     >
-      {campaignState?.messagingPillars  ? "Next" : "Generate"}
+      {/* {campaignState?.messagingPillars || calendarModified  ? "Next" : "Generate"} */}
+      {calendarModified ? "Generate" : "Next"}
     </button>
   ) : (
     <button

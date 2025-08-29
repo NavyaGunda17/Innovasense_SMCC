@@ -588,6 +588,7 @@ const convertImageUrlToBase64 = async (url: any): Promise<string> => {
               postIndex: Array.isArray(data?.selectedPosts)
                 ? data.selectedPosts
                 : [data.selectedPosts],
+              useExisting:useExisting,
               ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
             },
           }),

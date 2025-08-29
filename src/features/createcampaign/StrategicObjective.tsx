@@ -100,6 +100,7 @@ const StrategicObjective = forwardRef<
     (state: RootState) => state?.campaign
   );
   useEffect(() => {
+    console.log("camapaignState?.strategicObjective",camapaignState?.strategicObjective)
     if (camapaignState?.strategicObjective && enumerators.length > 0) {
       const selected = enumerators.find(
         (item: { option: string }) =>

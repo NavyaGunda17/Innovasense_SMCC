@@ -267,6 +267,7 @@ export const CalendarComponent1: React.FC<Props> = ({
             .subscribe((status) => {
               if (status === "SUBSCRIBED") {
                 console.log("✅ Subscribed to row changes");
+                 renderData();
               } else if (status === "CHANNEL_ERROR") {
                 console.error("❌ Error subscribing to row");
               }

@@ -84,21 +84,22 @@ const CampaignCalendar = forwardRef<
   const [campaignDuration, setCampaignDuration] = useState<any>(0);
 
   
-  useEffect(() => {
-    if (startDate && campaignDuration) {
-      dispatch(calendar({ startDate, campaignDuration }));
-    }
-  }, [startDate, campaignDuration]);
+  // useEffect(() => {
+  //   if (startDate && campaignDuration) {
+  //     dispatch(calendar({ startDate, campaignDuration }));
+  //   }
+  // }, [startDate, campaignDuration]);
+
   const camapaignState = useSelector((state: RootState) => state.campaign);
 
-  useEffect(() => {
-    const modified =
-      camapaignState?.startDate !== startDate ||
-      Number(camapaignState?.campaignDuration) !== Number(campaignDuration);
+  // useEffect(() => {
+  //   const modified =
+  //     camapaignState?.startDate !== startDate ||
+  //     Number(camapaignState?.campaignDuration) !== Number(campaignDuration);
    
-    console.log("modified",modified)
-    onModifiedChange?.(modified); // 🔥 bubble up
-  }, [startDate, campaignDuration]);
+  //   console.log("modified",modified)
+  //   onModifiedChange?.(modified); // 🔥 bubble up
+  // }, [startDate, campaignDuration]);
 
 
   const dispatch = useDispatch<AppDispatch>();
@@ -130,8 +131,18 @@ const CampaignCalendar = forwardRef<
   useEffect(() => {}, [startDate, campaignDuration]);
 
 
-  
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setStartDate(value);
+  dispatch(calendar({ startDate: value, campaignDuration: campaignDuration }));
+};
     
+  const handleCampaignDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setCampaignDuration(e.target.value)
+  dispatch(calendar({ startDate: value, campaignDuration: campaignDuration }));
+};
+
   return (
     <>
       <Box
@@ -195,7 +206,13 @@ const CampaignCalendar = forwardRef<
               sx: { color: "red", mt: 0, mb: 0 },
             }}
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={handleStartDateChange}
+            // onChange={(e) => 
+            //   (setStartDate(e.target.value),
+            //   dispatch(calendar({startDate:e.target.value,campaignDuration:1}))
+            
+            // )
+            // }
           />
 
           <Typography
@@ -211,7 +228,7 @@ const CampaignCalendar = forwardRef<
               placeholder="Campaign Duration: Weeks"
               type="number"
               value={campaignDuration}
-              onChange={(e) => setCampaignDuration(e.target.value)}
+              onChange={handleCampaignDuration}
               FormHelperTextProps={{
                 sx: { color: "red", mt: 0 },
               }}

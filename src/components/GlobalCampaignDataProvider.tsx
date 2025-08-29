@@ -12,7 +12,8 @@ import {
   setCampaignID,
   setGeneratedCampaignDetails,
   setGeneretedFileSummary,
-  setFileUploads
+  setFileUploads,
+  setInitialCampaignValues
 } from '../reducer/campaignSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -43,6 +44,7 @@ interface GlobalCampaignDataProviderProps {
           brandName: data.brandName,
         }));
 
+        
         dispatch(setCampaignGoal({ campaignGoal: data.campaignGoalUser }));
         if(data.clientFileName != null){
  dispatch(setFileUploads({ fileUpload: [data.clientFileName] }));
@@ -73,6 +75,16 @@ interface GlobalCampaignDataProviderProps {
       campaignDuration: data.campaignDuration,
     }));
 
+dispatch(setInitialCampaignValues({
+  startDate: data.startDate,
+  campaignDuration: data.campaignDuration,
+  strategicObjective: data.strategicObjective,
+   segment: data.segment,
+      demographics: data.demographics,
+      psychographics: data.psychographics,
+}));
+    
+
 
         dispatch(gaurdRails({ gaurdRails: [data.guardrails] }));
         // You may not need to setCampaignID here again if it's already in redux
@@ -95,7 +107,7 @@ interface GlobalCampaignDataProviderProps {
     
       fetchCampaignData();
    
-  }, [ campaignId, location, dispatch]);
+  }, [ campaignId]);
 
  return <>{children}</>;
 };
