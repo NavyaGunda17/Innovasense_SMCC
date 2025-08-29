@@ -179,7 +179,7 @@ export const CalendarComponent1: React.FC<Props> = ({
       const result = await response.json();
 
       if (result[0].output.status == "fail") {
-        showErrorToast("Error in generating the campaign Master article");
+        // showErrorToast("Error in generating the campaign Master article");
         // showErrorToast('Failed to trigger webhook');
         setShowLoader(false);
         return false 
@@ -191,7 +191,7 @@ export const CalendarComponent1: React.FC<Props> = ({
       renderData()
       //   setShowCampaignGoal(true)
     } catch (error) {
-      showErrorToast("Error in generating the campaign Master article");
+      // showErrorToast("Error in generating the campaign Master article");
       setShowLoader(false);
       renderData()
       // showErrorToast('Error triggering webhook:');
