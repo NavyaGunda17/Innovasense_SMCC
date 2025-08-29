@@ -417,7 +417,7 @@ useEffect(() => {
           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
           schema: "public",
           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
-          // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
+          filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
         },
         (payload) => {
           console.log("Realtime event:", payload);

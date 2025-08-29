@@ -215,7 +215,7 @@ transformMasterArtickeJSON()
        const result = await response.json();
 
       if (result[0].output.status == "fail") {
-        console.error("Failed to trigger webhook");
+        console.error("Failed in regenarting the master article");
         setShowLoader(false)
         return false
       }
