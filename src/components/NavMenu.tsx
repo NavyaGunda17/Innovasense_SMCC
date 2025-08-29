@@ -309,14 +309,19 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
     console.log("handleFormWizardClick",title)
     if(title == "File Upload" ){
 setIndex(0)
+ navigate(`/creatCampaign/${campaignId}#FileUpload`);
     }else if(title == "File Summary" && campaignState?.generatedFileSummary){
 setIndex(1)
+navigate(`/creatCampaign/${campaignId}#FileSummary`);
     }else if(title =="Stragtegic Objective" && campaignState?.strategicObjective){
 setIndex(2)
+navigate(`/creatCampaign/${campaignId}#StrategicObjective`);
     }else if(title =="Target Segments"  && campaignState?.segment){
 setIndex(3)
+navigate(`/creatCampaign/${campaignId}#TargetSegments`);
     }else if(title =="Campaign Calendar"  && campaignState?.campaignDuration){
 setIndex(4)
+navigate(`/creatCampaign/${campaignId}#KeyDates`);
     }
     
   }

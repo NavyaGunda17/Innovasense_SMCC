@@ -222,6 +222,7 @@ transformMasterArtickeJSON()
        renderData();
         setShowLoader(false)
     } catch (error) {
+       setShowLoader(false)
       console.error("Error triggering webhook:", error);
     }
   };

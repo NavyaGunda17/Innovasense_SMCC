@@ -254,7 +254,7 @@ export const CalendarComponent1: React.FC<Props> = ({
                 event: "*", // or 'UPDATE' if you want specific
                 schema: "public",
                 table: "campaignInput", // change this to your table name
-                filter: `campaignId=${campaignState?.campaignId}`,
+                filter: `campaignId=eq.${campaignState.campaignId}`,
               },
               (payload) => {
                 console.log("Row updated:", payload);
