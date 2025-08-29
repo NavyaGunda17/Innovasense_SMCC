@@ -140,7 +140,7 @@ const CampaignCalendar = forwardRef<
   const handleCampaignDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
   const value = e.target.value;
   setCampaignDuration(e.target.value)
-  dispatch(calendar({ startDate: value, campaignDuration: campaignDuration }));
+  dispatch(calendar({ startDate: startDate, campaignDuration: value }));
 };
 
   return (
@@ -242,10 +242,11 @@ const CampaignCalendar = forwardRef<
             />
             <AppButton
               variantType="primary"
-              onClick={() => {
+              onClick={(e) => {
                 const currentValue = Number(campaignDuration || 0);
                 if (currentValue > 0) {
                   setCampaignDuration(currentValue - 1);
+                   dispatch(calendar({ startDate: startDate, campaignDuration: currentValue - 1 }));
                 }
               }}
             >
@@ -257,6 +258,7 @@ const CampaignCalendar = forwardRef<
               onClick={() => {
                 const currentValue = Number(campaignDuration || 0);
                 setCampaignDuration(currentValue + 1);
+                 dispatch(calendar({ startDate: startDate, campaignDuration: currentValue + 1 }));
               }}
             >
               <AddIcon />
