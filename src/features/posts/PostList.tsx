@@ -417,14 +417,13 @@ useEffect(() => {
         if (campaignId) {
           channel = supabase
             .channel("row-listener")
-           
             .on(
         "postgres_changes",
         {
           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
           schema: "public",
           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
-          // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
+          filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
         },
         (payload) => {
           console.log("Realtime event:", payload);
@@ -459,6 +458,7 @@ useEffect(() => {
         document.removeEventListener("visibilitychange", handleVisibility);
       };
     }, []);
+const [activePostKey, setActivePostKey] = useState<any>(null);
 
 
 
@@ -524,111 +524,235 @@ if (!generated || Object.keys(generated).length === 0) {
     return result;
   };
 
-
-// Convert ArrayBuffer to Base64
+// Utility: Convert ArrayBuffer → Base64
 const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
   let binary = "";
   const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
+  const chunkSize = 0x8000; // safer for large files
 
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode.apply(null, chunk as any);
   }
 
   return btoa(binary);
 };
 
+// Generic converter for image/video
+const convertFileUrlToBase64 = async (url: string): Promise<string | false> => {
+  if (!url) return false;
 
-// Complete example: fetch image URL → ArrayBuffer → Base64
-const convertImageUrlToBase64 = async (url: string): Promise<string | false> => {
-  if (!url || url.length === 0) {
-    return false;
-  }
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("Failed to fetch the image");
+
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) throw new Error("Failed to fetch file");
+
+  const contentType =
+    response.headers.get("content-type") || "application/octet-stream";
+
   const buffer = await response.arrayBuffer();
-  return arrayBufferToBase64(buffer);
+  const base64 = arrayBufferToBase64(buffer);
+
+  return `data:${contentType};base64,${base64}`;
 };
 
+const [loadingPosts, setLoadingPosts] = useState<{ [key: string]: boolean }>({});
 
 
-  const handleRegenerate = async (data: {
-    platforms: string[];
-    events: string[];
-    contentType: string;
-    command: string;
-    selectedPosts?: any;
-    file?: string;
-    url?:string
-  }) => {
-    console.log("Regenerating:", data);
-    showInfoToast(
-      "Be mindful that image & video generation might take few moments."
+// Main handler
+const handleRegenerate = async (data: {
+  platforms: string[];
+  events: string[];
+  contentType: string;
+  command: string;
+  selectedPosts?: any;
+  file?: string;
+  url?: string;
+}) => {
+  console.log("Regenerating:", data);
+  showInfoToast(
+    "Be mindful that image & video generation might take few moments."
+  );
+
+  try {
+    console.log(
+      "dataaaaa",
+      campaignId,
+      data.command,
+      weekId,
+      data.contentType,
+      data.platforms[0],
+      data.selectedPosts
     );
-    try {
-      console.log(
-        "dataaaaa",
-        campaignId,
-        data.command,
-        weekId,
-        data.contentType,
-        data.platforms[0],
-        data.selectedPosts
-      );
-  const imageUrl = "";
-let binaryData:any =""
-       if (data?.url && useExisting) {
-   binaryData = await convertImageUrlToBase64(data.url);
-  // use binaryData...
-}
 
+    let binaryData: string | false = "";
 
-
-      const response = await fetch(
-        "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            companyId,
-            campaignId: campaignId,
-            intent: "Campaign post",
-            content: {
-              campaignPostComments: data.command || "",
-              weekNumber: weekId,
-              subTask:
-                data.contentType === "text"
-                  ? "regenerateText"
-                  : "regenerateMedia",
-              platform: data.platforms[0],
-              postIndex: Array.isArray(data?.selectedPosts)
-                ? data.selectedPosts
-                : [data.selectedPosts],
-              useExisting:useExisting,
-              ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
-            },
-          }),
-        }
-      );
-      console.log("Regenerating response:", response);
-
-      const result = await response.json();
-
-      if (result[0].output.status === "fail") {
-        showErrorToast("Failed to regenerate content");
-        return false;
+    
+    if (data?.url && useExisting) {
+      if(data?.url.endsWith(".mp4")){
+        binaryData = data.url
+      }else{
+binaryData = await convertFileUrlToBase64(data.url);
       }
-
-      // Wait a bit for the backend to process
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      renderData();
-      showInfoToast("Content regeneration initiated successfully");
-    } catch (error) {
-      console.error("Error triggering webhook:", error);
-      renderData();
-      showErrorToast("Error during regeneration");
+      
     }
-  };
+
+    
+    const response = await fetch(
+      "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyId,
+          campaignId: campaignId,
+          intent: "Campaign post",
+          content: {
+            campaignPostComments: data.command || "",
+            weekNumber: weekId,
+            subTask:
+              data.contentType === "text"
+                ? "regenerateText"
+                : "regenerateMedia",
+            platform: data.platforms[0],
+            postIndex: Array.isArray(data?.selectedPosts)
+              ? data.selectedPosts
+              : [data.selectedPosts],
+            useExisting: useExisting,
+            ...((data.file || useExisting) && {
+              file: useExisting ? binaryData : data.file,
+            }),
+          },
+        }),
+      }
+    );
+    console.log("Regenerating response:", response);
+
+    const result = await response.json();
+
+    if (result[0].output.status === "fail") {
+      showErrorToast("Failed to regenerate content");
+      return false;
+    }
+
+    // Wait a bit for the backend to process
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    renderData();
+    setLoadingPosts((prev) => ({ ...prev, [activePostKey]: false }));
+    setActivePostKey(null); // clear active post
+    showInfoToast("Content regeneration initiated successfully");
+  } catch (error) {
+    console.error("Error triggering webhook:", error);
+    renderData();
+    showErrorToast("Error during regeneration");
+  }
+};
+
+// // Convert ArrayBuffer to Base64
+// const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+//   let binary = "";
+//   const bytes = new Uint8Array(buffer);
+//   const len = bytes.byteLength;
+
+//   for (let i = 0; i < len; i++) {
+//     binary += String.fromCharCode(bytes[i]);
+//   }
+
+//   return btoa(binary);
+// };
+
+
+// // Complete example: fetch image URL → ArrayBuffer → Base64
+// const convertImageUrlToBase64 = async (url: string): Promise<string | false> => {
+//   if (!url || url.length === 0) {
+//     return false;
+//   }
+//   const response = await fetch(url);
+//   if (!response.ok) throw new Error("Failed to fetch the image");
+//   const buffer = await response.arrayBuffer();
+//   return arrayBufferToBase64(buffer);
+// };
+
+
+
+//   const handleRegenerate = async (data: {
+//     platforms: string[];
+//     events: string[];
+//     contentType: string;
+//     command: string;
+//     selectedPosts?: any;
+//     file?: string;
+//     url?:string
+//   }) => {
+//     console.log("Regenerating:", data);
+//     showInfoToast(
+//       "Be mindful that image & video generation might take few moments."
+//     );
+//     try {
+//       console.log(
+//         "dataaaaa",
+//         campaignId,
+//         data.command,
+//         weekId,
+//         data.contentType,
+//         data.platforms[0],
+//         data.selectedPosts
+//       );
+//   const imageUrl = "";
+// let binaryData:any =""
+//        if (data?.url && useExisting) {
+//    binaryData = await convertImageUrlToBase64(data.url);
+//   // use binaryData...
+// }
+
+
+
+//       const response = await fetch(
+//         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
+//         {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({
+//             companyId,
+//             campaignId: campaignId,
+//             intent: "Campaign post",
+//             content: {
+//               campaignPostComments: data.command || "",
+//               weekNumber: weekId,
+//               subTask:
+//                 data.contentType === "text"
+//                   ? "regenerateText"
+//                   : "regenerateMedia",
+//               platform: data.platforms[0],
+//               postIndex: Array.isArray(data?.selectedPosts)
+//                 ? data.selectedPosts
+//                 : [data.selectedPosts],
+//               useExisting:useExisting,
+//               ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
+//             },
+//           }),
+//         }
+//       );
+//       console.log("Regenerating response:", response);
+
+//       const result = await response.json();
+
+//       if (result[0].output.status === "fail") {
+//         showErrorToast("Failed to regenerate content");
+//         return false;
+//       }
+
+//       // Wait a bit for the backend to process
+//       await new Promise((resolve) => setTimeout(resolve, 2000));
+//       renderData();
+//       showInfoToast("Content regeneration initiated successfully");
+//     } catch (error) {
+//       console.error("Error triggering webhook:", error);
+//       renderData();
+//       showErrorToast("Error during regeneration");
+//     }
+//   };
+
+
 
   const [showAssistant, setShowAssistant] = useState(false);
   const [ useExisting , setExisting] = useState(false)
@@ -815,6 +939,8 @@ let binaryData:any =""
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setExisting(false)
+                              setActivePostKey(postKey);
+
                                 setRegenerateMediaModal({
                                   open: true,
                                   platform: platformKey,
@@ -877,6 +1003,7 @@ let binaryData:any =""
                                   // height: "200px",
                                     // aspectRatio:"2/3",
                                   objectFit: "cover",
+                                  filter: loadingPosts[postKey] ? "blur(20px)" : "none", // 👈 blur when loading
                                 }}
                               />
                             ) : (
@@ -909,6 +1036,27 @@ let binaryData:any =""
                             <div className="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                             </Skeleton>
                           )}
+
+  {loadingPosts[postKey] && (
+    <Box
+    //  height={200}
+      sx={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "rgba(0,0,0,0.4)",
+        borderRadius: "8px",
+        height:"43vh",
+          width: "100%",
+          
+      }}
+    >
+        <div className="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+    </Box>
+  )}
 
                           {post.caption ? (
                            <> <Typography variant="body2" mt={1}  sx={{fontSize: "14px",
@@ -1184,6 +1332,9 @@ let binaryData:any =""
           </Button>
           <Button
             onClick={() => {
+                       if (activePostKey) {
+      setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+    }
               handleRegenerate({
                 platforms: [regenerateModal.platform],
                 events: [],
@@ -1192,6 +1343,7 @@ let binaryData:any =""
                 selectedPosts: [regenerateModal.postIndex],
               });
               setRegenerateModal({ ...regenerateModal, open: false });
+      
             }}
             variant="contained"
             sx={{
@@ -1379,9 +1531,11 @@ let binaryData:any =""
  <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Reference Image (Optional)
             </Typography>
-            <FormGroup>
+              {regenerateMediaModal?.url?.endsWith(".mp4") ? <></> :  <FormGroup>
+            
   <FormControlLabel control={<Checkbox checked={useExisting} sx={{color:"white"}} onChange={()=> setExisting(!useExisting)}/>} label="Use the Existing image" />
-</FormGroup>
+</FormGroup>}
+          
 </Box>
            
             <Typography
@@ -1528,6 +1682,9 @@ let binaryData:any =""
           </Button>
           <Button
             onClick={async () => {
+                if (activePostKey) {
+      setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+    }
               const base64Image = regenerateMediaModal.productImage
                 ? await convertFileToBase64(regenerateMediaModal.productImage)
                 : null;
