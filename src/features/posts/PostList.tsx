@@ -343,7 +343,7 @@ const PostList: React.FC = () => {
       console.log("New data fetched:", data);
 
       // Update postList state
-      setPostList(data);
+      setPostList(data || []);
       console.log("New data fetched After set stae", data);
       // Only proceed if we have platforms data
       if (weekDetails?.platforms && data) {
@@ -358,70 +358,24 @@ const PostList: React.FC = () => {
         console.log("After combining - combinedSchedule:", combinedSchedule);
 
         // Update weekDetails with new schedule
-        setWeekDetails((prev: any) => {
-          const newState = {
-            ...prev,
-            schedule: combinedSchedule,
-          };
-          console.log("Updating weekDetails:", newState);
-          return newState;
-        });
+          setWeekDetails((prev:any) =>
+          prev ? { ...prev, platforms: combinedSchedule } : null
+        )
+
+        // setWeekDetails((prev: any) => {
+        //   const newState = {
+        //     ...prev,
+        //     schedule: combinedSchedule,
+        //   };
+        //   console.log("Updating weekDetails:", newState);
+        //   return newState;
+        // });
       }
     } catch (error) {
       console.error("Error in renderData:", error);
     }
   };
 
-  //  useEffect(() => {
-  //   let channel: any;
-
-  //   const subscribeRole = async () => {
-  //     if (!campaignId) return;
-
-  //     channel = supabase
-  //       .channel("row-listener")
-  //       .on(
-  //         "postgres_changes",
-  //         {
-  //           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
-  //           schema: "public",
-  //           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
-  //           // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
-  //         },
-  //         (payload) => {
-  //           console.log("Realtime event:", payload);
-  //           renderData(); // refresh data
-  //         }
-  //       )
-  //       .subscribe((status) => {
-  //         if (status === "SUBSCRIBED") {
-  //           console.log("✅ Realtime subscription active on postlist");
-  //         }
-  //       });
-  //   };
-
-  //   // const unsubscribeRole = () => {
-  //   //   if (channel) {
-  //   //     supabase.removeChannel(channel);
-  //   //     console.log("❌ Realtime unsubscribed");
-  //   //   }
-  //   // };
-
-  //   const handleVisibility = () => {
-  //     if (document.visibilityState === "visible") {
-  //       // unsubscribeRole();
-  //       subscribeRole();
-  //     }
-  //   };
-
-  //   subscribeRole();
-  //   document.addEventListener("visibilitychange", handleVisibility);
-
-  //   return () => {
-  //     // unsubscribeRole();
-  //     document.removeEventListener("visibilitychange", handleVisibility);
-  //   };
-  // }, []); // re-run if campaignId changes
 
   useEffect(() => {
     let channel: any;
@@ -506,6 +460,10 @@ const PostList: React.FC = () => {
       document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [campaignId]); // Add campaignId to dependency array
+
+
+
+
   const [activePostKey, setActivePostKey] = useState<any>(null);
 
   const toCamelCase = (str: string): string => {
