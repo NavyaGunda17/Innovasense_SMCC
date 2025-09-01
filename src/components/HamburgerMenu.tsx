@@ -121,7 +121,7 @@ const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
     };
 
     checkExisting();
-  }, [campaignId, companyId]);
+  }, [campaignId, companyId,campaignState?.campaignMasterArticleJson]);
 
   useEffect(()=>{
 
