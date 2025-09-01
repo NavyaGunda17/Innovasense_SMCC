@@ -86,12 +86,9 @@ const PostList: React.FC = () => {
 
   const { campaignId, weekId } = useParams();
 
-    const location = useLocation()
-    useEffect(()=>{
-  
-    },[location])
+  const location = useLocation();
+  useEffect(() => {}, [location]);
 
-    
   const companyId = useSelector((state: RootState) => state.auth.companyId);
   const campaignStateWeekEvent = useSelector(
     (state: RootState) => state.campaign.campaignMasterWeekEvent
@@ -125,7 +122,7 @@ const PostList: React.FC = () => {
     productImage: File | null;
     postIndex: number;
     prompt: string;
-    url?:string
+    url?: string;
   }>({
     open: false,
     platform: "",
@@ -172,10 +169,13 @@ const PostList: React.FC = () => {
     }
   }, [campaignStateWeekEvent, campaignStateMarticleJson]);
 
+  useEffect(() => {
+    console.log("weekDetails updated:", weekDetails);
+  }, [weekDetails]);
 
-  useEffect(()=>{
-
-  },[weekDetails])
+  useEffect(() => {
+    console.log("postList updated:", postList);
+  }, [postList]);
 
   const transformMasterArtickeJSON = () => {
     if (weekId) {
@@ -285,23 +285,17 @@ const PostList: React.FC = () => {
       }
 
       showSuccessToast("Post generation initiated successfully");
-      renderData()
+      renderData();
     } catch (error) {
       console.error("Error triggering webhook:", error);
       showErrorToast("Error generating post");
     }
   };
 
-
-  const publishPerPost = async(
-      platform: string,
-    postIndex?: number
-  ) =>{
-     showInfoToast(
-      "Initated the process to publish the post"
-    );
-try{
-    const response = await fetch(
+  const publishPerPost = async (platform: string, postIndex?: number) => {
+    showInfoToast("Initated the process to publish the post");
+    try {
+      const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
         {
           method: "POST",
@@ -311,15 +305,14 @@ try{
             campaignId: campaignId,
             intent: "Schedule Post",
             content: {
-            
               weekNumber: weekId,
               platform: platform,
-              postIndexes: [postIndex || 1]
+              postIndexes: [postIndex || 1],
             },
           }),
         }
       );
-       const result = await response.json();
+      const result = await response.json();
 
       if (result[0].output.status === "fail") {
         showErrorToast("Failed to Publish post");
@@ -327,140 +320,193 @@ try{
       }
 
       showSuccessToast("Publishing post initiated successfully");
-}catch(error){
- console.error("Error triggering webhook:", error);
+    } catch (error) {
+      console.error("Error triggering webhook:", error);
       showErrorToast("Error in publishing post");
-}
-  }
+    }
+  };
   const renderData = async () => {
-    const { data } = await supabase
-      .from("postList")
-      .select("*")
-      .eq("campaignId", campaignId)
-      .eq("companyId", companyId)
-      .eq("week", weekId)
-     
+    console.log("New data fetched from render DAta");
+    try {
+      const { data, error } = await supabase
+        .from("postList")
+        .select("*")
+        .eq("campaignId", campaignId)
+        .eq("companyId", companyId)
+        .eq("week", weekId);
 
-      console.log("change in table",data)
-    if (data) {
+      if (error) {
+        console.error("Error fetching data:", error);
+        return;
+      }
+
+      console.log("New data fetched:", data);
+
+      // Update postList state
       setPostList(data);
-
-      if (weekDetails?.platforms) {
+      console.log("New data fetched After set stae", data);
+      // Only proceed if we have platforms data
+      if (weekDetails?.platforms && data) {
+        console.log(
+          "Before combining - weekDetails.platforms:",
+          weekDetails.platforms
+        );
         const combinedSchedule = combineScheduleWithPosts(
           data,
-          weekDetails?.platforms
+          weekDetails.platforms
         );
-        setWeekDetails((prev: any) => ({
-          ...prev,
-          schedule: combinedSchedule,
-        }));
+        console.log("After combining - combinedSchedule:", combinedSchedule);
+
+        // Update weekDetails with new schedule
+        setWeekDetails((prev: any) => {
+          const newState = {
+            ...prev,
+            schedule: combinedSchedule,
+          };
+          console.log("Updating weekDetails:", newState);
+          return newState;
+        });
       }
+    } catch (error) {
+      console.error("Error in renderData:", error);
     }
   };
 
-//  useEffect(() => {
-//   let channel: any;
+  //  useEffect(() => {
+  //   let channel: any;
 
-//   const subscribeRole = async () => {
-//     if (!campaignId) return;
+  //   const subscribeRole = async () => {
+  //     if (!campaignId) return;
 
-//     channel = supabase
-//       .channel("row-listener")
-//       .on(
-//         "postgres_changes",
-//         {
-//           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
-//           schema: "public",
-//           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
-//           // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
-//         },
-//         (payload) => {
-//           console.log("Realtime event:", payload);
-//           renderData(); // refresh data
-//         }
-//       )
-//       .subscribe((status) => {
-//         if (status === "SUBSCRIBED") {
-//           console.log("✅ Realtime subscription active on postlist");
-//         }
-//       });
-//   };
+  //     channel = supabase
+  //       .channel("row-listener")
+  //       .on(
+  //         "postgres_changes",
+  //         {
+  //           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
+  //           schema: "public",
+  //           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
+  //           // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
+  //         },
+  //         (payload) => {
+  //           console.log("Realtime event:", payload);
+  //           renderData(); // refresh data
+  //         }
+  //       )
+  //       .subscribe((status) => {
+  //         if (status === "SUBSCRIBED") {
+  //           console.log("✅ Realtime subscription active on postlist");
+  //         }
+  //       });
+  //   };
 
-//   // const unsubscribeRole = () => {
-//   //   if (channel) {
-//   //     supabase.removeChannel(channel);
-//   //     console.log("❌ Realtime unsubscribed");
-//   //   }
-//   // };
+  //   // const unsubscribeRole = () => {
+  //   //   if (channel) {
+  //   //     supabase.removeChannel(channel);
+  //   //     console.log("❌ Realtime unsubscribed");
+  //   //   }
+  //   // };
 
-//   const handleVisibility = () => {
-//     if (document.visibilityState === "visible") {
-//       // unsubscribeRole();
-//       subscribeRole();
-//     }
-//   };
+  //   const handleVisibility = () => {
+  //     if (document.visibilityState === "visible") {
+  //       // unsubscribeRole();
+  //       subscribeRole();
+  //     }
+  //   };
 
-//   subscribeRole();
-//   document.addEventListener("visibilitychange", handleVisibility);
+  //   subscribeRole();
+  //   document.addEventListener("visibilitychange", handleVisibility);
 
-//   return () => {
-//     // unsubscribeRole();
-//     document.removeEventListener("visibilitychange", handleVisibility);
-//   };
-// }, []); // re-run if campaignId changes
+  //   return () => {
+  //     // unsubscribeRole();
+  //     document.removeEventListener("visibilitychange", handleVisibility);
+  //   };
+  // }, []); // re-run if campaignId changes
 
+  useEffect(() => {
+    let channel: any;
 
-useEffect(() => {
-      let channel: any;
-  
-      const subscribeRole = () => {
-        if (campaignId) {
-          channel = supabase
-            .channel("row-listener")
-            .on(
-        "postgres_changes",
-        {
-          event: "*", // can be INSERT, UPDATE, DELETE, or "*"
-          schema: "public",
-          table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
-          filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
-        },
-        (payload) => {
-          console.log("Realtime event:", payload);
-          renderData(); // refresh data
+    const subscribeRole = async () => {
+      console.log("Setting up realtime listener for campaignId:", campaignId);
+      if (!campaignId) return;
+
+      try {
+        // Remove any existing subscription
+        if (channel) {
+          await supabase.removeChannel(channel);
         }
-      )
-            .subscribe((status) => {
-              if (status === "SUBSCRIBED") {
-                console.log("✅ Subscribed to row changes");
-                 renderData(); // refresh data
-              } else if (status === "CHANNEL_ERROR") {
-                console.error("❌ Error subscribing to row");
-              }
-            });
-        }
-      };
-  console.log("Realtime event:");
-      subscribeRole();
-  
-      const handleVisibility = () => {
-        if (document.visibilityState === "visible") {
-          console.log("🔄 Tab activated — refreshing connection");
-          if (channel) supabase.removeChannel(channel);
-          subscribeRole();
-        }
-      };
-  
-      document.addEventListener("visibilitychange", handleVisibility);
-  
-      return () => {
-        if (channel) supabase.removeChannel(channel);
-        document.removeEventListener("visibilitychange", handleVisibility);
-      };
-    }, []);
-const [activePostKey, setActivePostKey] = useState<any>(null);
 
+        // Enable debugging for Supabase client
+        console.log("Current Supabase config:", supabase.realtime);
 
+        channel = supabase
+          .channel("posts-channel-" + campaignId)
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "postList",
+              filter: `campaignId=eq.${Number(campaignId)}`,
+            },
+            (payload) => {
+              console.log("🔄 Realtime event received:");
+              renderData();
+            }
+          )
+          .subscribe(async (status, err) => {
+            if (status === "SUBSCRIBED") {
+              console.log(
+                "✅ Successfully subscribed to postlist changes for campaignId:",
+                campaignId
+              );
+              await renderData(); // Initial data load
+            } else if (status === "CHANNEL_ERROR") {
+              console.error("❌ Error subscribing to postlist changes:", err);
+              console.error("Channel error details:", {
+                campaignId,
+                channel: channel?.topic,
+                error: err,
+              });
+            } else if (status === "CLOSED") {
+              console.log("Channel closed for campaignId:", campaignId);
+            } else if (status === "TIMED_OUT") {
+              console.log(
+                "Channel timed out for campaignId:",
+                campaignId,
+                "- reconnecting..."
+              );
+              subscribeRole(); // Attempt to reconnect
+            }
+          });
+      } catch (error) {
+        console.error("Error setting up realtime subscription:", error);
+      }
+    };
+
+    // Initial subscription
+    subscribeRole();
+
+    // Handle tab visibility changes
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        console.log("🔄 Tab activated - refreshing subscription");
+        subscribeRole();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // Cleanup
+    return () => {
+      if (channel) {
+        console.log("Cleaning up realtime subscription");
+        supabase.removeChannel(channel);
+      }
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [campaignId]); // Add campaignId to dependency array
+  const [activePostKey, setActivePostKey] = useState<any>(null);
 
   const toCamelCase = (str: string): string => {
     return str
@@ -477,7 +523,7 @@ const [activePostKey, setActivePostKey] = useState<any>(null);
     Object.entries(platforms).forEach(([platformKey, platformData]) => {
       const scheduledPosts = platformData["Post Schedule"] || [];
 
-    console.log("platformData",platformData)
+      console.log("platformData", platformData);
 
       const postListKey = toCamelCase(platformKey);
       const generatedPosts = postListData?.[postListKey] || [];
@@ -497,21 +543,22 @@ const [activePostKey, setActivePostKey] = useState<any>(null);
               : scheduledPost?.indexType
           ) - 1;
 
+        const generated = postListData.find(
+          (gen: any) => gen.postIndex == Number(scheduledPost.index)
+        );
 
-           const generated = postListData.find((gen: any) => gen.postIndex == Number(scheduledPost.index));
-        
-if (!generated || Object.keys(generated).length === 0) {
-  return {
-      ...scheduledPost, // 👈 return instead of leaving `undefined`
-    };
-}
+        if (!generated || Object.keys(generated).length === 0) {
+          return {
+            ...scheduledPost, // 👈 return instead of leaving `undefined`
+          };
+        }
         // const generated = index >= 0 ? generatedPosts[index] : undefined;
 
         return {
           ...scheduledPost,
           url: generated[`${postListKey}`]?.url || "",
           caption: generated[`${postListKey}`]?.caption || "",
-          hashtags: generated[`${postListKey}`]?.hashtags || ""
+          hashtags: generated[`${postListKey}`]?.hashtags || "",
         };
       });
 
@@ -524,247 +571,235 @@ if (!generated || Object.keys(generated).length === 0) {
     return result;
   };
 
-// Utility: Convert ArrayBuffer → Base64
-const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  let binary = "";
-  const bytes = new Uint8Array(buffer);
-  const chunkSize = 0x8000; // safer for large files
+  // Utility: Convert ArrayBuffer → Base64
+  const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    const chunkSize = 0x8000; // safer for large files
 
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    const chunk = bytes.subarray(i, i + chunkSize);
-    binary += String.fromCharCode.apply(null, chunk as any);
-  }
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, i + chunkSize);
+      binary += String.fromCharCode.apply(null, chunk as any);
+    }
 
-  return btoa(binary);
-};
+    return btoa(binary);
+  };
 
-// Generic converter for image/video
-const convertFileUrlToBase64 = async (url: string): Promise<string | false> => {
-  if (!url) return false;
+  // Generic converter for image/video
+  const convertFileUrlToBase64 = async (
+    url: string
+  ): Promise<string | false> => {
+    if (!url) return false;
 
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) throw new Error("Failed to fetch file");
 
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) throw new Error("Failed to fetch file");
+    const contentType =
+      response.headers.get("content-type") || "application/octet-stream";
 
-  const contentType =
-    response.headers.get("content-type") || "application/octet-stream";
+    const buffer = await response.arrayBuffer();
+    const base64 = arrayBufferToBase64(buffer);
 
-  const buffer = await response.arrayBuffer();
-  const base64 = arrayBufferToBase64(buffer);
+    return `data:${contentType};base64,${base64}`;
+  };
 
-  return `data:${contentType};base64,${base64}`;
-};
-
-const [loadingPosts, setLoadingPosts] = useState<{ [key: string]: boolean }>({});
-
-
-// Main handler
-const handleRegenerate = async (data: {
-  platforms: string[];
-  events: string[];
-  contentType: string;
-  command: string;
-  selectedPosts?: any;
-  file?: string;
-  url?: string;
-}) => {
-  console.log("Regenerating:", data);
-  showInfoToast(
-    "Be mindful that image & video generation might take few moments."
+  const [loadingPosts, setLoadingPosts] = useState<{ [key: string]: boolean }>(
+    {}
   );
 
-  try {
-    console.log(
-      "dataaaaa",
-      campaignId,
-      data.command,
-      weekId,
-      data.contentType,
-      data.platforms[0],
-      data.selectedPosts
+  // Main handler
+  const handleRegenerate = async (data: {
+    platforms: string[];
+    events: string[];
+    contentType: string;
+    command: string;
+    selectedPosts?: any;
+    file?: string;
+    url?: string;
+  }) => {
+    console.log("Regenerating:", data);
+    showInfoToast(
+      "Be mindful that image & video generation might take few moments."
     );
 
-    let binaryData: string | false = "";
+    try {
+      console.log(
+        "dataaaaa",
+        campaignId,
+        data.command,
+        weekId,
+        data.contentType,
+        data.platforms[0],
+        data.selectedPosts
+      );
 
-    
-    if (data?.url && useExisting) {
-      if(data?.url.endsWith(".mp4")){
-        binaryData = data.url
-      }else{
-binaryData = await convertFileUrlToBase64(data.url);
+      let binaryData: string | false = "";
+
+      if (data?.url && useExisting) {
+        if (data?.url.endsWith(".mp4")) {
+          binaryData = data.url;
+        } else {
+          binaryData = await convertFileUrlToBase64(data.url);
+        }
       }
-      
-    }
 
-    
-    const response = await fetch(
-      "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          companyId,
-          campaignId: campaignId,
-          intent: "Campaign post",
-          content: {
-            campaignPostComments: data.command || "",
-            weekNumber: weekId,
-            subTask:
-              data.contentType === "text"
-                ? "regenerateText"
-                : "regenerateMedia",
-            platform: data.platforms[0],
-            postIndex: Array.isArray(data?.selectedPosts)
-              ? data.selectedPosts
-              : [data.selectedPosts],
-            useExisting: useExisting,
-            ...((data.file || useExisting) && {
-              file: useExisting ? binaryData : data.file,
-            }),
-          },
-        }),
+      const response = await fetch(
+        "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            companyId,
+            campaignId: campaignId,
+            intent: "Campaign post",
+            content: {
+              campaignPostComments: data.command || "",
+              weekNumber: weekId,
+              subTask:
+                data.contentType === "text"
+                  ? "regenerateText"
+                  : "regenerateMedia",
+              platform: data.platforms[0],
+              postIndex: Array.isArray(data?.selectedPosts)
+                ? data.selectedPosts
+                : [data.selectedPosts],
+              useExisting: useExisting,
+              ...((data.file || useExisting) && {
+                file: useExisting ? binaryData : data.file,
+              }),
+            },
+          }),
+        }
+      );
+      console.log("Regenerating response:", response);
+
+      const result = await response.json();
+
+      if (result[0].output.status === "fail") {
+        showErrorToast("Failed to regenerate content");
+        return false;
       }
-    );
-    console.log("Regenerating response:", response);
 
-    const result = await response.json();
-
-    if (result[0].output.status === "fail") {
-      showErrorToast("Failed to regenerate content");
-      return false;
+      // Wait a bit for the backend to process
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      renderData();
+      setLoadingPosts((prev) => ({ ...prev, [activePostKey]: false }));
+      setActivePostKey(null); // clear active post
+      showInfoToast("Content regeneration initiated successfully");
+    } catch (error) {
+      console.error("Error triggering webhook:", error);
+      renderData();
+      showErrorToast("Error during regeneration");
     }
+  };
 
-    // Wait a bit for the backend to process
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    renderData();
-    setLoadingPosts((prev) => ({ ...prev, [activePostKey]: false }));
-    setActivePostKey(null); // clear active post
-    showInfoToast("Content regeneration initiated successfully");
-  } catch (error) {
-    console.error("Error triggering webhook:", error);
-    renderData();
-    showErrorToast("Error during regeneration");
-  }
-};
+  // // Convert ArrayBuffer to Base64
+  // const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+  //   let binary = "";
+  //   const bytes = new Uint8Array(buffer);
+  //   const len = bytes.byteLength;
 
-// // Convert ArrayBuffer to Base64
-// const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-//   let binary = "";
-//   const bytes = new Uint8Array(buffer);
-//   const len = bytes.byteLength;
+  //   for (let i = 0; i < len; i++) {
+  //     binary += String.fromCharCode(bytes[i]);
+  //   }
 
-//   for (let i = 0; i < len; i++) {
-//     binary += String.fromCharCode(bytes[i]);
-//   }
+  //   return btoa(binary);
+  // };
 
-//   return btoa(binary);
-// };
+  // // Complete example: fetch image URL → ArrayBuffer → Base64
+  // const convertImageUrlToBase64 = async (url: string): Promise<string | false> => {
+  //   if (!url || url.length === 0) {
+  //     return false;
+  //   }
+  //   const response = await fetch(url);
+  //   if (!response.ok) throw new Error("Failed to fetch the image");
+  //   const buffer = await response.arrayBuffer();
+  //   return arrayBufferToBase64(buffer);
+  // };
 
+  //   const handleRegenerate = async (data: {
+  //     platforms: string[];
+  //     events: string[];
+  //     contentType: string;
+  //     command: string;
+  //     selectedPosts?: any;
+  //     file?: string;
+  //     url?:string
+  //   }) => {
+  //     console.log("Regenerating:", data);
+  //     showInfoToast(
+  //       "Be mindful that image & video generation might take few moments."
+  //     );
+  //     try {
+  //       console.log(
+  //         "dataaaaa",
+  //         campaignId,
+  //         data.command,
+  //         weekId,
+  //         data.contentType,
+  //         data.platforms[0],
+  //         data.selectedPosts
+  //       );
+  //   const imageUrl = "";
+  // let binaryData:any =""
+  //        if (data?.url && useExisting) {
+  //    binaryData = await convertImageUrlToBase64(data.url);
+  //   // use binaryData...
+  // }
 
-// // Complete example: fetch image URL → ArrayBuffer → Base64
-// const convertImageUrlToBase64 = async (url: string): Promise<string | false> => {
-//   if (!url || url.length === 0) {
-//     return false;
-//   }
-//   const response = await fetch(url);
-//   if (!response.ok) throw new Error("Failed to fetch the image");
-//   const buffer = await response.arrayBuffer();
-//   return arrayBufferToBase64(buffer);
-// };
+  //       const response = await fetch(
+  //         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
+  //         {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({
+  //             companyId,
+  //             campaignId: campaignId,
+  //             intent: "Campaign post",
+  //             content: {
+  //               campaignPostComments: data.command || "",
+  //               weekNumber: weekId,
+  //               subTask:
+  //                 data.contentType === "text"
+  //                   ? "regenerateText"
+  //                   : "regenerateMedia",
+  //               platform: data.platforms[0],
+  //               postIndex: Array.isArray(data?.selectedPosts)
+  //                 ? data.selectedPosts
+  //                 : [data.selectedPosts],
+  //               useExisting:useExisting,
+  //               ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
+  //             },
+  //           }),
+  //         }
+  //       );
+  //       console.log("Regenerating response:", response);
 
+  //       const result = await response.json();
 
+  //       if (result[0].output.status === "fail") {
+  //         showErrorToast("Failed to regenerate content");
+  //         return false;
+  //       }
 
-//   const handleRegenerate = async (data: {
-//     platforms: string[];
-//     events: string[];
-//     contentType: string;
-//     command: string;
-//     selectedPosts?: any;
-//     file?: string;
-//     url?:string
-//   }) => {
-//     console.log("Regenerating:", data);
-//     showInfoToast(
-//       "Be mindful that image & video generation might take few moments."
-//     );
-//     try {
-//       console.log(
-//         "dataaaaa",
-//         campaignId,
-//         data.command,
-//         weekId,
-//         data.contentType,
-//         data.platforms[0],
-//         data.selectedPosts
-//       );
-//   const imageUrl = "";
-// let binaryData:any =""
-//        if (data?.url && useExisting) {
-//    binaryData = await convertImageUrlToBase64(data.url);
-//   // use binaryData...
-// }
-
-
-
-//       const response = await fetch(
-//         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
-//         {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({
-//             companyId,
-//             campaignId: campaignId,
-//             intent: "Campaign post",
-//             content: {
-//               campaignPostComments: data.command || "",
-//               weekNumber: weekId,
-//               subTask:
-//                 data.contentType === "text"
-//                   ? "regenerateText"
-//                   : "regenerateMedia",
-//               platform: data.platforms[0],
-//               postIndex: Array.isArray(data?.selectedPosts)
-//                 ? data.selectedPosts
-//                 : [data.selectedPosts],
-//               useExisting:useExisting,
-//               ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
-//             },
-//           }),
-//         }
-//       );
-//       console.log("Regenerating response:", response);
-
-//       const result = await response.json();
-
-//       if (result[0].output.status === "fail") {
-//         showErrorToast("Failed to regenerate content");
-//         return false;
-//       }
-
-//       // Wait a bit for the backend to process
-//       await new Promise((resolve) => setTimeout(resolve, 2000));
-//       renderData();
-//       showInfoToast("Content regeneration initiated successfully");
-//     } catch (error) {
-//       console.error("Error triggering webhook:", error);
-//       renderData();
-//       showErrorToast("Error during regeneration");
-//     }
-//   };
-
-
+  //       // Wait a bit for the backend to process
+  //       await new Promise((resolve) => setTimeout(resolve, 2000));
+  //       renderData();
+  //       showInfoToast("Content regeneration initiated successfully");
+  //     } catch (error) {
+  //       console.error("Error triggering webhook:", error);
+  //       renderData();
+  //       showErrorToast("Error during regeneration");
+  //     }
+  //   };
 
   const [showAssistant, setShowAssistant] = useState(false);
-  const [ useExisting , setExisting] = useState(false)
-  useEffect(()=>{
+  const [useExisting, setExisting] = useState(false);
+  useEffect(() => {}, [useExisting]);
 
-  },[useExisting])
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
-    <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px", }}>
-     
-
+    <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px" }}>
       <Box
         sx={{
           display: "flex",
@@ -938,8 +973,8 @@ binaryData = await convertFileUrlToBase64(data.url);
                             <MenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setExisting(false)
-                              setActivePostKey(postKey);
+                                setExisting(false);
+                                setActivePostKey(postKey);
 
                                 setRegenerateMediaModal({
                                   open: true,
@@ -947,7 +982,7 @@ binaryData = await convertFileUrlToBase64(data.url);
                                   postIndex: idx + 1,
                                   productImage: null,
                                   prompt: "",
-                                  url:post.url
+                                  url: post.url,
                                 });
                                 setAnchorEl({ ...anchorEl, [postKey]: null });
                               }}
@@ -1001,9 +1036,11 @@ binaryData = await convertFileUrlToBase64(data.url);
                                   width: "100%",
                                   borderRadius: "8px",
                                   // height: "200px",
-                                    // aspectRatio:"2/3",
+                                  // aspectRatio:"2/3",
                                   objectFit: "cover",
-                                  filter: loadingPosts[postKey] ? "blur(20px)" : "none", // 👈 blur when loading
+                                  filter: loadingPosts[postKey]
+                                    ? "blur(20px)"
+                                    : "none", // 👈 blur when loading
                                 }}
                               />
                             ) : (
@@ -1022,57 +1059,101 @@ binaryData = await convertFileUrlToBase64(data.url);
                             )
                           ) : (
                             <Skeleton
-                            animation="wave"
+                              animation="wave"
                               variant="rectangular"
                               height={200}
                               width="100%"
                               sx={{
-                                textAlign:"center",
-                                display:"flex",
-                                justifyContent:"center",
-                                alignItems:"center"
+                                textAlign: "center",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                               }}
                             >
-                            <div className="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                              <div className="lds-default">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                              </div>
                             </Skeleton>
                           )}
 
-  {loadingPosts[postKey] && (
-    <Box
-    //  height={200}
-      sx={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "rgba(0,0,0,0.4)",
-        borderRadius: "8px",
-        height:"43vh",
-          width: "100%",
-          
-      }}
-    >
-        <div className="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-
-    </Box>
-  )}
+                          {loadingPosts[postKey] && (
+                            <Box
+                              //  height={200}
+                              sx={{
+                                position: "absolute",
+                                inset: 0,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                background: "rgba(0,0,0,0.4)",
+                                borderRadius: "8px",
+                                height: "43vh",
+                                width: "100%",
+                              }}
+                            >
+                              <div className="lds-default">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                              </div>
+                            </Box>
+                          )}
 
                           {post.caption ? (
-                           <> <Typography variant="body2" mt={1}  sx={{fontSize: "14px",
-            opacity: 0.8,
-            lineHeight: "1.4em",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: 4,
-            WebkitBoxOrient: "vertical",}}>
-                              {post.caption}
-                            </Typography>
-                            <Typography sx={{color:"#8359e5",cursor:"pointer",width:"max-content"}}  onClick={() =>
-                            post?.url &&
-                            setExpandedPost({ post, platform: platformKey })
-                          }>Read More</Typography>
+                            <>
+                              {" "}
+                              <Typography
+                                variant="body2"
+                                mt={1}
+                                sx={{
+                                  fontSize: "14px",
+                                  opacity: 0.8,
+                                  lineHeight: "1.4em",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 4,
+                                  WebkitBoxOrient: "vertical",
+                                }}
+                              >
+                                {post.caption}
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  color: "#8359e5",
+                                  cursor: "pointer",
+                                  width: "max-content",
+                                }}
+                                onClick={() =>
+                                  post?.url &&
+                                  setExpandedPost({
+                                    post,
+                                    platform: platformKey,
+                                  })
+                                }
+                              >
+                                Read More
+                              </Typography>
                             </>
                           ) : (
                             <Skeleton
@@ -1116,22 +1197,19 @@ binaryData = await convertFileUrlToBase64(data.url);
                             </Box>
                           )}
 
-                          {post.url && 
-   <AppButton
-   sx={{mt:2}}
+                          {post.url && (
+                            <AppButton
+                              sx={{ mt: 2 }}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 // TODO: Implement publish functionality
-                                publishPerPost(platformKey,idx + 1)
+                                publishPerPost(platformKey, idx + 1);
                                 setAnchorEl({ ...anchorEl, [postKey]: null });
                               }}
                             >
-                             Publish
+                              Publish
                             </AppButton>
-                          }
-
-                          
-
+                          )}
                         </Box>
                       </Box>
                     );
@@ -1332,9 +1410,9 @@ binaryData = await convertFileUrlToBase64(data.url);
           </Button>
           <Button
             onClick={() => {
-                       if (activePostKey) {
-      setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
-    }
+              if (activePostKey) {
+                setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+              }
               handleRegenerate({
                 platforms: [regenerateModal.platform],
                 events: [],
@@ -1343,7 +1421,6 @@ binaryData = await convertFileUrlToBase64(data.url);
                 selectedPosts: [regenerateModal.postIndex],
               });
               setRegenerateModal({ ...regenerateModal, open: false });
-      
             }}
             variant="contained"
             sx={{
@@ -1523,21 +1600,34 @@ binaryData = await convertFileUrlToBase64(data.url);
               }}
             />
 
-<Box sx={{
-  display:'flex',
-  justifyContent:"space-between",
-  alignItems:"center"
-}}>
- <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Reference Image (Optional)
-            </Typography>
-              {regenerateMediaModal?.url?.endsWith(".mp4") ? <></> :  <FormGroup>
-            
-  <FormControlLabel control={<Checkbox checked={useExisting} sx={{color:"white"}} onChange={()=> setExisting(!useExisting)}/>} label="Use the Existing image" />
-</FormGroup>}
-          
-</Box>
-           
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                Reference Image (Optional)
+              </Typography>
+              {regenerateMediaModal?.url?.endsWith(".mp4") ? (
+                <></>
+              ) : (
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={useExisting}
+                        sx={{ color: "white" }}
+                        onChange={() => setExisting(!useExisting)}
+                      />
+                    }
+                    label="Use the Existing image"
+                  />
+                </FormGroup>
+              )}
+            </Box>
+
             <Typography
               variant="body2"
               sx={{ mb: 2, color: "rgba(255,255,255,0.7)" }}
@@ -1546,101 +1636,104 @@ binaryData = await convertFileUrlToBase64(data.url);
             </Typography>
 
             {!regenerateMediaModal.productImage ? (
-            !useExisting &&  <Box
-                sx={{
-                  border: "2px dashed rgba(255, 255, 255, 0.3)",
-                  borderRadius: "8px",
-                  p: 3,
-                  textAlign: "center",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  backgroundColor: "rgba(0, 0, 0, 0.2)",
-                  "&:hover": {
-                    borderColor: "rgba(255, 255, 255, 0.5)",
-                    backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  },
-                }}
-                onClick={() =>
-                  document
-                    .getElementById("regenerate-media-image-upload")
-                    ?.click()
-                }
-              >
-                <CloudUploadIcon
+              !useExisting && (
+                <Box
                   sx={{
-                    fontSize: 36,
-                    color: "rgba(255, 255, 255, 0.7)",
-                    mb: 1,
+                    border: "2px dashed rgba(255, 255, 255, 0.3)",
+                    borderRadius: "8px",
+                    p: 3,
+                    textAlign: "center",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    "&:hover": {
+                      borderColor: "rgba(255, 255, 255, 0.5)",
+                      backgroundColor: "rgba(255, 255, 255, 0.05)",
+                    },
                   }}
-                />
-                <Typography sx={{ color: "rgba(255, 255, 255, 0.9)", mb: 0.5 }}>
-                  Drop your image here or click to browse
-                </Typography>
-                <Typography
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.6)",
-                    fontSize: "0.75rem",
-                  }}
+                  onClick={() =>
+                    document
+                      .getElementById("regenerate-media-image-upload")
+                      ?.click()
+                  }
                 >
-                  Accepted: .jpg, .png, .gif | Max: 5MB
-                </Typography>
-              </Box>
-            ) : (
-            
-              <>  
-               <Box
-                sx={{
-                  border: "2px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "8px",
-                  p: 2,
-                  backgroundColor: "rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <FileIcon
-                    sx={{ fontSize: 24, color: "rgba(255, 255, 255, 0.8)" }}
-                  />
-                  <Box sx={{ flex: 1 }}>
-                    <Typography
-                      sx={{
-                        color: "white",
-                        fontWeight: 500,
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      {regenerateMediaModal.productImage.name}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.6)",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {(
-                        regenerateMediaModal.productImage.size /
-                        (1024 * 1024)
-                      ).toFixed(2)}{" "}
-                      MB
-                    </Typography>
-                  </Box>
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setRegenerateMediaModal({
-                        ...regenerateMediaModal,
-                        productImage: null,
-                      });
-                    }}
+                  <CloudUploadIcon
                     sx={{
+                      fontSize: 36,
                       color: "rgba(255, 255, 255, 0.7)",
-                      "&:hover": { color: "#ff4444" },
+                      mb: 1,
+                    }}
+                  />
+                  <Typography
+                    sx={{ color: "rgba(255, 255, 255, 0.9)", mb: 0.5 }}
+                  >
+                    Drop your image here or click to browse
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.6)",
+                      fontSize: "0.75rem",
                     }}
                   >
-                    <DeleteIcon />
-                  </IconButton>
+                    Accepted: .jpg, .png, .gif | Max: 5MB
+                  </Typography>
                 </Box>
-              </Box></>
-           
+              )
+            ) : (
+              <>
+                <Box
+                  sx={{
+                    border: "2px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "8px",
+                    p: 2,
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <FileIcon
+                      sx={{ fontSize: 24, color: "rgba(255, 255, 255, 0.8)" }}
+                    />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        sx={{
+                          color: "white",
+                          fontWeight: 500,
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        {regenerateMediaModal.productImage.name}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.6)",
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        {(
+                          regenerateMediaModal.productImage.size /
+                          (1024 * 1024)
+                        ).toFixed(2)}{" "}
+                        MB
+                      </Typography>
+                    </Box>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setRegenerateMediaModal({
+                          ...regenerateMediaModal,
+                          productImage: null,
+                        });
+                      }}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.7)",
+                        "&:hover": { color: "#ff4444" },
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </>
             )}
 
             <input
@@ -1682,9 +1775,9 @@ binaryData = await convertFileUrlToBase64(data.url);
           </Button>
           <Button
             onClick={async () => {
-                if (activePostKey) {
-      setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
-    }
+              if (activePostKey) {
+                setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+              }
               const base64Image = regenerateMediaModal.productImage
                 ? await convertFileToBase64(regenerateMediaModal.productImage)
                 : null;
@@ -1696,7 +1789,7 @@ binaryData = await convertFileUrlToBase64(data.url);
                 command: regenerateMediaModal.prompt,
                 selectedPosts: [regenerateMediaModal.postIndex],
                 file: base64Image || undefined,
-                url:regenerateMediaModal?.url
+                url: regenerateMediaModal?.url,
               });
               setRegenerateMediaModal({ ...regenerateMediaModal, open: false });
             }}
