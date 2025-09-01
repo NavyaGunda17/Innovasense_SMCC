@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { setCampaignMasterArticleWeekevent } from "../../reducer/campaignSlice";
 import { useDispatch } from "react-redux";
@@ -85,6 +85,13 @@ const PostList: React.FC = () => {
   });
 
   const { campaignId, weekId } = useParams();
+
+    const location = useLocation()
+    useEffect(()=>{
+  
+    },[location])
+
+    
   const companyId = useSelector((state: RootState) => state.auth.companyId);
   const campaignStateWeekEvent = useSelector(
     (state: RootState) => state.campaign.campaignMasterWeekEvent
@@ -417,7 +424,7 @@ useEffect(() => {
           event: "*", // can be INSERT, UPDATE, DELETE, or "*"
           schema: "public",
           table: "postlist", // ⚠️ make sure your table name is lowercase unless quoted
-          filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
+          // filter: `campaignId=eq.${campaignId}`, // optional filter if you only want one campaign
         },
         (payload) => {
           console.log("Realtime event:", payload);
@@ -434,7 +441,7 @@ useEffect(() => {
             });
         }
       };
-  
+  console.log("Realtime event:");
       subscribeRole();
   
       const handleVisibility = () => {
@@ -452,6 +459,7 @@ useEffect(() => {
         document.removeEventListener("visibilitychange", handleVisibility);
       };
     }, []);
+
 
 
   const toCamelCase = (str: string): string => {
@@ -569,7 +577,7 @@ const convertImageUrlToBase64 = async (url: string): Promise<string | false> => 
       );
   const imageUrl = "";
 let binaryData:any =""
-       if (data?.url) {
+       if (data?.url && useExisting) {
    binaryData = await convertImageUrlToBase64(data.url);
   // use binaryData...
 }

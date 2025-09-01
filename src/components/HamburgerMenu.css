@@ -105,3 +105,24 @@
   background: rgba(255, 255, 255, 0.1);
   transform: translateX(2px);
 }
+
+
+.nested-menu {
+  margin-left: 45px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nested-item {
+  padding: 6px 12px;
+  font-size: 13px;
+  background: #333;
+  margin: 2px 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.nested-item:hover {
+  background: #555;
+}

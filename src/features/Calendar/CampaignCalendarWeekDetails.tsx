@@ -7,7 +7,7 @@ import {
   Box,
   TextField,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import AppButton from "../../components/AppButton";
@@ -55,6 +55,10 @@ const CamapignCalendarWeekDetails = () => {
   const { weekId, campaignId } = useParams();
   const dispatch = useDispatch();
 
+  const location = useLocation()
+  useEffect(()=>{
+
+  },[location])
   const navigate = useNavigate()
   const [weekDetails, setWeekDetails] = useState<any>({});
   const [weekDetailsArticle, setWeekDetailsArticle] = useState<string>("");
@@ -68,16 +72,6 @@ const CamapignCalendarWeekDetails = () => {
   );
   const campaignStateAll = useSelector((state: RootState) => state.campaign);
   const companyId = useSelector((state: RootState) => state.auth.companyId);
-
-  // Fetch campaign data from Supabase when campaignId changes
-  useEffect(() => {
-    if (campaignId) {
-      renderData();
-    }
-  }, [campaignId]);
-
-  const [allWeeks, setAllWeeks] = useState<any>({});
-
 
   // Set week details based on weekId & campaignState
   useEffect(() => {
@@ -96,6 +90,28 @@ console.log(index); // 👉 Output: 1
       }
     }
   }, [weekId, campaignState]);
+
+  // Fetch campaign data from Supabase when campaignId changes
+  useEffect(() => {
+    if (campaignId && weekId) {
+      renderData();
+    }
+  }, [campaignId,weekId]);
+
+
+
+
+useEffect(()=>{
+  console.log("checkExisting")
+checkExisting()
+},[campaignStateMarticleJson])
+
+
+  useEffect(() => {
+  transformMasterArtickeJSON();
+}, [weekId, campaignStateMarticleJson]);
+
+  const [allWeeks, setAllWeeks] = useState<any>({});
 
 
 useEffect(() => {
@@ -287,11 +303,6 @@ type Platforms = {
 
 
 
-useEffect(()=>{
-  console.log("checkExisting")
-checkExisting()
-},[])
-
 // useEffect(()=>{
 //   handleApproveMasterArticle1()
 // },[])
@@ -300,38 +311,39 @@ const handleApproveMasterArticle1 = () => {
 
   const weekPlatforms = campaignStateWeekEvent.platforms;
 
-  for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
-    const platform = platformKey;
-    const platformData1 = platformData as any;
+let delay = 0;
+
+for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
+  const platform = platformKey;
+  const platformData1 = platformData as any;
 
   for (const post of platformData1["Post Schedule"]) {
-  const postIndex = post.index;
+    const postIndex = post.index;
 
-  const payload = {
-    companyId,
-    campaignId: campaignStateWeekEvent.campaignId,
-    intent: "Campaign post",
-    content: {
-      campaignPostComments: "",
-      weekNumber: weekId,
-      subTask: "generate",
-      platform,
-      postIndex: [postIndex || 1],
-    },
-  };
+    setTimeout(() => {
+      const payload = {
+        companyId,
+        campaignId: campaignStateWeekEvent.campaignId,
+        intent: "Campaign post",
+        content: {
+          campaignPostComments: "",
+          weekNumber: weekId,
+          subTask: "generate",
+          platform,
+          postIndex: [postIndex || 1],
+        },
+      };
 
-  // Fire-and-forget fetch
-  fetch("https://innovasense.app.n8n.cloud/webhook/smcc/brain", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  }).catch((err) => console.error("Failed to send webhook", err));
-}
+      fetch("https://innovasense.app.n8n.cloud/webhook/smcc/brain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch((err) => console.error("Failed to send webhook", err));
+    }, delay);
 
-// Navigate immediately
-// navigate(`/posts/${campaignId}/${weekId}`);
-
+    delay += 5000; // ⏱ increase delay by 5s for next call
   }
+}
 
   // Navigate immediately
   // navigate(`/posts/${campaignId}/${weekId}`);

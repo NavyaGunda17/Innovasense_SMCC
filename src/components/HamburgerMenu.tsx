@@ -3,6 +3,9 @@ import "./HamburgerMenu.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { supabase } from "../lib/supabaseClient";
+import { useDispatch } from "react-redux";
+import { setWeekId } from "../reducer/campaignSlice";
 
 type HamburgerMenuProps = {
   currentPage?: string;
@@ -22,7 +25,9 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [activeItem, setActiveItem] = useState<string>(currentPage);
-
+ const [showPost, setShowPost] = useState(false);
+  const [weeks, setWeeks] = useState<string[]>([]);
+  const [showWeeksMenu, setShowWeeksMenu] = useState(false);
   const menuItems: MenuItem[] = [
     // {
     //   name: "Campaigns",
@@ -76,6 +81,8 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       objectiveName: "Calendar",
       active: activeItem === "Calendar",
     },
+        { name: "Master Article", objectiveName: "MasterArticle", active: activeItem === "Master Article" },
+
     // {
     //   name: "Master Article",
     //   objectiveName: "MasterArticle",
@@ -85,7 +92,42 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
   ];
 
   const campaignState = useSelector((state: RootState) => state.campaign);
+  const naviagte = useNavigate();
+  const campaignId = useSelector(
+    (state: RootState) => state.campaign.campaignId
+  );
+  const companyId = useSelector((state: RootState) => state.auth.companyId);
+  const weekId = useSelector((state: RootState) => state.campaign.weekId);
 
+
+    useEffect(() => {
+    if (!campaignId || !companyId) return;
+
+    const checkExisting = async () => {
+      const { data } = await supabase
+        .from("postList")
+        .select("*")
+        .eq("campaignId", campaignId)
+        .eq("companyId", companyId);
+
+      if (data && data.length > 0) {
+        setShowPost(true);
+const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
+       setWeeks(uniqueWeeks.sort((a, b) => a - b)); // ascending
+
+      } else {
+        setShowPost(false);
+      }
+    };
+
+    checkExisting();
+  }, [campaignId, companyId]);
+
+  useEffect(()=>{
+
+  },[campaignState?.campaignMasterArticleJson])
+
+  
   useEffect(() => {}, [campaignState]);
 
   const location = useLocation();
@@ -147,6 +189,9 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
     if (itemName === "Calendar") {
       return !!campaignState?.campaignStructureSummary; // Optional: set this flag after approval
     }
+     if (itemName === "Master Article") {
+      return showPost;
+    }
     // if (itemName === "Master Article") {
     //   return (campaignState?.campaignMasterArticle || [])?.length > 0;
     // }
@@ -173,12 +218,6 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
   const toggleMenu = (): void => {
     setIsOpen(!isOpen);
   };
-  const naviagte = useNavigate();
-  const campaignId = useSelector(
-    (state: RootState) => state.campaign.campaignId
-  );
-  const companyId = useSelector((state: RootState) => state.auth.companyId);
-  const weekId = useSelector((state: RootState) => state.campaign.weekId);
 
   const handleItemClick = (itemName: any): void => {
     setActiveItem(itemName.name); // ✅ Set clicked item as active
@@ -203,15 +242,24 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
     if (itemName.name == "Calendar") {
       naviagte(`/campaignCalendar/${campaignId}`);
     }
-    if (itemName.name == "Master Article") {
-      naviagte(`/campaignWeekDetails/${weekId}/${campaignId}`);
-    }
+    // if (itemName.name == "Master Article") {
+    //   naviagte(`/campaignWeekDetails/${weekId}/${campaignId}`);
+    // }
+   
+
 
     if (onNavigate) {
       onNavigate(itemName);
     }
+      if (itemName.name === "Master Article") {
+      setShowWeeksMenu((prev) => !prev);
+      //  toggleMenu()
+      return
+    }
+  
     setIsOpen(false);
   };
+  const dispatch = useDispatch()
 
   return (
     <div className="hamburger-menu-container" ref={menuRef}>
@@ -230,18 +278,53 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
             const isActive = activeItem === item.name;
 
             return (
-              <div
-                key={index}
-                className={`menu-item ${isActive ? "active" : ""} ${
-                  !isEnabled ? "disabled" : ""
-                }`}
-                onClick={() => isEnabled && handleItemClick(item)}
-                style={{
-                  cursor: isEnabled ? "pointer" : "not-allowed",
-                  opacity: isEnabled ? 1 : 0.4,
-                }}
-              >
-                {item.name}
+              // <div
+              //   key={index}
+              //   className={`menu-item ${isActive ? "active" : ""} ${
+              //     !isEnabled ? "disabled" : ""
+              //   }`}
+              //   onClick={() => isEnabled && handleItemClick(item)}
+              //   style={{
+              //     cursor: isEnabled ? "pointer" : "not-allowed",
+              //     opacity: isEnabled ? 1 : 0.4,
+              //   }}
+              // >
+              //   {item.name}
+              // </div>
+              <div key={index}>
+                <div
+                  className={`menu-item ${isActive ? "active" : ""} ${
+                    !isEnabled ? "disabled" : ""
+                  }`}
+                  onClick={() => isEnabled && handleItemClick(item)}
+                  style={{
+                    cursor: isEnabled ? "pointer" : "not-allowed",
+                    opacity: isEnabled ? 1 : 0.4,
+                  }}
+                >
+                  {item.name}
+                </div>
+
+                {/* Nested Weeks under Master Article */}
+                {item.name === "Master Article" && showWeeksMenu && (
+                  <div className="nested-menu">
+                    {weeks.map((w, idx) => (
+                      <div
+                        key={idx}
+                        className="nested-item"
+                        onClick={() =>
+                          (
+                            toggleMenu(),
+                            dispatch(setWeekId({weekId:w})),
+                            naviagte(`/campaignWeekDetails/${w}/${campaignId}`)
+                        )
+                        }
+                      >
+                        Week {w}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
