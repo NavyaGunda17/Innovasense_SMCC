@@ -81,7 +81,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       objectiveName: "Calendar",
       active: activeItem === "Calendar",
     },
-        { name: "Master Article", objectiveName: "MasterArticle", active: activeItem === "Master Article" },
+        { name: "Posts", objectiveName: "Posts", active: activeItem === "Posts" },
 
     // {
     //   name: "Master Article",
@@ -148,7 +148,7 @@ const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
     if (pathname.includes("/campaignCalendar")) {
       setActiveItem("Calendar");
     } else if (pathname.includes("/campaignWeekDetails")) {
-      setActiveItem("Master Article");
+      setActiveItem("Posts");
     } else if (pathname.includes("/campaignList")) {
       setActiveItem("Campaigns");
     } else if (pathname.includes("/posts")) {
@@ -189,7 +189,7 @@ const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
     if (itemName === "Calendar") {
       return !!campaignState?.campaignStructureSummary; // Optional: set this flag after approval
     }
-     if (itemName === "Master Article") {
+     if (itemName === "Posts") {
       return showPost;
     }
     // if (itemName === "Master Article") {
@@ -251,7 +251,7 @@ const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
     if (onNavigate) {
       onNavigate(itemName);
     }
-      if (itemName.name === "Master Article") {
+      if (itemName.name === "Posts") {
       setShowWeeksMenu((prev) => !prev);
       //  toggleMenu()
       return
@@ -306,7 +306,7 @@ const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
                 </div>
 
                 {/* Nested Weeks under Master Article */}
-                {item.name === "Master Article" && showWeeksMenu && (
+                {item.name === "Posts" && showWeeksMenu && (
                   <div className="nested-menu">
                     {weeks.map((w, idx) => (
                       <div
