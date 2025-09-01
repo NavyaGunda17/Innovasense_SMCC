@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import AppButton from "../../components/AppButton";
 import SendIcon from "@mui/icons-material/Send";
@@ -98,17 +98,23 @@ console.log(index); // 👉 Output: 1
     }
   }, [campaignId,weekId]);
 
+const alreadyApprovedRef = useRef(false); // ✅ Guard
 
 
 
-useEffect(()=>{
-  console.log("checkExisting")
-checkExisting()
-},[campaignStateMarticleJson])
+// useEffect(()=>{
+//   console.log("checkExisting")
+// checkExisting()
+// },[campaignStateMarticleJson])
 
-
-  useEffect(() => {
+useEffect(() => {
+  // Transform week JSON
   transformMasterArtickeJSON();
+
+  // Only run checkExisting once per weekId
+  if (!alreadyApprovedRef.current) {
+    checkExisting();
+  }
 }, [weekId, campaignStateMarticleJson]);
 
   const [allWeeks, setAllWeeks] = useState<any>({});
@@ -247,23 +253,7 @@ transformMasterArtickeJSON()
   const campaignStateWeekEvent:any = useSelector(
     (state: RootState) => state.campaign.campaignMasterWeekEvent
   );
-// const handleApproveMasterArticle1 = () =>{
-//   console.log("campaignStateWeekEvent",campaignStateWeekEvent)
-//  const weekplatforms = campaignStateWeekEvent?.platforms;
 
-//   if (weekplatforms) {
-//     Object.entries(weekplatforms).forEach(([platformKey, platformData]: [any, any]) => {
-//       platformData["Post Schedule"].forEach((post:any) => {
-//         // Handle each post here
-//         console.log(
-//           `Platform: ${platformKey}, Day: ${post.day}, Prompt: ${post.prompt}`
-//         );
-//       });
-//     });
-//   }
-
-//    navigate(`/posts/${campaignId}/${weekId}`)
-// }
 
 const [showViewPost, setShowPost] = useState(false)
 
@@ -280,6 +270,7 @@ const [showViewPost, setShowPost] = useState(false)
       if(data && data.length > 0){
         setShowPost(true)
       }else{
+         alreadyApprovedRef.current = true;
           handleApproveMasterArticle1()
       }
     
@@ -443,15 +434,15 @@ for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
         </Typography>
         <Box sx={{display:"flex",gap:2}}>
  <AppButton variantType="secondary" onClick={()=> setMoreDetails(true)} sx={{minWidth:"fit-content",height:"max-content"}}> View Master Article</AppButton>
-             <AppButton
+             {/* <AppButton
         variant="contained"
         color="primary"
-        onClick={handleApproveMasterArticle1}
+        onClick={() => handleApproveMasterArticle1}
         sx={{ minWidth:"fit-content",height:"max-content",display:"none"}}
       >
         {showViewPost ? "View Post": "Generate Post "}
        
-      </AppButton>
+      </AppButton> */}
         </Box>
        
         </Box>
