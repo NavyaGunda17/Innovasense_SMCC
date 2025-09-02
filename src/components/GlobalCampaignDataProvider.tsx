@@ -13,7 +13,8 @@ import {
   setGeneratedCampaignDetails,
   setGeneretedFileSummary,
   setFileUploads,
-  setInitialCampaignValues
+  setInitialCampaignValues,
+  setCampaignMasterArticleWeekevent
 } from '../reducer/campaignSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -84,7 +85,7 @@ dispatch(setInitialCampaignValues({
       psychographics: data.psychographics,
 }));
     
-
+dispatch(setCampaignMasterArticleWeekevent({ campaignMasterWeekEvent: {} }))
 
         dispatch(gaurdRails({ gaurdRails: [data.guardrails] }));
         // You may not need to setCampaignID here again if it's already in redux

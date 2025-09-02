@@ -163,7 +163,7 @@ useEffect(()=>{
       campaignStateAll?.campaignMasterArticle && campaignStateAll?.campaignMasterArticle?.length > 0
     ) {
       const keyToFind = `week_${weekId}`;
-      console.log("campaignStateAll.campaignMasterArticle.",campaignStateAll.campaignMasterArticle)
+      console.log("campaignStateAll.campaignMasterArticle.",campaignStateAll.campaignMasterArticle,keyToFind)
       const index = campaignStateAll.campaignMasterArticle.findIndex(
         (obj: any) => keyToFind in obj
       );
@@ -180,7 +180,7 @@ useEffect(()=>{
 
   // Debug only
   useEffect(() => {
-    console.log("weekDetailsArticle", weekDetailsArticle);
+   
   }, [weekDetailsArticle]);
 
   const renderData = async () => {
@@ -301,8 +301,10 @@ const handleApproveMasterArticle1 = () => {
   if (!campaignStateWeekEvent?.platforms) return;
 
   const weekPlatforms = campaignStateWeekEvent.platforms;
+  console.log("weekPlatforms",weekPlatforms)
 
 let delay = 0;
+
 
 for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
   const platform = platformKey;

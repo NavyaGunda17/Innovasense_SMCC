@@ -143,7 +143,7 @@ const PostList: React.FC = () => {
     prompt: "",
   });
   const [postList, setPostList] = useState<any>();
-  const [weekDetails, setWeekDetails] = useState<any>(campaignStateWeekEvent);
+  const [weekDetails, setWeekDetails] = useState<any>([]);
 
   const campaignStateMarticleJson = useSelector(
     (state: RootState) => state.campaign.campaignMasterArticleJson
@@ -504,14 +504,13 @@ const PostList: React.FC = () => {
         const generated = postListData.find(
           (gen: any) => gen.postIndex == Number(scheduledPost.index)
         );
-
+        console.log("generated",generated)
         if (!generated || Object.keys(generated).length === 0) {
           return {
             ...scheduledPost, // 👈 return instead of leaving `undefined`
           };
         }
         // const generated = index >= 0 ? generatedPosts[index] : undefined;
-
         return {
           ...scheduledPost,
           url: generated[`${postListKey}`]?.url || "",

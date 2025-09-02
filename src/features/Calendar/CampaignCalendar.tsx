@@ -116,7 +116,10 @@ const CampaignCalendar: React.FC = () => {
 
   const handleViewCampaign = (weekId:any) => {
     dispatch(setWeekId({weekId:weekId}))
-    navigate(`/campaignWeekDetails/${weekId}/${id}`)
+    setTimeout(()=>{
+  navigate(`/campaignWeekDetails/${weekId}/${id}`)
+    },0)
+  
     
   }
 
