@@ -414,7 +414,7 @@ const PostList: React.FC = () => {
                 "✅ Successfully subscribed to postlist changes for campaignId:",
                 campaignId
               );
-              await renderData(); // Initial data load
+              renderData(); // Initial data load
             } else if (status === "CHANNEL_ERROR") {
               console.error("❌ Error subscribing to postlist changes:", err);
               console.error("Channel error details:", {
@@ -471,6 +471,12 @@ const PostList: React.FC = () => {
       .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
       .replace(/^(.)/, (c) => c.toLowerCase());
   };
+useEffect(() => {
+  if (weekDetails?.platforms && postList) {
+    const combinedSchedule = combineScheduleWithPosts(postList, weekDetails.platforms);
+    setWeekDetails((prev: any) => ({ ...prev, platforms: combinedSchedule }));
+  }
+}, [postList]);
 
   const combineScheduleWithPosts = (
     postListData: any,
@@ -494,30 +500,48 @@ const PostList: React.FC = () => {
       // }
 
       const mergedPosts = scheduledPosts.map((scheduledPost: any) => {
-        const index =
-          Number(
-            scheduledPost?.index
-              ? scheduledPost?.index
-              : scheduledPost?.indexType
-          ) - 1;
+  const generated = postListData.find(
+    (gen: any) => Number(gen.postIndex) === Number(scheduledPost.index)
+  );
 
-        const generated = postListData.find(
-          (gen: any) => gen.postIndex == Number(scheduledPost.index)
-        );
-        console.log("generated",generated)
-        if (!generated || Object.keys(generated).length === 0) {
-          return {
-            ...scheduledPost, // 👈 return instead of leaving `undefined`
-          };
-        }
-        // const generated = index >= 0 ? generatedPosts[index] : undefined;
-        return {
-          ...scheduledPost,
-          url: generated[`${postListKey}`]?.url || "",
-          caption: generated[`${postListKey}`]?.caption || "",
-          hashtags: generated[`${postListKey}`]?.hashtags || "",
-        };
-      });
+  return {
+    ...scheduledPost,
+    url: generated?.[postListKey]?.url || "",
+    caption: generated?.[postListKey]?.caption || "",
+    hashtags: generated?.[postListKey]?.hashtags || "",
+  };
+});
+
+result[platformKey] = {
+  ...platformData,
+  ["Post Schedule"]: [...mergedPosts], // create a new array
+};
+
+      // const mergedPosts = scheduledPosts.map((scheduledPost: any) => {
+      //   const index =
+      //     Number(
+      //       scheduledPost?.index
+      //         ? scheduledPost?.index
+      //         : scheduledPost?.indexType
+      //     ) - 1;
+
+      //   const generated = postListData.find(
+      //     (gen: any) => gen.postIndex == Number(scheduledPost.index)
+      //   );
+      //   console.log("generated",generated)
+      //   if (!generated || Object.keys(generated).length === 0) {
+      //     return {
+      //       ...scheduledPost, // 👈 return instead of leaving `undefined`
+      //     };
+      //   }
+      //   // const generated = index >= 0 ? generatedPosts[index] : undefined;
+      //   return {
+      //     ...scheduledPost,
+      //     url: generated[`${postListKey}`]?.url || "",
+      //     caption: generated[`${postListKey}`]?.caption || "",
+      //     hashtags: generated[`${postListKey}`]?.hashtags || "",
+      //   };
+      // });
 
       result[platformKey] = {
         ...platformData,
