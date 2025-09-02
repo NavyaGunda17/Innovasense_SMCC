@@ -115,16 +115,16 @@ useEffect(() => {
   if (!alreadyApprovedRef.current) {
     checkExisting();
   }
-}, [weekId, campaignStateMarticleJson]);
+}, [campaignStateMarticleJson]);
 
   const [allWeeks, setAllWeeks] = useState<any>({});
 
 
-useEffect(() => {
+// useEffect(() => {
  
-transformMasterArtickeJSON()
+// transformMasterArtickeJSON()
 
-}, [campaignStateMarticleJson]);
+// }, [campaignStateMarticleJson]);
 
 const transformMasterArtickeJSON = () => {
  if(weekId){
@@ -310,9 +310,7 @@ for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
 
   for (const post of platformData1["Post Schedule"]) {
     const postIndex = post.index;
-
-    setTimeout(() => {
-      const payload = {
+   const payload = {
         companyId,
         campaignId: campaignStateWeekEvent.campaignId,
         intent: "Campaign post",
@@ -330,7 +328,9 @@ for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       }).catch((err) => console.error("Failed to send webhook", err));
-    }, delay);
+    // setTimeout(() => {
+   
+    // }, delay);
 
     delay += 5000; // ⏱ increase delay by 5s for next call
   }
