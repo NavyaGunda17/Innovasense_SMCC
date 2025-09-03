@@ -207,11 +207,11 @@ export const CalendarComponent1: React.FC<Props> = ({
       .single();
     console.log(data.data);
     const campaignStructureSummary = data?.data?.campaignStructureSummary;
-    console.log(
-      "calendar componet",
-      campaignStructureSummary,
-      data?.data?.campaignStructureJson
-    );
+    // console.log(
+    //   "calendar componet",
+    //   campaignStructureSummary,
+    //   data?.data?.campaignStructureJson
+    // );
     dispatch(
       setGeneratedCampaignstructure({
         campaignStructureSummary: campaignStructureSummary,

@@ -1035,6 +1035,9 @@ result[platformKey] = {
                                   borderRadius: "8px",
                                   // aspectRatio:"2/3",
                                   objectFit: "cover",
+                                   filter: loadingPosts[postKey]
+                                    ? "blur(20px)"
+                                    : "none", // 👈 blur when loading
                                 }}
                               />
                             )
@@ -1592,7 +1595,18 @@ result[platformKey] = {
                 Reference Image (Optional)
               </Typography>
               {regenerateMediaModal?.url?.endsWith(".mp4") ? (
-                <></>
+                <>  <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={useExisting}
+                        sx={{ color: "white" }}
+                        onChange={() => setExisting(!useExisting)}
+                      />
+                    }
+                    label="Use the Existing image"
+                  />
+                </FormGroup></>
               ) : (
                 <FormGroup>
                   <FormControlLabel
@@ -1756,13 +1770,14 @@ result[platformKey] = {
           </Button>
           <Button
             onClick={async () => {
+            
               if (activePostKey) {
                 setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
               }
               const base64Image = regenerateMediaModal.productImage
                 ? await convertFileToBase64(regenerateMediaModal.productImage)
                 : null;
-
+             
               handleRegenerate({
                 platforms: [regenerateMediaModal.platform],
                 events: [],

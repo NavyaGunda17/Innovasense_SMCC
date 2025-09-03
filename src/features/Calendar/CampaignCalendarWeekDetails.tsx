@@ -176,7 +176,7 @@ useEffect(()=>{
     }
 
     console.log("campaignMasterArticleJson",campaignStateAll.campaignMasterArticleJson)
-  }, [weekId, campaignStateAll?.campaignMasterArticle]);
+  }, [ campaignStateAll?.campaignMasterArticle]);
 
   // Debug only
   useEffect(() => {
