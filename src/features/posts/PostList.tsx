@@ -34,9 +34,11 @@ import RegenerateAssistant from "./RegenerationAssistant";
 import { useInfo } from "../../context/InfoToastContext";
 import { useError } from "../../context/ErrorToastContext";
 import { useSuccess } from "../../context/SuccessToastContext";
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 
 // Types here (or import from separate file)
 type Post = {
+  published: any;
   type: string;
   day: string;
   date: string;
@@ -214,29 +216,7 @@ const PostList: React.FC = () => {
     handleGeneratePostForPlatform(platform, postIndex);
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result instanceof ArrayBuffer) {
-          const binary = new Uint8Array(reader.result);
-          let binaryString = "";
-          for (let i = 0; i < binary.byteLength; i++) {
-            binaryString += String.fromCharCode(binary[i]);
-          }
-          resolve(btoa(binaryString));
-        } else if (typeof reader.result === "string") {
-          // Remove the Data URL prefix if present
-          const base64 = reader.result.split(",")[1];
-          resolve(base64);
-        } else {
-          reject(new Error("Failed to convert file to base64."));
-        }
-      };
-      reader.onerror = () => reject(new Error("Error reading the file."));
-      reader.readAsDataURL(file);
-    });
-  };
+
 
   const handleGeneratePostForPlatform = async (
     platform: string,
@@ -503,12 +483,15 @@ useEffect(() => {
   const generated = postListData.find(
     (gen: any) => Number(gen.postIndex) === Number(scheduledPost.index)
   );
+  console.log("generated",generated)
 
   return {
     ...scheduledPost,
     url: generated?.[postListKey]?.url || "",
     caption: generated?.[postListKey]?.caption || "",
     hashtags: generated?.[postListKey]?.hashtags || "",
+    published: generated?.[postListKey]?.published ?? false,
+    scheduled: generated?.[postListKey]?.scheduled ?? false,
   };
 });
 
@@ -581,12 +564,40 @@ result[platformKey] = {
     const buffer = await response.arrayBuffer();
     const base64 = arrayBufferToBase64(buffer);
 
-    return `data:${contentType};base64,${base64}`;
+    return `${contentType};base64,${base64}`;
+  };
+
+
+    const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result instanceof ArrayBuffer) {
+          const binary = new Uint8Array(reader.result);
+          let binaryString = "";
+          for (let i = 0; i < binary.byteLength; i++) {
+            binaryString += String.fromCharCode(binary[i]);
+          }
+          resolve(btoa(binaryString));
+        } else if (typeof reader.result === "string") {
+          // Remove the Data URL prefix if present
+          const base64 = reader.result.split(",")[1];
+          resolve(base64);
+        } else {
+          reject(new Error("Failed to convert file to base64."));
+        }
+      };
+      reader.onerror = () => reject(new Error("Error reading the file."));
+      reader.readAsDataURL(file);
+    });
   };
 
   const [loadingPosts, setLoadingPosts] = useState<{ [key: string]: boolean }>(
     {}
   );
+
+
+
 
   // Main handler
   const handleRegenerate = async (data: {
@@ -620,7 +631,10 @@ result[platformKey] = {
         if (data?.url.endsWith(".mp4")) {
           binaryData = data.url;
         } else {
-          binaryData = await convertFileUrlToBase64(data.url);
+          binaryData =  data.url
+          // await convertFileUrlToBase64(data.url);
+          // data.url
+          // await convertFileUrlToBase64(data.url);
         }
       }
 
@@ -646,7 +660,8 @@ result[platformKey] = {
                 : [data.selectedPosts],
               useExisting: useExisting,
               ...((data.file || useExisting) && {
-                file: useExisting ? binaryData : data.file,
+                file: !useExisting ? data?.file : "",
+                 url: useExisting ? binaryData : "",
               }),
             },
           }),
@@ -878,6 +893,7 @@ result[platformKey] = {
                           position: "relative",
                         }}
                       >
+
                         <Box
                           sx={{
                             position: "absolute",
@@ -902,7 +918,7 @@ result[platformKey] = {
                             </Button>
                           )}
                           */}
-                          <IconButton
+                          { !post?.published &&  <IconButton
                             onClick={(e) => {
                               e.stopPropagation();
                               setAnchorEl({ [postKey]: e.currentTarget });
@@ -917,7 +933,8 @@ result[platformKey] = {
                             }}
                           >
                             <MoreVertIcon />
-                          </IconButton>
+                          </IconButton>  }
+                         
                           <Menu
                             anchorEl={anchorEl[postKey]}
                             open={Boolean(anchorEl[postKey])}
@@ -996,6 +1013,7 @@ result[platformKey] = {
                             </MenuItem> */}
                           </Menu>
                         </Box>
+                       
                         <Box
                           // onClick={() =>
                           //   post?.url &&
@@ -1182,7 +1200,17 @@ result[platformKey] = {
                           )}
 
                           {post.url && (
-                            <AppButton
+                             post?.published ? <>  <AppButton
+                              sx={{ mt: 2 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              
+                              }}
+                              disabled
+                            >
+                              Published
+                            </AppButton></> :
+                             <>  <AppButton
                               sx={{ mt: 2 }}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1192,7 +1220,10 @@ result[platformKey] = {
                               }}
                             >
                               Publish
-                            </AppButton>
+                            </AppButton></> 
+                      
+                          
+                          
                           )}
                         </Box>
                       </Box>
@@ -1591,22 +1622,12 @@ result[platformKey] = {
                 alignItems: "center",
               }}
             >
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              {!useExisting &&    <Typography variant="subtitle1" sx={{ mb: 1 }}>
                 Reference Image (Optional)
-              </Typography>
+              </Typography>}
+            
               {regenerateMediaModal?.url?.endsWith(".mp4") ? (
-                <>  <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={useExisting}
-                        sx={{ color: "white" }}
-                        onChange={() => setExisting(!useExisting)}
-                      />
-                    }
-                    label="Use the Existing image"
-                  />
-                </FormGroup></>
+                <> </>
               ) : (
                 <FormGroup>
                   <FormControlLabel
@@ -1622,13 +1643,13 @@ result[platformKey] = {
                 </FormGroup>
               )}
             </Box>
-
-            <Typography
+              {!useExisting &&   <Typography
               variant="body2"
               sx={{ mb: 2, color: "rgba(255,255,255,0.7)" }}
             >
               Upload a reference image to guide the AI
-            </Typography>
+            </Typography>} 
+         
 
             {!regenerateMediaModal.productImage ? (
               !useExisting && (
