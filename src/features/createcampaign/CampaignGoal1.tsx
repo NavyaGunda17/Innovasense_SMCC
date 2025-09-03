@@ -126,7 +126,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
       const result = await response.json();
 
       if (result[0].output.status == "fail") {
-        showErrorToast("Error in generating the campaign structure.");
+        // showErrorToast("Error in generating the campaign structure.");
         setShowLoader(false);
         return false;
       }
@@ -138,7 +138,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
       //   setShowCampaignGoal(true)
     } catch (error) {
       setShowLoader(false);
-      showErrorToast("Error in generating the campaign structure.");
+      // showErrorToast("Error in generating the campaign structure.");
     }
   };
 
@@ -321,7 +321,16 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                         }}
                       >
                         <ReactMarkdown>
-                          {generateGoal.replace(/<br\s*\/?>/gi, "\n\n")}
+                          {/* <br>
+
+<br/>
+
+<br />
+
+<br />
+
+<br ></br> */}
+                          {generateGoal.replace(/<br\s*\/?>|br\s*\/?/gi, "\n\n")}
                         </ReactMarkdown>
                       </Box>
                     )}

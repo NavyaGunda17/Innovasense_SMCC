@@ -127,7 +127,7 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
 
       if (result[0].output.status == "fail") {
         setShowLoader(false);
-        showErrorToast("Error in generating the campaign goal.");
+        // showErrorToast("Error in generating the campaign goal.");
         return false;
       }
       navigate(`/creatCampaign/${campaignId}#AIGneeratedGoal`);
@@ -136,7 +136,7 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
       renderData();
       setShowLoader(false);
     } catch {
-      showErrorToast("Error in generating the campaign goal.");
+      // showErrorToast("Error in generating the campaign goal.");
     }
   };
 

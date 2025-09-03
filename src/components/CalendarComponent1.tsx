@@ -7,6 +7,8 @@ import {
   Tooltip,
   Button,
   Divider,
+  LinearProgress,
+  keyframes,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
@@ -240,7 +242,11 @@ export const CalendarComponent1: React.FC<Props> = ({
     console.log("calendar componet", campaignWeeks);
   }, []);
 
-
+// Slow moving animation
+const slowMotion = keyframes`
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+`;
   useEffect(() => {
       let channel: any;
   
@@ -408,20 +414,48 @@ const articleExists =
     
 
                  
-          {inProgress && !articleExists && (
-            <Box
-              sx={{
-                px: 2,
-                py: 0.5,
-                borderRadius: 2,
-                backgroundColor: "#573705",
-                color: "#ec9c1f",
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              In Progress
-            </Box>
+          {inProgress && !articleExists  && (
+       <Box
+      sx={{
+        position: "relative",
+        width: "max-content",
+       padding:"5px 22px",
+        borderRadius: 2,
+        overflow: "hidden",
+        backgroundColor: "#3b2400", // base background
+      }}
+    >
+      {/* Animated yellow bar */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+background: "linear-gradient(90deg, #3b2400 20%, #573705 40%,rgb(102, 66, 7) 60%, #573705 80%, #3b2400 100%)",
+
+          animation: `${slowMotion} 6s linear infinite`,
+        }}
+      />
+
+      {/* Text always on top */}
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+         
+          color: "#c07b0a",
+          fontSize: "16px",
+        }}
+      >
+        In Progress...
+      </Box>
+    </Box>
           )}
        
                 </Box>
