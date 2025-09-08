@@ -1244,6 +1244,9 @@ const getDayFromDate = (dateStr: string): string => {
               value={editedPosts[postKey]?.time || post.time}
                onChange={(e) => handleTimeChange(postKey, e.target.value)}
               sx={{ input: { color: "white" } }}
+              inputProps={{
+    step: 1, // allows seconds
+  }}
             />
             <IconButton color="primary" size="small" onClick={handleSave}>
               <SaveIcon fontSize="small" />
