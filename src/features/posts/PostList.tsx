@@ -39,7 +39,8 @@ import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
-
+import { QueryBuilderOutlined } from "@mui/icons-material";
+import DateRangeIcon from '@mui/icons-material/DateRange';
 // Types here (or import from separate file)
 type Post = {
   published: any;
@@ -710,106 +711,6 @@ const PostList: React.FC = () => {
     }
   };
 
-  // // Convert ArrayBuffer to Base64
-  // const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  //   let binary = "";
-  //   const bytes = new Uint8Array(buffer);
-  //   const len = bytes.byteLength;
-
-  //   for (let i = 0; i < len; i++) {
-  //     binary += String.fromCharCode(bytes[i]);
-  //   }
-
-  //   return btoa(binary);
-  // };
-
-  // // Complete example: fetch image URL → ArrayBuffer → Base64
-  // const convertImageUrlToBase64 = async (url: string): Promise<string | false> => {
-  //   if (!url || url.length === 0) {
-  //     return false;
-  //   }
-  //   const response = await fetch(url);
-  //   if (!response.ok) throw new Error("Failed to fetch the image");
-  //   const buffer = await response.arrayBuffer();
-  //   return arrayBufferToBase64(buffer);
-  // };
-
-  //   const handleRegenerate = async (data: {
-  //     platforms: string[];
-  //     events: string[];
-  //     contentType: string;
-  //     command: string;
-  //     selectedPosts?: any;
-  //     file?: string;
-  //     url?:string
-  //   }) => {
-  //     console.log("Regenerating:", data);
-  //     showInfoToast(
-  //       "Be mindful that image & video generation might take few moments."
-  //     );
-  //     try {
-  //       console.log(
-  //         "dataaaaa",
-  //         campaignId,
-  //         data.command,
-  //         weekId,
-  //         data.contentType,
-  //         data.platforms[0],
-  //         data.selectedPosts
-  //       );
-  //   const imageUrl = "";
-  // let binaryData:any =""
-  //        if (data?.url && useExisting) {
-  //    binaryData = await convertImageUrlToBase64(data.url);
-  //   // use binaryData...
-  // }
-
-  //       const response = await fetch(
-  //         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
-  //         {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({
-  //             companyId,
-  //             campaignId: campaignId,
-  //             intent: "Campaign post",
-  //             content: {
-  //               campaignPostComments: data.command || "",
-  //               weekNumber: weekId,
-  //               subTask:
-  //                 data.contentType === "text"
-  //                   ? "regenerateText"
-  //                   : "regenerateMedia",
-  //               platform: data.platforms[0],
-  //               postIndex: Array.isArray(data?.selectedPosts)
-  //                 ? data.selectedPosts
-  //                 : [data.selectedPosts],
-  //               useExisting:useExisting,
-  //               ...((data.file || useExisting) && { file: useExisting ? binaryData:data.file }),
-  //             },
-  //           }),
-  //         }
-  //       );
-  //       console.log("Regenerating response:", response);
-
-  //       const result = await response.json();
-
-  //       if (result[0].output.status === "fail") {
-  //         showErrorToast("Failed to regenerate content");
-  //         return false;
-  //       }
-
-  //       // Wait a bit for the backend to process
-  //       await new Promise((resolve) => setTimeout(resolve, 2000));
-  //       renderData();
-  //       showInfoToast("Content regeneration initiated successfully");
-  //     } catch (error) {
-  //       console.error("Error triggering webhook:", error);
-  //       renderData();
-  //       showErrorToast("Error during regeneration");
-  //     }
-  //   };
-
   const [showAssistant, setShowAssistant] = useState(false);
   const [useExisting, setExisting] = useState(false);
   useEffect(() => {}, [useExisting]);
@@ -817,19 +718,95 @@ const PostList: React.FC = () => {
   const navigate = useNavigate();
 
 
-    const [editedPost, setEditedPost] = useState<any>();
-  const [editField, setEditField] = useState<"date" | "time" | null>(null);
+    // const [editedPost, setEditedPost] = useState<any>();
+  // const [editField, setEditField] = useState<"date" | "time" | null>(null);
+  const [editField, setEditField] = useState<{ postKey: string; field: "date" | "time" } | null>(null);
+const [editedPosts, setEditedPosts] = useState<Record<string, { date?: string; time?: string }>>({});
 
-  const handleSave = () => {
+
+  // const handleSave = () => {
    
-    setEditField(null);
-  };
+  //   setEditField(null);
+  // };
 
-  const handleCancel = () => {
-   
-    setEditField(null);
-  };
+  const handleSave = async() => {
+  if (!editField) return;
 
+  const { postKey, field } = editField;
+  const updatedValue = editedPosts[postKey]?.[field];
+
+  console.log("Saving for postKey:", postKey, "Field:", field, "Value:", updatedValue);
+    console.log("editedPosts",editedPosts)
+
+    const extractData = postKey.split("-")
+    const platformName = extractData[0]
+    const postIndex = Number(extractData[1]) + 1
+  setEditField(null);
+const response = await fetch(
+        "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            companyId,
+            campaignId: campaignId,
+            intent: "Schedule post",
+            content: {
+              weekNumber:weekId,
+              platform:platformName,
+              postIndexes:[postIndex],
+              newDate: field === "date" ? updatedValue :"",
+              newTime: field === "time" ? updatedValue : ""
+            },
+          }),
+        }
+      );
+
+console.log("response",response)
+
+
+};
+
+
+const handleCancel = () => {
+  if (!editField) return;
+
+  const { postKey,field } = editField;
+    const updatedValue = editedPosts[postKey]?.[field];
+
+    console.log("cancel for postKey:", postKey, "Field:", field, "Value:", updatedValue);
+    console.log("editedPosts",editedPosts)
+
+  // remove unsaved edits for this post
+  setEditedPosts((prev) => {
+    const updated = { ...prev };
+    delete updated[postKey];
+    return updated;
+  });
+
+  // exit edit mode
+  setEditField(null);
+};
+
+
+
+  const handleDateChange = (postKey: string, value: string) => {
+  setEditedPosts((prev) => ({
+    ...prev,
+    [postKey]: { ...prev[postKey], date: value,postKey: postKey},
+  }));
+};
+
+const handleTimeChange = (postKey: string, value: string) => {
+  setEditedPosts((prev) => ({
+    ...prev,
+    [postKey]: { ...prev[postKey], time: value },
+  }));
+};
+const getDayFromDate = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", { weekday: "long" });
+};
 
   return (
     <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px" }}>
@@ -1216,16 +1193,15 @@ const PostList: React.FC = () => {
                           )}
 
 
- <Box sx={{ display: "none", alignItems: "center", gap: 1 }}>
-        {false ? (
+ <Box sx={{ display: "flex", alignItems: "center" }}>
+   <DateRangeIcon sx={{mr:"10px"}}/> 
+        {editField?.postKey === postKey &&  editField.field == "date" ?(
           <>
             <TextField
               type="date"
               size="small"
-              value={post.date}
-              onChange={(e) =>
-                setEditedPost({date: e.target.value} )
-              }
+              value={editedPosts[postKey]?.date || post.date}
+             onChange={(e) => handleDateChange(postKey, e.target.value)}
               sx={{ input: { color: "white" } }}
             />
             <IconButton color="primary" size="small" onClick={handleSave}>
@@ -1237,24 +1213,73 @@ const PostList: React.FC = () => {
           </>
         ) : (
           <>
-            <Typography variant="body2" sx={{ color: "white" }}>
-              📅 <strong>{post.day}, {post.date}</strong>
+            <>
+<Typography variant="body2" sx={{ color: "white" }}>
+           {getDayFromDate(editedPosts[postKey]?.date || post.date)} , {editedPosts[postKey]?.date || post.date}
             </Typography>
+          </>
+          {!post.published ? 
             <Tooltip title="Edit Date">
               <IconButton
                 size="small"
-                onClick={() => setEditField("date")}
+                onClick={() => setEditField({ postKey, field: "date" })}
                 sx={{ color: "#aaa" }}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
-            </Tooltip>
+            </Tooltip> :<></>
+          }
+          
           </>
         )}
       </Box>
 
-                          <Box sx={{ mt: 2 }}>
-                            <Typography variant="body2">
+       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+         <QueryBuilderOutlined /> 
+        {editField?.postKey === postKey && editField.field === "time" ?(
+          <>
+            <TextField
+              type="time"
+              size="small"
+              value={editedPosts[postKey]?.time || post.time}
+               onChange={(e) => handleTimeChange(postKey, e.target.value)}
+              sx={{ input: { color: "white" } }}
+            />
+            <IconButton color="primary" size="small" onClick={handleSave}>
+              <SaveIcon fontSize="small" />
+            </IconButton>
+            <IconButton color="error" size="small" onClick={handleCancel}>
+              <CancelIcon fontSize="small" />
+            </IconButton>
+          </>
+        ) : (
+          <>
+          <Box sx={{display:"flex",alignItems:"center",gap:1}}>
+
+<Typography variant="body2" sx={{ color: "white" }}>
+             {editedPosts[postKey]?.time || post.time}
+            </Typography>
+          </Box>
+            {/* <Typography variant="body2" sx={{ color: "white" }}>
+              {post.time}
+            </Typography> */}
+            {!post.published ?  <Tooltip title="Edit Time">
+              <IconButton
+                size="small"
+                onClick={() => setEditField({ postKey, field: "time" })}
+                sx={{ color: "#aaa" }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip> :<></>}
+           
+          </>
+        )}
+      </Box>
+
+
+                          <Box sx={{mt:1}}>
+                            {/* <Typography variant="body2">
                               📅{" "}
                               <strong>
                                 {post.day}, {post.date}
@@ -1262,9 +1287,9 @@ const PostList: React.FC = () => {
                             </Typography>
                             <Typography variant="body2">
                               🕒 <strong>{post.time}</strong>
-                            </Typography>
+                            </Typography> */}
                             <Typography variant="body2">
-                              📝 <strong>{post.mediaType}</strong>
+                              📝 <strong style={{marginLeft:"10px"}}>{post.mediaType}</strong>
                             </Typography>
                           </Box>
 
