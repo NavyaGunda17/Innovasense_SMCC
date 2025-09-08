@@ -216,6 +216,14 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
     navigate(`/creatCampaign/${campaignId}#Structure`, { replace: false });
   };
 
+    const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+
+     useEffect(() => {
+    const handleResize = () => setScreenHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
     <Box sx={{ mb: 4 }}>
       <Box
@@ -252,7 +260,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
             <Box
               className="campaign-detail-rectangle"
               sx={{
-                maxHeight: "60vh",
+                maxHeight: screenHeight<1000 ? "50vh":"60vh",
                 padding: "16px", // limit height
                 overflowY: "auto", // enable scroll
                 scrollbarWidth: "none",

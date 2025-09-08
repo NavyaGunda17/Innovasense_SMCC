@@ -43,6 +43,15 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
   const [hasGenerated, setHasGenerated] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
+    const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+
+     useEffect(() => {
+    const handleResize = () => setScreenHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+      console.log("screenHeight",screenHeight)
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const { showErrorToast } = useError();
   const { showSuccessToast } = useSuccess();
 
@@ -189,7 +198,8 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.3 }}
         sx={{
-          width: 300,
+           width: screenHeight < 900 ? 200: 300,
+          // width: 300,
           height: 200,
           borderRadius: 2,
           background:
@@ -274,7 +284,7 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
             flexWrap: "wrap",
             gap: 3,
             justifyContent: "center",
-            width: "70vw",
+            width:screenHeight < 900 ? "95vw": "70vw",
             mt: 4,
           }}
         >

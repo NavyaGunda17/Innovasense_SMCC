@@ -113,11 +113,14 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
             alignItems: "center",
           }}
         >
+
+          
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+             
             }}
           >
             <Typography
@@ -133,6 +136,8 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                 right: "0",
                 margin: "auto",
                 display: "inline-table",
+                 width:"90%",
+                 textAlign:"center"
               }}
             >
               Generated Summary
@@ -144,7 +149,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
               <Box
                 className="campaign-detail-rectangle"
                 sx={{
-                  maxHeight: "60vh",
+                  maxHeight: "50vh",
                   padding: "16px",
                   overflowY: "auto",
                   scrollbarWidth: "none",

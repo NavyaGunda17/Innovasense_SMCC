@@ -299,13 +299,21 @@ const slowMotion = keyframes`
       };
     }, []);
 
+        const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+    
+         useEffect(() => {
+        const handleResize = () => setScreenHeight(window.innerHeight);
+        window.addEventListener("resize", handleResize);
+    
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
   return (
     <div
       style={{
         overflowX: "auto",
         fontFamily: "sans-serif",
         padding: "30px",
-        maxHeight: "75vh", // limit height
+        maxHeight: screenHeight< 1000 ? "70vh" : "75vh", // limit height
         overflowY: "auto", // enable scroll
         scrollbarWidth: "none",
       }}

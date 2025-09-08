@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import AI_lgo from "../../assests/AI_logo.png"
 
 const TriangleCardLayout: React.FC = () => {
-  const [selectedCard, setSelectedCard] = useState<string | null>("brand");
+  const [selectedCard, setSelectedCard] = useState<string | null>("");
     const campaignState = useSelector( (state:RootState )=> state.campaign )
   useEffect(()=>{
     renderData()
@@ -153,7 +153,7 @@ const TriangleCardLayout: React.FC = () => {
   }}
   transition={{ duration: 0.3 }}
   sx={{
-    width: isSelected ? "350px" : "300px",
+    width: isSelected ? "30vh" : "27vh",
     height: isSelected ? "400px" : "300px",
     borderRadius: "16px",
     position: "relative",
@@ -266,7 +266,7 @@ const containerRef = useRef<HTMLDivElement>(null);
      ref={containerRef}
       sx={{
         width: "100%",
-        maxWidth: "1200px",
+        // maxWidth: "1200px",
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",

@@ -206,7 +206,7 @@ const StrategicObjective = forwardRef<
         } ${transitionPhase !== "idle" ? `phase-${transitionPhase}` : ""} `}
         sx={{
           maxHeight: "50vh",
-          overflowY: "auto",
+          overflowY: "hidden",
         }}
       >
         <div className="objective-options">

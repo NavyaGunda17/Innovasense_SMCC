@@ -185,7 +185,7 @@ const CampaignCalendar = forwardRef<
         <Box
           className="campaign-detail-rectangle"
           sx={{
-            maxHeight: "27vh",
+            maxHeight: "max-content",
             overflowY: "auto",
           }}
         >

@@ -11,7 +11,7 @@
   width: 80vw;
   /* height: 70vh; */
   max-width: 1200px;
-  max-height: 700px;
+  max-height: 70vh;
   z-index: 11;
   align-content: start;
   overflow-y: auto;
