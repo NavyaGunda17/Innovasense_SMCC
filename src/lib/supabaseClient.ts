@@ -1,7 +1,7 @@
 // src/supabaseClient.js
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://supabasesmcc.innovasense.net";
+const supabaseUrl = "https://qdwkznmbngbdnldckens.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkd2t6bm1ibmdiZG5sZGNrZW5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxMzQwNTMsImV4cCI6MjA2NzcxMDA1M30.kyS_M95tfV5VdD0tocff3u6MaULA_0T4w3GHwR-BSqw";
 
