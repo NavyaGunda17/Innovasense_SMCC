@@ -34,11 +34,12 @@ import RegenerateAssistant from "./RegenerationAssistant";
 import { useInfo } from "../../context/InfoToastContext";
 import { useError } from "../../context/ErrorToastContext";
 import { useSuccess } from "../../context/SuccessToastContext";
-import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 
 // Types here (or import from separate file)
 type Post = {
   published: any;
+  scheduled: boolean;
   type: string;
   day: string;
   date: string;
@@ -48,6 +49,7 @@ type Post = {
   url?: string;
   caption?: string;
   hashtags?: string[];
+  prompt?: string;
 };
 
 type PlatformData = {
@@ -216,8 +218,6 @@ const PostList: React.FC = () => {
     handleGeneratePostForPlatform(platform, postIndex);
   };
 
-
-
   const handleGeneratePostForPlatform = async (
     platform: string,
     postIndex?: number
@@ -273,7 +273,20 @@ const PostList: React.FC = () => {
   };
 
   const publishPerPost = async (platform: string, postIndex?: number) => {
-    showInfoToast("Initated the process to publish the post");
+    // Get the current post data to check if it's scheduled
+    const platformData = weekDetails?.platforms?.[platform];
+    const currentPost = platformData?.["Post Schedule"]?.find(
+      (p: Post) => Number(p.index) === Number(postIndex)
+    );
+    const isScheduled = currentPost?.scheduled;
+
+    // Show appropriate toast message
+    showInfoToast(
+      isScheduled
+        ? "Canceling the publishing process..."
+        : "Initiating the process to publish the post"
+    );
+
     try {
       const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
@@ -288,6 +301,7 @@ const PostList: React.FC = () => {
               weekNumber: weekId,
               platform: platform,
               postIndexes: [postIndex || 1],
+              publish: !isScheduled, // true for publish, false for cancel
             },
           }),
         }
@@ -295,14 +309,22 @@ const PostList: React.FC = () => {
       const result = await response.json();
 
       if (result[0].output.status === "fail") {
-        showErrorToast("Failed to Publish post");
+        showErrorToast(
+          isScheduled ? "Failed to cancel publishing" : "Failed to publish post"
+        );
         return false;
       }
 
-      showSuccessToast("Publishing post initiated successfully");
+      showSuccessToast(
+        isScheduled
+          ? "Publishing canceled successfully"
+          : "Publishing post initiated successfully"
+      );
     } catch (error) {
       console.error("Error triggering webhook:", error);
-      showErrorToast("Error in publishing post");
+      showErrorToast(
+        isScheduled ? "Error in canceling publish" : "Error in publishing post"
+      );
     }
   };
   const renderData = async () => {
@@ -338,9 +360,9 @@ const PostList: React.FC = () => {
         console.log("After combining - combinedSchedule:", combinedSchedule);
 
         // Update weekDetails with new schedule
-          setWeekDetails((prev:any) =>
+        setWeekDetails((prev: any) =>
           prev ? { ...prev, platforms: combinedSchedule } : null
-        )
+        );
 
         // setWeekDetails((prev: any) => {
         //   const newState = {
@@ -355,7 +377,6 @@ const PostList: React.FC = () => {
       console.error("Error in renderData:", error);
     }
   };
-
 
   useEffect(() => {
     let channel: any;
@@ -441,9 +462,6 @@ const PostList: React.FC = () => {
     };
   }, [campaignId]); // Add campaignId to dependency array
 
-
-
-
   const [activePostKey, setActivePostKey] = useState<any>(null);
 
   const toCamelCase = (str: string): string => {
@@ -451,12 +469,15 @@ const PostList: React.FC = () => {
       .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
       .replace(/^(.)/, (c) => c.toLowerCase());
   };
-useEffect(() => {
-  if (weekDetails?.platforms && postList) {
-    const combinedSchedule = combineScheduleWithPosts(postList, weekDetails.platforms);
-    setWeekDetails((prev: any) => ({ ...prev, platforms: combinedSchedule }));
-  }
-}, [postList]);
+  useEffect(() => {
+    if (weekDetails?.platforms && postList) {
+      const combinedSchedule = combineScheduleWithPosts(
+        postList,
+        weekDetails.platforms
+      );
+      setWeekDetails((prev: any) => ({ ...prev, platforms: combinedSchedule }));
+    }
+  }, [postList]);
 
   const combineScheduleWithPosts = (
     postListData: any,
@@ -480,25 +501,25 @@ useEffect(() => {
       // }
 
       const mergedPosts = scheduledPosts.map((scheduledPost: any) => {
-  const generated = postListData.find(
-    (gen: any) => Number(gen.postIndex) === Number(scheduledPost.index)
-  );
-  console.log("generated",generated)
+        const generated = postListData.find(
+          (gen: any) => Number(gen.postIndex) === Number(scheduledPost.index)
+        );
+        console.log("generated", generated);
 
-  return {
-    ...scheduledPost,
-    url: generated?.[postListKey]?.url || "",
-    caption: generated?.[postListKey]?.caption || "",
-    hashtags: generated?.[postListKey]?.hashtags || "",
-    published: generated?.[postListKey]?.published ?? false,
-    scheduled: generated?.[postListKey]?.scheduled ?? false,
-  };
-});
+        return {
+          ...scheduledPost,
+          url: generated?.[postListKey]?.url || "",
+          caption: generated?.[postListKey]?.caption || "",
+          hashtags: generated?.[postListKey]?.hashtags || "",
+          published: generated?.[postListKey]?.published ?? false,
+          scheduled: generated?.[postListKey]?.scheduled ?? false,
+        };
+      });
 
-result[platformKey] = {
-  ...platformData,
-  ["Post Schedule"]: [...mergedPosts], // create a new array
-};
+      result[platformKey] = {
+        ...platformData,
+        ["Post Schedule"]: [...mergedPosts], // create a new array
+      };
 
       // const mergedPosts = scheduledPosts.map((scheduledPost: any) => {
       //   const index =
@@ -567,8 +588,7 @@ result[platformKey] = {
     return `${contentType};base64,${base64}`;
   };
 
-
-    const convertFileToBase64 = (file: File): Promise<string> => {
+  const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
@@ -595,9 +615,6 @@ result[platformKey] = {
   const [loadingPosts, setLoadingPosts] = useState<{ [key: string]: boolean }>(
     {}
   );
-
-
-
 
   // Main handler
   const handleRegenerate = async (data: {
@@ -631,7 +648,7 @@ result[platformKey] = {
         if (data?.url.endsWith(".mp4")) {
           binaryData = data.url;
         } else {
-          binaryData =  data.url
+          binaryData = data.url;
           // await convertFileUrlToBase64(data.url);
           // data.url
           // await convertFileUrlToBase64(data.url);
@@ -661,7 +678,7 @@ result[platformKey] = {
               useExisting: useExisting,
               ...((data.file || useExisting) && {
                 file: !useExisting ? data?.file : "",
-                 url: useExisting ? binaryData : "",
+                url: useExisting ? binaryData : "",
               }),
             },
           }),
@@ -893,7 +910,6 @@ result[platformKey] = {
                           position: "relative",
                         }}
                       >
-
                         <Box
                           sx={{
                             position: "absolute",
@@ -918,23 +934,25 @@ result[platformKey] = {
                             </Button>
                           )}
                           */}
-                          { !post?.published &&  <IconButton
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setAnchorEl({ [postKey]: e.currentTarget });
-                            }}
-                            sx={{
-                              backgroundColor: "rgba(0, 0, 0, 0.5)",
-                              backdropFilter: "blur(4px)",
-                              color: "white",
-                              "&:hover": {
-                                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                              },
-                            }}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>  }
-                         
+                          {!post?.published && (
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAnchorEl({ [postKey]: e.currentTarget });
+                              }}
+                              sx={{
+                                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                backdropFilter: "blur(4px)",
+                                color: "white",
+                                "&:hover": {
+                                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                                },
+                              }}
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                          )}
+
                           <Menu
                             anchorEl={anchorEl[postKey]}
                             open={Boolean(anchorEl[postKey])}
@@ -979,7 +997,7 @@ result[platformKey] = {
                                   platform: platformKey,
                                   postIndex: idx + 1,
                                   productImage: null,
-                                  prompt: "",
+                                  prompt: post.prompt || "",
                                   url: post.url,
                                 });
                                 setAnchorEl({ ...anchorEl, [postKey]: null });
@@ -994,7 +1012,7 @@ result[platformKey] = {
                                   open: true,
                                   platform: platformKey,
                                   postIndex: idx + 1,
-                                  prompt: "",
+                                  prompt: post.prompt || "",
                                 });
                                 setAnchorEl({ ...anchorEl, [postKey]: null });
                               }}
@@ -1013,7 +1031,7 @@ result[platformKey] = {
                             </MenuItem> */}
                           </Menu>
                         </Box>
-                       
+
                         <Box
                           // onClick={() =>
                           //   post?.url &&
@@ -1053,7 +1071,7 @@ result[platformKey] = {
                                   borderRadius: "8px",
                                   // aspectRatio:"2/3",
                                   objectFit: "cover",
-                                   filter: loadingPosts[postKey]
+                                  filter: loadingPosts[postKey]
                                     ? "blur(20px)"
                                     : "none", // 👈 blur when loading
                                 }}
@@ -1200,30 +1218,27 @@ result[platformKey] = {
                           )}
 
                           {post.url && (
-                             post?.published ? <>  <AppButton
-                              sx={{ mt: 2 }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              
-                              }}
-                              disabled
-                            >
-                              Published
-                            </AppButton></> :
-                             <>  <AppButton
-                              sx={{ mt: 2 }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // TODO: Implement publish functionality
-                                publishPerPost(platformKey, idx + 1);
-                                setAnchorEl({ ...anchorEl, [postKey]: null });
-                              }}
-                            >
-                              Publish
-                            </AppButton></> 
-                      
-                          
-                          
+                            <>
+                              <AppButton
+                                sx={{ mt: 2 }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // Handle publish/cancel based on scheduled status
+                                  publishPerPost(platformKey, idx + 1);
+                                  setAnchorEl({
+                                    ...anchorEl,
+                                    [postKey]: null,
+                                  });
+                                }}
+                                disabled={post.published}
+                              >
+                                {post.published
+                                  ? "Published"
+                                  : post.scheduled
+                                  ? "Cancel Publishing"
+                                  : "Publish"}
+                              </AppButton>
+                            </>
                           )}
                         </Box>
                       </Box>
@@ -1484,7 +1499,7 @@ result[platformKey] = {
               fullWidth
               multiline
               rows={4}
-              placeholder="E.g., Make it more engaging, focus on benefits, use a professional tone..."
+              placeholder="Edit the prompt to regenerate the text content..."
               value={regenerateTextModal.prompt}
               onChange={(e) =>
                 setRegenerateTextModal({
@@ -1587,7 +1602,7 @@ result[platformKey] = {
               fullWidth
               multiline
               rows={4}
-              placeholder="E.g., Make the image more vibrant, focus on the product, use a light background..."
+              placeholder="Edit the prompt to regenerate the media content..."
               value={regenerateMediaModal.prompt}
               onChange={(e) =>
                 setRegenerateMediaModal({
@@ -1622,10 +1637,12 @@ result[platformKey] = {
                 alignItems: "center",
               }}
             >
-              {!useExisting &&    <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                Reference Image (Optional)
-              </Typography>}
-            
+              {!useExisting && (
+                <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                  Reference Image (Optional)
+                </Typography>
+              )}
+
               {regenerateMediaModal?.url?.endsWith(".mp4") ? (
                 <> </>
               ) : (
@@ -1643,13 +1660,14 @@ result[platformKey] = {
                 </FormGroup>
               )}
             </Box>
-              {!useExisting &&   <Typography
-              variant="body2"
-              sx={{ mb: 2, color: "rgba(255,255,255,0.7)" }}
-            >
-              Upload a reference image to guide the AI
-            </Typography>} 
-         
+            {!useExisting && (
+              <Typography
+                variant="body2"
+                sx={{ mb: 2, color: "rgba(255,255,255,0.7)" }}
+              >
+                Upload a reference image to guide the AI
+              </Typography>
+            )}
 
             {!regenerateMediaModal.productImage ? (
               !useExisting && (
@@ -1791,14 +1809,13 @@ result[platformKey] = {
           </Button>
           <Button
             onClick={async () => {
-            
               if (activePostKey) {
                 setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
               }
               const base64Image = regenerateMediaModal.productImage
                 ? await convertFileToBase64(regenerateMediaModal.productImage)
                 : null;
-             
+
               handleRegenerate({
                 platforms: [regenerateMediaModal.platform],
                 events: [],
