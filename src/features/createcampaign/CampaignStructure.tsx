@@ -154,6 +154,7 @@ const CampaignStructure = () => {
           >
             <ReactMarkdown>
               {campaignState?.campaignStructureSummary.replace(/<br\s*\/?>/gi, "\n\n")}
+
              
             </ReactMarkdown>
           </Box>

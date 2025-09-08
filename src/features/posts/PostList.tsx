@@ -16,6 +16,7 @@ import {
   FormGroup,
   Checkbox,
   FormControlLabel,
+  Tooltip,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
@@ -35,6 +36,9 @@ import { useInfo } from "../../context/InfoToastContext";
 import { useError } from "../../context/ErrorToastContext";
 import { useSuccess } from "../../context/SuccessToastContext";
 import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
 
 // Types here (or import from separate file)
 type Post = {
@@ -811,6 +815,22 @@ const PostList: React.FC = () => {
   useEffect(() => {}, [useExisting]);
 
   const navigate = useNavigate();
+
+
+    const [editedPost, setEditedPost] = useState<any>();
+  const [editField, setEditField] = useState<"date" | "time" | null>(null);
+
+  const handleSave = () => {
+   
+    setEditField(null);
+  };
+
+  const handleCancel = () => {
+   
+    setEditField(null);
+  };
+
+
   return (
     <Box sx={{ height: "-webkit-fill-available", borderRadius: "10px" }}>
       <Box
@@ -1052,13 +1072,18 @@ const PostList: React.FC = () => {
                                 style={{
                                   width: "100%",
                                   borderRadius: "8px",
-                                  // height: "200px",
+                                  height: "300px",
                                   // aspectRatio:"2/3",
                                   objectFit: "cover",
+
                                   filter: loadingPosts[postKey]
                                     ? "blur(20px)"
                                     : "none", // 👈 blur when loading
                                 }}
+                                 onClick={() =>
+                            post?.url &&
+                            setExpandedPost({ post, platform: platformKey })
+                          }
                               />
                             ) : (
                               <img
@@ -1068,6 +1093,7 @@ const PostList: React.FC = () => {
                                 style={{
                                   //  height: "200px",
                                   width: "100%",
+                                    height: "300px",
                                   borderRadius: "8px",
                                   // aspectRatio:"2/3",
                                   objectFit: "cover",
@@ -1075,6 +1101,10 @@ const PostList: React.FC = () => {
                                     ? "blur(20px)"
                                     : "none", // 👈 blur when loading
                                 }}
+                                 onClick={() =>
+                            post?.url &&
+                            setExpandedPost({ post, platform: platformKey })
+                          }
                               />
                             )
                           ) : (
@@ -1185,6 +1215,44 @@ const PostList: React.FC = () => {
                             />
                           )}
 
+
+ <Box sx={{ display: "none", alignItems: "center", gap: 1 }}>
+        {false ? (
+          <>
+            <TextField
+              type="date"
+              size="small"
+              value={post.date}
+              onChange={(e) =>
+                setEditedPost({date: e.target.value} )
+              }
+              sx={{ input: { color: "white" } }}
+            />
+            <IconButton color="primary" size="small" onClick={handleSave}>
+              <SaveIcon fontSize="small" />
+            </IconButton>
+            <IconButton color="error" size="small" onClick={handleCancel}>
+              <CancelIcon fontSize="small" />
+            </IconButton>
+          </>
+        ) : (
+          <>
+            <Typography variant="body2" sx={{ color: "white" }}>
+              📅 <strong>{post.day}, {post.date}</strong>
+            </Typography>
+            <Tooltip title="Edit Date">
+              <IconButton
+                size="small"
+                onClick={() => setEditField("date")}
+                sx={{ color: "#aaa" }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+      </Box>
+
                           <Box sx={{ mt: 2 }}>
                             <Typography variant="body2">
                               📅{" "}
@@ -1286,7 +1354,7 @@ const PostList: React.FC = () => {
                 color: "white",
               }}
             >
-              {/* {expandedPost.post.mediaType === "video" ? (
+              {expandedPost.post.mediaType === "video" ? (
                 <video
                   src={expandedPost.post.url}
                   autoPlay
@@ -1295,7 +1363,7 @@ const PostList: React.FC = () => {
                   style={{
                     width: "100%",
                     borderRadius: "12px",
-                    // height: "auto",
+                    height: "400px",
                     //  aspectRatio:"2/3",
                     // maxHeight: "400px",
                     objectFit: "cover",
@@ -1308,13 +1376,13 @@ const PostList: React.FC = () => {
                   style={{
                     width: "100%",
                     borderRadius: "12px",
-                    // height: "auto",
+                    height: "400px",
                     //  aspectRatio:"2/3",
                     // maxHeight: "400px",
                     objectFit: "cover",
                   }}
                 />
-              )} */}
+              )}
 
               <Typography variant="h6" mt={2}>
                 {expandedPost.post.caption}

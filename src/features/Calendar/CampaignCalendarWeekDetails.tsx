@@ -52,112 +52,64 @@ const hexToRGBA = (hex: string, opacity: number) => {
 
 
 const CamapignCalendarWeekDetails = () => {
-  const { weekId, campaignId } = useParams();
+const { weekId, campaignId } = useParams();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const location = useLocation()
-  useEffect(()=>{
-
-  },[location])
-  const navigate = useNavigate()
   const [weekDetails, setWeekDetails] = useState<any>({});
   const [weekDetailsArticle, setWeekDetailsArticle] = useState<string>("");
   const [command, setCommand] = useState("");
+  const [allWeeks, setAllWeeks] = useState<any>({});
+  const [showLoader, setShowLoader] = useState(false);
+  const [showViewPost, setShowPost] = useState(false);
+  const [moreDetails, setMoreDetails] = useState(false);
 
-  const campaignState = useSelector(
-    (state: RootState) => state.campaign.campaignWeekEvent
-  );
-  const campaignStateMarticleJson = useSelector(
-    (state: RootState) => state.campaign.campaignMasterArticleJson
-  );
-  const campaignStateAll = useSelector((state: RootState) => state.campaign);
   const companyId = useSelector((state: RootState) => state.auth.companyId);
+  const campaignWeekEvent = useSelector((state: RootState) => state.campaign.campaignWeekEvent);
+  const campaignStateMarticleJson = useSelector((state: RootState) => state.campaign.campaignMasterArticleJson);
+  const campaignStateAll = useSelector((state: RootState) => state.campaign);
+  const campaignStateWeekEvent: any = useSelector((state: RootState) => state.campaign.campaignMasterWeekEvent);
 
-  // Set week details based on weekId & campaignState
+  // ✅ Guard for webhook execution
+  const alreadyApprovedRef = useRef(false);
+
+  // Set week details
   useEffect(() => {
-    console.log("campaignWeekEvent",campaignState)
-    console.log("campaignStateMarticleJson",campaignStateMarticleJson)
-    if (weekId && campaignState?.length) {
+    if (weekId && campaignWeekEvent?.length) {
       const index = parseInt(weekId, 10);
-      
-      const selectedWeek = campaignState[index - 1];
-
-
-
-console.log(index); // 👉 Output: 1
+      const selectedWeek = campaignWeekEvent[index - 1];
       if (selectedWeek) {
         setWeekDetails(selectedWeek);
       }
     }
-  }, [weekId, campaignState]);
+  }, [weekId, campaignWeekEvent]);
 
-  // Fetch campaign data from Supabase when campaignId changes
+  // Fetch campaign data when location changes
   useEffect(() => {
     if (campaignId && weekId) {
       renderData();
     }
-  }, [campaignId,weekId]);
+  }, [location]);
 
-const alreadyApprovedRef = useRef(false); // ✅ Guard
+  // ✅ Unified Effect: Transform first, then checkExisting once
+  useEffect(() => {
+    if (!weekId || !campaignId) return;
 
+    if (!alreadyApprovedRef.current && campaignStateMarticleJson && campaignStateMarticleJson?.length > 0) {
+      alreadyApprovedRef.current = true; // lock immediately
 
-
-// useEffect(()=>{
-//   console.log("checkExisting")
-// checkExisting()
-// },[campaignStateMarticleJson])
-
-useEffect(() => {
-  // Transform week JSON
-  transformMasterArtickeJSON();
-
-  // Only run checkExisting once per weekId
-  if (!alreadyApprovedRef.current) {
-    checkExisting();
-  }
-}, [campaignStateMarticleJson]);
-
-  const [allWeeks, setAllWeeks] = useState<any>({});
-
-
-// useEffect(() => {
- 
-// transformMasterArtickeJSON()
-
-// }, [campaignStateMarticleJson]);
-
-const transformMasterArtickeJSON = () => {
- if(weekId){
- const index = parseInt(weekId, 10);
-  const keyName = `week_${index}`
-  if (!campaignStateMarticleJson || !keyName) return;
-
-  const foundIndex = campaignStateMarticleJson.findIndex(
-    (obj: Record<string, any>) => Object.keys(obj)[0] === keyName
-  );
-
-  if (foundIndex !== -1) {
-    const rawJsonString = campaignStateMarticleJson[foundIndex][keyName];
-
-    try {
-      const parsed = JSON.parse(rawJsonString);
-      const parsedWeek = { weekKey: keyName, ...parsed };
-      console.log("parsedWeek",parsedWeek)
-      dispatch(setCampaignMasterArticleWeekevent({ campaignMasterWeekEvent: parsedWeek }));
-      setAllWeeks(parsedWeek); // still using array to reuse rendering logic
-    } catch (error) {
-      console.error(`Failed to parse ${keyName}`, error);
+      const success = transformMasterArtickeJSON();
+     
     }
-  }
-  }
-}
+  }, [campaignId, weekId, campaignStateMarticleJson]);
 
 useEffect(()=>{
-
+ if (allWeeks && allWeeks?.platforms) {
+        checkExisting();
+      }
 },[allWeeks])
-
-  // Set article details based on weekId & campaignMasterArticle
-  useEffect(() => {
+ useEffect(() => {
     if (
       weekId &&
       campaignStateAll?.campaignMasterArticle && campaignStateAll?.campaignMasterArticle?.length > 0
@@ -178,10 +130,35 @@ useEffect(()=>{
     console.log("campaignMasterArticleJson",campaignStateAll.campaignMasterArticleJson)
   }, [ campaignStateAll?.campaignMasterArticle]);
 
-  // Debug only
-  useEffect(() => {
-   
-  }, [weekDetailsArticle]);
+  const transformMasterArtickeJSON = () => {
+    if (!weekId) return false;
+
+    const index = parseInt(weekId, 10);
+    const keyName = `week_${index}`;
+    if (!campaignStateMarticleJson) return false;
+
+    const foundIndex = campaignStateMarticleJson.findIndex(
+      (obj: Record<string, any>) => Object.keys(obj)[0] === keyName
+    );
+
+    if (foundIndex === -1) return false;
+
+    try {
+      const rawJsonString = campaignStateMarticleJson[foundIndex][keyName];
+      const parsed = JSON.parse(rawJsonString);
+      const parsedWeek = { weekKey: keyName, ...parsed };
+
+      dispatch(setCampaignMasterArticleWeekevent({ campaignMasterWeekEvent: parsedWeek }));
+      setAllWeeks(parsedWeek);
+      
+    } catch (error) {
+      console.error(`Failed to parse ${keyName}`, error);
+     
+    }
+  };
+
+
+
 
   const renderData = async () => {
     const response: any = await supabase
@@ -194,7 +171,7 @@ useEffect(()=>{
     const campaignStructureJsonRaw = response?.data?.campaignStructureJson;
     const campaignMasterArticle = response?.data?.campaignMasterArticle;
     const campaignMasterArticleJson = response?.data?.campaignMasterArticleJson;
-    console.log("campaignStructureSummary",campaignStructureSummary,campaignMasterArticle)
+
     const campaignStructureJson =
       typeof campaignStructureJsonRaw === "string"
         ? JSON.parse(campaignStructureJsonRaw)
@@ -205,19 +182,16 @@ useEffect(()=>{
         campaignStructureSummary,
         campaignStructureJson,
         campaignMasterArticle,
-        campaignMasterArticleJson
+        campaignMasterArticleJson,
       })
     );
-transformMasterArtickeJSON()
-    // const campaign = campaignMasterArticleJson["campaign Structure"];
-    // dispatch(setCampaignWeeksEvent({ campaignWeekEvent: campaign?.weeks }));
   };
 
-  const [showLoader, setShowLoader] = useState(false)
   const handleRegenerateKnowledge = async () => {
-    setShowLoader(true)
-    setCommand("")
-    handleCloseMoreDetails()
+    setShowLoader(true);
+    setCommand("");
+    setMoreDetails(false);
+
     try {
       const response = await fetch(
         "https://innovasense.app.n8n.cloud/webhook/smcc/brain",
@@ -236,26 +210,20 @@ transformMasterArtickeJSON()
         }
       );
 
-       const result = await response.json();
-
-      if (result[0].output.status == "fail") {
-        console.error("Failed in regenarting the master article");
-        setShowLoader(false)
-        return false
+      const result = await response.json();
+      if (result[0].output.status === "fail") {
+        console.error("Failed in regenerating the master article");
+        setShowLoader(false);
+        return false;
       }
-       renderData();
-        setShowLoader(false)
+
+      renderData();
+      setShowLoader(false);
     } catch (error) {
-       setShowLoader(false)
+      setShowLoader(false);
       console.error("Error triggering webhook:", error);
     }
   };
-  const campaignStateWeekEvent:any = useSelector(
-    (state: RootState) => state.campaign.campaignMasterWeekEvent
-  );
-
-
-const [showViewPost, setShowPost] = useState(false)
 
   const checkExisting = async () => {
     const { data } = await supabase
@@ -263,90 +231,50 @@ const [showViewPost, setShowPost] = useState(false)
       .select("*")
       .eq("campaignId", campaignId)
       .eq("companyId", companyId)
-      .eq("week", weekId)
-     
+      .eq("week", weekId);
 
-      console.log("change in table",data)
-      if(data && data.length > 0){
-        setShowPost(true)
-      }else{
-         alreadyApprovedRef.current = true;
-          handleApproveMasterArticle1()
+    if (data && data.length > 0) {
+      setShowPost(true);
+    } else {
+      handleApproveMasterArticle1();
+    }
+  };
+
+  const handleApproveMasterArticle1 = () => {
+    if (!allWeeks?.platforms) return;
+
+    const weekPlatforms = allWeeks.platforms;
+
+    for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
+      const platformData1 = platformData as any;
+
+      for (const post of platformData1["Post Schedule"]) {
+        const payload = {
+          companyId,
+          campaignId: campaignId,
+          intent: "Campaign post",
+          content: {
+            campaignPostComments: "",
+            weekNumber: weekId,
+            subTask: "generate",
+            platform: platformKey,
+            postIndex: [post.index || 1],
+          },
+        };
+
+        fetch("https://innovasense.app.n8n.cloud/webhook/smcc/brain", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).catch((err) => console.error("Failed to send webhook", err));
       }
-    
-  };
-  const toCamelCase = (str: string): string => {
-    return str
-      .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
-      .replace(/^(.)/, (c) => c.toLowerCase());
+    }
   };
 
-type PlatformData = {
-  "Platform name": string;
-  "The Narrative": string;
-  "Visual Prompt": string;
-  "Post Schedule": any[];
-};
-
-type Platforms = {
-  [platformKey: string]: PlatformData;
-};
-
-
-
-// useEffect(()=>{
-//   handleApproveMasterArticle1()
-// },[])
-const handleApproveMasterArticle1 = () => {
-  if (!campaignStateWeekEvent?.platforms) return;
-
-  const weekPlatforms = campaignStateWeekEvent.platforms;
-  console.log("weekPlatforms",weekPlatforms)
-
-let delay = 0;
-
-
-for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
-  const platform = platformKey;
-  const platformData1 = platformData as any;
-
-  for (const post of platformData1["Post Schedule"]) {
-    const postIndex = post.index;
-   const payload = {
-        companyId,
-        campaignId: campaignStateWeekEvent.campaignId,
-        intent: "Campaign post",
-        content: {
-          campaignPostComments: "",
-          weekNumber: weekId,
-          subTask: "generate",
-          platform,
-          postIndex: [postIndex || 1],
-        },
-      };
-
-      fetch("https://innovasense.app.n8n.cloud/webhook/smcc/brain", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }).catch((err) => console.error("Failed to send webhook", err));
-    // setTimeout(() => {
-   
-    // }, delay);
-
-    delay += 5000; // ⏱ increase delay by 5s for next call
-  }
-}
-
-  // Navigate immediately
-  // navigate(`/posts/${campaignId}/${weekId}`);
-};
-
-
-  const [moreDetails, setMoreDetails] = useState(false)
   const handleCloseMoreDetails = () =>{
-    setMoreDetails(false)
+      setMoreDetails(false)
   }
+
   return (
     <Box sx={{ m: 4, }}>
 
@@ -642,7 +570,10 @@ for (const [platformKey, platformData] of Object.entries(weekPlatforms)) {
         },
       }}
     >
-      <ReactMarkdown>{weekDetailsArticle.replace(/<br\s*\/?>/gi, "\n\n")}</ReactMarkdown>
+
+       
+
+      <ReactMarkdown>{weekDetailsArticle.replace(/<br\s*\/?>/gi, "\n")}</ReactMarkdown>
       
     </Box>
     <Box sx={{display:"flex",flexDirection:"row",gap:2,pt:2}}> 

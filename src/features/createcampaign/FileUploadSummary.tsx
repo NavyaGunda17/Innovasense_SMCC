@@ -185,6 +185,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                       }}
                     >
                       <ReactMarkdown>
+                        
                         {generatedFileSummary
                           ? generatedFileSummary.replace(/<br\s*\/?>/gi, "\n\n")
                           : "No file summary available. You can upload a file in the previous step or continue without file upload."}

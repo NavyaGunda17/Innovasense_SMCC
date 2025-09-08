@@ -330,7 +330,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
 <br />
 
 <br ></br> */}
-                          {generateGoal.replace(/<br\s*\/?>|br\s*\/?/gi, "\n\n")}
+                          {generateGoal.replace(/<br\s*\/?>/gi, "\n")}
                         </ReactMarkdown>
                       </Box>
                     )}
