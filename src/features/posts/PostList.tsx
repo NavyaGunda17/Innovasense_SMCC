@@ -411,6 +411,8 @@ const PostList: React.FC = () => {
             },
             (payload) => {
               console.log("🔄 Realtime event received:");
+              const updatedPost:any = payload.new;
+              setLoadingPosts({});
               renderData();
             }
           )
@@ -638,6 +640,8 @@ const PostList: React.FC = () => {
     );
 
     try {
+       const postKey = data.platforms[0] + "-" + data.selectedPosts; // 👈 unique key for loader
+    setActivePostKey(postKey);
       console.log(
         "dataaaaa",
         campaignId,
@@ -696,14 +700,15 @@ const PostList: React.FC = () => {
 
       if (result[0].output.status === "fail") {
         showErrorToast("Failed to regenerate content");
+        setActivePostKey(null);
         return false;
       }
 
       // Wait a bit for the backend to process
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 8000));
       renderData();
-      setLoadingPosts((prev) => ({ ...prev, [activePostKey]: false }));
-      setActivePostKey(null); // clear active post
+      // setLoadingPosts((prev) => ({ ...prev, [activePostKey]: false }));
+      // setActivePostKey(null); // clear active post
       showInfoToast("Content regeneration initiated successfully");
     } catch (error) {
       console.error("Error triggering webhook:", error);
@@ -1091,7 +1096,7 @@ const getDayFromDate = (dateStr: string): string => {
                             <Skeleton
                               animation="wave"
                               variant="rectangular"
-                              height={200}
+                              height="300px"
                               width="100%"
                               sx={{
                                 textAlign: "center",
@@ -1128,7 +1133,7 @@ const getDayFromDate = (dateStr: string): string => {
                                 alignItems: "center",
                                 background: "rgba(0,0,0,0.4)",
                                 borderRadius: "8px",
-                                height: "43vh",
+                                height:"300px",
                                 width: "100%",
                               }}
                             >
