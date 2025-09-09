@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -412,7 +412,30 @@ const PostList: React.FC = () => {
             (payload) => {
               console.log("🔄 Realtime event received:");
               const updatedPost:any = payload.new;
-              setLoadingPosts({});
+
+              const platforms = ["Instagram", "LinkedIn", "TikTok","X"]; // all platforms to check
+  platforms.forEach((platform) => {
+    const key = platform + "-" + (Number(updatedPost.postIndex)-1);
+    const url = updatedPost[platform.toLocaleLowerCase()]?.url;
+
+    // Only stop loader if this post/platform was regenerating AND url exists
+    if (regeneratingPostsRef.current[key] && url) {
+     
+      // setLoadingPosts((prev) => ({ ...prev, [key]: false }));
+      delete regeneratingPostsRef.current[key]; // cleanup
+      // showInfoToast(`${platform} Media regeneration is successfull for post ${updatedPost.postIndex}`);
+    }
+  });
+
+  //              const postKey = updatedPost.platform + "-" + updatedPost.postIndex;
+
+  // // ✅ only process if this post was regenerating
+  // if (regeneratingPostsRef.current[postKey] && updatedPost.url) {
+  //   setLoadingPosts((prev) => ({ ...prev, [postKey]: false }));
+  //   delete regeneratingPostsRef.current[postKey]; // cleanup
+  //   showInfoToast(`Post ${postKey} is ready!`);
+  // }
+              // setLoadingPosts({});
               renderData();
             }
           )
@@ -620,9 +643,8 @@ const PostList: React.FC = () => {
     });
   };
 
-  const [loadingPosts, setLoadingPosts] = useState<{ [key: string]: boolean }>(
-    {}
-  );
+
+const regeneratingPostsRef = useRef<{ [key: string]: boolean }>({});
 
   // Main handler
   const handleRegenerate = async (data: {
@@ -635,13 +657,16 @@ const PostList: React.FC = () => {
     url?: string;
   }) => {
     console.log("Regenerating:", data);
+     const postKey = data.platforms[0] + "-" + data.selectedPosts; // 👈 unique key for loader
     showInfoToast(
       "Be mindful that image & video generation might take few moments."
     );
 
     try {
-       const postKey = data.platforms[0] + "-" + data.selectedPosts; // 👈 unique key for loader
+      
     setActivePostKey(postKey);
+      // regeneratingPostsRef.current[postKey] = true; // ✅ mark this post as regenerating
+
       console.log(
         "dataaaaa",
         campaignId,
@@ -701,6 +726,8 @@ const PostList: React.FC = () => {
       if (result[0].output.status === "fail") {
         showErrorToast("Failed to regenerate content");
         setActivePostKey(null);
+        delete regeneratingPostsRef.current[postKey]; // ✅ cleanup
+
         return false;
       }
 
@@ -714,6 +741,8 @@ const PostList: React.FC = () => {
       console.error("Error triggering webhook:", error);
       renderData();
       showErrorToast("Error during regeneration");
+      delete regeneratingPostsRef.current[postKey]; // ✅ cleanup
+
     }
   };
 
@@ -994,7 +1023,7 @@ const getDayFromDate = (dateStr: string): string => {
                                 e.stopPropagation();
                                 setExisting(false);
                                 setActivePostKey(postKey);
-
+                               
                                 setRegenerateMediaModal({
                                   open: true,
                                   platform: platformKey,
@@ -1060,7 +1089,7 @@ const getDayFromDate = (dateStr: string): string => {
                                   // aspectRatio:"2/3",
                                   objectFit: "cover",
 
-                                  filter: loadingPosts[postKey]
+                                  filter: regeneratingPostsRef.current[postKey]
                                     ? "blur(20px)"
                                     : "none", // 👈 blur when loading
                                 }}
@@ -1082,7 +1111,7 @@ const getDayFromDate = (dateStr: string): string => {
                                   borderRadius: "8px",
                                   // aspectRatio:"2/3",
                                   objectFit: "cover",
-                                  filter: loadingPosts[postKey]
+                                  filter: regeneratingPostsRef.current[postKey]
                                     ? "blur(20px)"
                                     : "none", // 👈 blur when loading
                                 }}
@@ -1122,7 +1151,7 @@ const getDayFromDate = (dateStr: string): string => {
                             </Skeleton>
                           )}
 
-                          {loadingPosts[postKey] && (
+                          {( regeneratingPostsRef.current[postKey]) && (
                             <Box
                               //  height={200}
                               sx={{
@@ -1603,7 +1632,8 @@ const getDayFromDate = (dateStr: string): string => {
           <Button
             onClick={() => {
               if (activePostKey) {
-                setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+                // setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+                 regeneratingPostsRef.current[activePostKey] = true;
               }
               handleRegenerate({
                 platforms: [regenerateModal.platform],
@@ -1972,7 +2002,8 @@ const getDayFromDate = (dateStr: string): string => {
           <Button
             onClick={async () => {
               if (activePostKey) {
-                setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+                // setLoadingPosts((prev) => ({ ...prev, [activePostKey]: true })); // start loader
+                 regeneratingPostsRef.current[activePostKey] = true;
               }
               const base64Image = regenerateMediaModal.productImage
                 ? await convertFileToBase64(regenerateMediaModal.productImage)
