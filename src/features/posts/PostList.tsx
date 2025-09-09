@@ -1049,6 +1049,7 @@ const getDayFromDate = (dateStr: string): string => {
                                 controls
                                 style={{
                                   width: "100%",
+                                  cursor:"pointer",
                                   borderRadius: "8px",
                                   height: "300px",
                                   // aspectRatio:"2/3",
@@ -1069,6 +1070,7 @@ const getDayFromDate = (dateStr: string): string => {
                                 alt={post.caption || ""}
                                 // height="200px"
                                 style={{
+                                  cursor:"pointer",
                                   //  height: "200px",
                                   width: "100%",
                                     height: "300px",
