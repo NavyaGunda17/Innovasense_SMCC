@@ -220,7 +220,7 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
           >
             <Box>
               <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
-                Segment
+                Who they are
               </Typography>
 
               <div className="objective-options">
@@ -245,7 +245,7 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
             </Box>
             <Box>
               <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
-                Demographics
+                Age groups
               </Typography>
 
               <div className="objective-options">
@@ -274,7 +274,7 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
             </Box>
             <Box>
               <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
-                Psychographics
+                How they think/behave
               </Typography>
 
               <div className="objective-options">

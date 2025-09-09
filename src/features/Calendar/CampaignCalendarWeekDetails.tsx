@@ -573,7 +573,7 @@ useEffect(()=>{
 
        
 
-      <ReactMarkdown>{weekDetailsArticle.replace(/<br\s*\/?>/gi, "\n")}</ReactMarkdown>
+      <ReactMarkdown>{weekDetailsArticle?.replace(/<br\s*\/?>/gi, "\n")}</ReactMarkdown>
       
     </Box>
     <Box sx={{display:"flex",flexDirection:"row",gap:2,pt:2}}> 

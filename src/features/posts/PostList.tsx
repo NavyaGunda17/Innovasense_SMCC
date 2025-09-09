@@ -1087,7 +1087,7 @@ const getDayFromDate = (dateStr: string): string => {
                                   borderRadius: "8px",
                                   height: "300px",
                                   // aspectRatio:"2/3",
-                                  objectFit: "cover",
+                                  objectFit: "contain",
 
                                   filter: regeneratingPostsRef.current[postKey]
                                     ? "blur(20px)"
@@ -1489,7 +1489,7 @@ const getDayFromDate = (dateStr: string): string => {
                     height: "400px",
                     //  aspectRatio:"2/3",
                     // maxHeight: "400px",
-                    objectFit: "cover",
+                    objectFit: "contain",
                   }}
                 />
               ) : (
