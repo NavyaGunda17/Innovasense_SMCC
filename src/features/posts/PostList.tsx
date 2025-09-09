@@ -514,6 +514,7 @@ const PostList: React.FC = () => {
         return {
           ...scheduledPost,
           url: generated?.[postListKey]?.url || "",
+          time: generated?.[postListKey]?.time || scheduledPost?.time,
           caption: generated?.[postListKey]?.caption || "",
           hashtags: generated?.[postListKey]?.hashtags || "",
           published: generated?.[postListKey]?.published ?? false,
@@ -1202,12 +1203,41 @@ const getDayFromDate = (dateStr: string): string => {
               size="small"
               value={editedPosts[postKey]?.date || post.date}
              onChange={(e) => handleDateChange(postKey, e.target.value)}
-              sx={{ input: { color: "white" } }}
+               sx={{
+                 "& .MuiInputBase-root": {
+      border: "1px solid white",
+      borderRadius: "8px",
+      transition: "border 0.2s ease-in-out",
+      "&:hover": {
+        border: "1px solid #fff", // hover border color
+      },
+      "&.Mui-focused": {
+        border: "1px solid #fff", // focus border color (blue)
+      },
+    },
+    input: {
+      color: "white",
+      border: "1px solid white",
+      borderRadius: "8px",
+      
+      "&::-webkit-calendar-picker-indicator": {
+        filter: "invert(1)", // makes icon white
+        cursor: "pointer",
+      },
+      "&::-webkit-calendar-picker-indicator:hover": {
+        filter: "invert(50%) sepia(100%) saturate(500%) hue-rotate(180deg)", // hover color (blueish)
+      },
+      "& .MuiInputBase-root:hover": {
+         border: "1px solid white",
+      }
+     
+    },
+  }}
             />
-            <IconButton color="primary" size="small" onClick={handleSave}>
+            <IconButton color="primary" size="small" onClick={handleSave} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"10px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
               <SaveIcon fontSize="small" />
             </IconButton>
-            <IconButton color="error" size="small" onClick={handleCancel}>
+            <IconButton color="error" size="small" onClick={handleCancel} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"5px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
               <CancelIcon fontSize="small" />
             </IconButton>
           </>
@@ -1223,7 +1253,7 @@ const getDayFromDate = (dateStr: string): string => {
               <IconButton
                 size="small"
                 onClick={() => setEditField({ postKey, field: "date" })}
-                sx={{ color: "#aaa" }}
+                sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"10px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
@@ -1243,15 +1273,44 @@ const getDayFromDate = (dateStr: string): string => {
               size="small"
               value={editedPosts[postKey]?.time || post.time}
                onChange={(e) => handleTimeChange(postKey, e.target.value)}
-              sx={{ input: { color: "white" } }}
+               sx={{
+                 "& .MuiInputBase-root": {
+      border: "1px solid white",
+      borderRadius: "8px",
+      transition: "border 0.2s ease-in-out",
+      "&:hover": {
+        border: "1px solid #fff", // hover border color
+      },
+      "&.Mui-focused": {
+        border: "1px solid #fff", // focus border color (blue)
+      },
+    },
+    input: {
+      color: "white",
+      border: "1px solid white",
+      borderRadius: "8px",
+      
+      "&::-webkit-calendar-picker-indicator": {
+        filter: "invert(1)", // makes icon white
+        cursor: "pointer",
+      },
+      "&::-webkit-calendar-picker-indicator:hover": {
+        filter: "invert(50%) sepia(100%) saturate(500%) hue-rotate(180deg)", // hover color (blueish)
+      },
+      "& .MuiInputBase-root:hover": {
+         border: "1px solid white",
+      }
+     
+    },
+  }}
               inputProps={{
     step: 1, // allows seconds
   }}
             />
-            <IconButton color="primary" size="small" onClick={handleSave}>
+            <IconButton color="primary" size="small" onClick={handleSave} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"10x","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
               <SaveIcon fontSize="small" />
             </IconButton>
-            <IconButton color="error" size="small" onClick={handleCancel}>
+            <IconButton color="error" size="small" onClick={handleCancel} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"2px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
               <CancelIcon fontSize="small" />
             </IconButton>
           </>
@@ -1270,7 +1329,7 @@ const getDayFromDate = (dateStr: string): string => {
               <IconButton
                 size="small"
                 onClick={() => setEditField({ postKey, field: "time" })}
-                sx={{ color: "#aaa" }}
+                sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"0px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
@@ -1331,7 +1390,7 @@ const getDayFromDate = (dateStr: string): string => {
                                 {post.published
                                   ? "Published"
                                   : post.scheduled
-                                  ? "Cancel Publishing"
+                                  ? "Cancel Scheduled Post"
                                   : "Publish"}
                               </AppButton>
                             </>

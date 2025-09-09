@@ -362,7 +362,7 @@ const articleExists =
                   }}
                 >
                   <Typography variant="h6" color="white" gutterBottom>
-                    Week {week.week_number} — {week.theme}
+                    Week {week.week_number} - {week.theme}
                   </Typography>
                   {/* <Typography variant="body2" sx={{ color: '#ccc', mb: 2 }}>
         {week.content_focus}
