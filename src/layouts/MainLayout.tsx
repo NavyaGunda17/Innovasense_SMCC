@@ -4,6 +4,8 @@ import StarDustContainer from "../components/StarDustContainer";
 import { useLayoutAnimation } from "../context/LayoutAnimationContext";
 import TopControls from "../components/TopControl";
 import { Box } from "@mui/material";
+import picture from "../assests/lady1.png"
+import ChatHint from "../components/PersonChatUI";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -11,7 +13,8 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { pathname } = location;
+  const { pathname ,hash} = location;
+  console.log("pathname",pathname)
   const { isLoggingOut } = useLayoutAnimation();
   const isLoginPage = pathname === "/login";
 
@@ -92,6 +95,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 }}
               >
                 <TopControls />
+                
+              </Box>
+              <Box  sx={{
+                  position: "fixed",
+                  bottom: "30px",
+                  left: "0px",
+                  display:( pathname.includes("/campaignCalendar")  ||  pathname.includes("/campaignWeekDetails") ) ?"none" : "inline-block" ,
+                  zIndex: 999,
+                }}>
+                 <div>
+                {/* <img src={picture} style={{width:"30vw"}}/> */}
+                <ChatHint />
+                </div>
               </Box>
 
               {!isLoginPage && <div className="overlay-outline"></div>}
@@ -101,6 +117,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 {children}
               </main>
+             
             </div>
           )}
         </div>

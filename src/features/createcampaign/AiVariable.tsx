@@ -272,7 +272,7 @@ const containerRef = useRef<HTMLDivElement>(null);
         flexDirection: "column",
         alignItems: "center",
         gap: 4,
-        mt: 6,
+        // mt: 6,
       }}
     >
       <Box
