@@ -58,21 +58,17 @@ if (path.includes("creatCampaign/") && hashHints[hash]) {
   const [isCloudVisible, setIsCloudVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Click outside handler
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setVisibleLines([]);
-        setIsCloudVisible(true);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
+// Click anywhere handler
+useEffect(() => {
+  const handleClickAnywhere = () => {
+    setVisibleLines([]);
+    setIsCloudVisible(true);
+  };
+
+  document.addEventListener("mousedown", handleClickAnywhere);
+  return () => document.removeEventListener("mousedown", handleClickAnywhere);
+}, []);
 
 
 const handleCloudClick = () => {
