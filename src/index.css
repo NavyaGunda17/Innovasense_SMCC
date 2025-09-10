@@ -841,3 +841,7 @@ div:has(> img[src*="loading-v2.gif"]) {
   0%, 20%, 80%, 100% { transform: scale(1); }
   50% { transform: scale(1.5); }
 }
+.custom-objective-input.custom-textarea::placeholder {
+  color: #555555;
+  opacity: 1;
+}

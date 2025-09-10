@@ -95,14 +95,14 @@ const CampaignStructure = () => {
       <Box
         sx={{
           display: "flex",
-          gap: 2,
+          // gap: 2,
           flexDirection: "column",
           margin: "auto",
-          width: "70vw",
+          width: "96vw",
           justifyContent: "center",
         }}
       >
-          <Box sx={{ display: "flex", gap: 2 ,justifyContent:"flex-end"}}>
+          <Box sx={{ display: "flex", gap: 2 ,justifyContent:"flex-end",width:'60vw',margin:"auto",mb:2}}>
           {/* <AppButton sx={{width:"max-content"}} variantType="secondary" onClick ={handleregenerateStruture}>Regenerate Struture</AppButton> */}
           <AppButton
             sx={{ width: "max-content" }}
@@ -118,20 +118,24 @@ const CampaignStructure = () => {
             </Typography> */}
         <Box
           sx={{
+              
+                maxWidth:"93vw",
             height: "calc(73vh - 100px)",
             overflowY: "auto",
             scrollbarWidth: "none",
-            background: "#ffffffbd !important",
+            background: "#e2e2e2 !important",
             p: 3,
             pt: 0,
-            borderRadius: "16px",
+            borderRadius: "0px",
           }}
         >
+         
           <Box
             sx={{
               color: "#2e2e2e",
               // backgroundColor: '#121212',
               // p: 3,
+              width:'60vw',margin:"auto",
               borderRadius: 2,
               lineHeight: 1.7,
               //  whiteSpace: 'pre-wrap',
@@ -159,9 +163,10 @@ const CampaignStructure = () => {
             </ReactMarkdown>
           </Box>
         </Box>
-
-        <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+<Box sx={{background:"#9f9f9f",padding:"10px"}}>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2,width:'60vw',margin:"auto" }}>
           <textarea
+         
             value={command}
             style={{
               height: "44px", // fixed height
@@ -171,12 +176,14 @@ const CampaignStructure = () => {
               padding: "10px", // adjust for alignment
               fontSize: "14px", // optional for better compactness
               borderRadius: "4px", // optional for better style
-
+              // background:"#6761e3",
+              border:"1px solid #555555",
+              color:"#555555",
               flex: 1, // allows it to grow
             }}
             onChange={(e) => setCommand(e.target.value)}
             placeholder="Provide the comments to regenerate the campaign structure"
-            className="custom-objective-input"
+            className="custom-objective-input custom-textarea"
             rows={1}
           />
 
@@ -186,13 +193,13 @@ const CampaignStructure = () => {
               whiteSpace: "nowrap",
               minWidth: "fit-content",
             }}
-            variantType="secondary"
+            variantType="primary"
             onClick={handleSabeRegenartedCommand}
           >
             Regenerate Structure
           </AppButton>
         </Box>
-      
+      </Box>
       </Box>
       
       {showLoader && <AnimatedLoader />}

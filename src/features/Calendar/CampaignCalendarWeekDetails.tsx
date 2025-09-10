@@ -68,6 +68,7 @@ const { weekId, campaignId } = useParams();
   const companyId = useSelector((state: RootState) => state.auth.companyId);
   const campaignWeekEvent = useSelector((state: RootState) => state.campaign.campaignWeekEvent);
   const campaignStateMarticleJson = useSelector((state: RootState) => state.campaign.campaignMasterArticleJson);
+  const masterArticleRef = useRef<any>(useSelector((state: RootState) => state.campaign.campaignMasterArticleJson))
   const campaignStateAll = useSelector((state: RootState) => state.campaign);
   const campaignStateWeekEvent: any = useSelector((state: RootState) => state.campaign.campaignMasterWeekEvent);
 
@@ -89,6 +90,7 @@ const { weekId, campaignId } = useParams();
   useEffect(() => {
     if (campaignId && weekId) {
       renderData();
+      alreadyApprovedRef.current = false
     }
   }, [location]);
 
@@ -145,6 +147,7 @@ useEffect(()=>{
 
     try {
       const rawJsonString = campaignStateMarticleJson[foundIndex][keyName];
+      console.log("rawJsonString",rawJsonString)
       const parsed = JSON.parse(rawJsonString);
       const parsedWeek = { weekKey: keyName, ...parsed };
 
@@ -171,7 +174,7 @@ useEffect(()=>{
     const campaignStructureJsonRaw = response?.data?.campaignStructureJson;
     const campaignMasterArticle = response?.data?.campaignMasterArticle;
     const campaignMasterArticleJson = response?.data?.campaignMasterArticleJson;
-
+masterArticleRef.current  = campaignMasterArticleJson
     const campaignStructureJson =
       typeof campaignStructureJsonRaw === "string"
         ? JSON.parse(campaignStructureJsonRaw)
@@ -187,6 +190,69 @@ useEffect(()=>{
     );
   };
 
+
+  useEffect(() => {
+        let channel: any;
+    
+        const subscribeRole = () => {
+          if (campaignId) {
+            channel = supabase
+              .channel("row-listener")
+              .on(
+                "postgres_changes",
+                {
+                  event: "*", // or 'UPDATE' if you want specific
+                  schema: "public",
+                  table: "campaignInput", // change this to your table name
+                  filter: `campaignId=eq.${campaignId}`,
+                },
+                (payload:any) => {
+                  console.log("Row updated:", payload);
+                  const updatedData: any = payload.new;
+                  // renderData();
+                   if (
+payload.new?.campaignMasterArticleJson &&
+      payload.new?.campaignMasterArticleJson !== masterArticleRef.current
+    ) {
+      console.log("📝 campaignMasterArticleJSON changed:", updatedData.campaignMasterArticleJSON);
+      renderData();
+      alreadyApprovedRef.current = false
+      setTimeout(()=>{
+setShowLoader(false)
+      },2000)
+      
+    }
+
+                                 }
+              )
+              .subscribe((status) => {
+                if (status === "SUBSCRIBED") {
+                  console.log("✅ Subscribed to row changes");
+                   renderData();
+                } else if (status === "CHANNEL_ERROR") {
+                  console.error("❌ Error subscribing to row");
+                }
+              });
+          }
+        };
+    
+        subscribeRole();
+    
+        const handleVisibility = () => {
+          if (document.visibilityState === "visible") {
+            console.log("🔄 Tab activated — refreshing connection");
+            if (channel) supabase.removeChannel(channel);
+            subscribeRole();
+          }
+        };
+    
+        document.addEventListener("visibilitychange", handleVisibility);
+    
+        return () => {
+          if (channel) supabase.removeChannel(channel);
+          document.removeEventListener("visibilitychange", handleVisibility);
+        };
+      }, []);
   const handleRegenerateKnowledge = async () => {
     setShowLoader(true);
     setCommand("");
@@ -211,16 +277,20 @@ useEffect(()=>{
       );
 
       const result = await response.json();
+       
       if (result[0].output.status === "fail") {
         console.error("Failed in regenerating the master article");
-        setShowLoader(false);
+        // setShowLoader(false);
         return false;
       }
-
+       alreadyApprovedRef.current = false;
+// handleApproveMasterArticle1()
       renderData();
-      setShowLoader(false);
+      // setShowLoader(false);
+     
     } catch (error) {
-      setShowLoader(false);
+      // handleApproveMasterArticle1()
+      // setShowLoader(false);
       console.error("Error triggering webhook:", error);
     }
   };
@@ -360,7 +430,7 @@ useEffect(()=>{
       >
         <Box sx={{display:"flex",justifyContent:"space-between"}}>
         <Typography variant="h5" fontWeight="bold" sx={{ color: "white",fontFamily: 'Orbitron, sans-serif',mb:2,flex:1 }}>
-          Week {allWeeks.Week}: {weekDetails.theme}
+          Week {weekId}: {weekDetails.theme}
         </Typography>
         <Box sx={{display:"flex",gap:2}}>
  <AppButton variantType="secondary" onClick={()=> setMoreDetails(true)} sx={{minWidth:"fit-content",height:"max-content"}}> View Master Article</AppButton>

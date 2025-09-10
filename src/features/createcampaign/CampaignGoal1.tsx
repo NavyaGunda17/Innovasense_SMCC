@@ -255,16 +255,19 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
             Generated Campaign Goal
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Box sx={{ position: "relative", overflow: "hidden" }}>
+        <Box sx={{ display: "flex", flexDirection: "column" ,width:"100%"}}>
+          <Box sx={{ position: "relative", overflow: "hidden",width:"100%" }}>
             <Box
               className="campaign-detail-rectangle"
               sx={{
+                width:"100%",
+                maxWidth:"93vw",
                 maxHeight: screenHeight<1000 ? "50vh":"60vh",
                 padding: "16px", // limit height
                 overflowY: "auto", // enable scroll
                 scrollbarWidth: "none",
-                background: "#ffffffbd !important",
+                background: "#e2e2e2 !important",
+                borderRadius:"0px"
               }}
             >
               <AnimatePresence mode="wait">
@@ -275,7 +278,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    style={{ position: "relative" }}
+                    style={{ position: "relative",width:'60vw',margin:"auto" }}
                   >
                     {!editGoal ? (
                       <div data-color-mode="light">
