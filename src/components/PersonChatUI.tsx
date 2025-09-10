@@ -88,7 +88,7 @@ const handleCloudClick = () => {
     if (idx >= steps.length) {
       clearInterval(interval); // stop after both bubbles
     }
-  }, 1200); // delay between empty and text
+  }, 200); // delay between empty and text
 };
 
 

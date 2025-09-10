@@ -90,6 +90,14 @@ const CampaignStructure = () => {
   const handleApproveStructure = async () => {
     naviagte(`/campaignCalendar/${campaignState?.campaignId}`);
   };
+   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+  
+       useEffect(() => {
+      const handleResize = () => setScreenHeight(window.innerHeight);
+      window.addEventListener("resize", handleResize);
+  
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
   return (
     <>
       <Box
@@ -120,7 +128,7 @@ const CampaignStructure = () => {
           sx={{
               
                 maxWidth:"93vw",
-            height: "calc(73vh - 100px)",
+            maxHeight: screenHeight<1000 ? "50vh":"60vh",
             overflowY: "auto",
             scrollbarWidth: "none",
             background: "#e2e2e2 !important",
@@ -135,6 +143,7 @@ const CampaignStructure = () => {
               color: "#2e2e2e",
               // backgroundColor: '#121212',
               // p: 3,
+                 fontSize: "14px",
               width:'60vw',margin:"auto",
               borderRadius: 2,
               lineHeight: 1.7,

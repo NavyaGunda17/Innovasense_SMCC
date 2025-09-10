@@ -101,13 +101,21 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
         console.log("Clearing files...");
       },
     }));
+ const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
+     useEffect(() => {
+    const handleResize = () => setScreenHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
     return (
       <Box sx={{}}>
         <Box
           sx={{
             display: "flex",
-            width: "inherit",
+            width: "96vw",
+          
             justifyContent: "space-between",
             flexDirection: "column",
             alignItems: "center",
@@ -144,18 +152,22 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ position: "relative", overflow: "hidden" }}>
+          <Box sx={{ display: "flex", flexDirection: "column" ,width:"100%"}}>
+                   <Box sx={{ position: "relative", overflow: "hidden",width:"100%" }}>
               <Box
                 className="campaign-detail-rectangle"
                 sx={{
-                  maxHeight: "50vh",
-                  padding: "16px",
+                  width:"100%",
+                    maxWidth:"93vw",
+                  maxHeight: screenHeight<1000 ? "50vh":"60vh",
+                  p: 3,
                   overflowY: "auto",
                   scrollbarWidth: "none",
-                  background: "#ffffffbd !important",
+                  background: "#e2e2e2 !important",
+                   borderRadius:"0px"
                 }}
               >
+               
                 <AnimatePresence mode="wait">
                   <motion.div
                     key="generated"
@@ -163,7 +175,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    style={{ position: "relative" }}
+                    style={{position: "relative",width:'60vw',margin:"auto"  }}
                   >
                     <Box
                       sx={{
@@ -187,6 +199,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                         "& hr": {
                           borderColor: "#444",
                         },
+                       
                       }}
                     >
                       <ReactMarkdown>
@@ -198,6 +211,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                     </Box>
                   </motion.div>
                 </AnimatePresence>
+               
               </Box>
             </Box>
           </Box>

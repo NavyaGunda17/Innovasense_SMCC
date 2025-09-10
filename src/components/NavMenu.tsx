@@ -535,12 +535,13 @@ useEffect(() => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent:items[index].title === "File Summary" ?"center" : "flex-end",
             gap: "20px",
             width: "100%",
             mt: 4,
             mb: 2,
             paddingRight: "100px",
+            
           }}
         >
           {/* <button
