@@ -50,7 +50,7 @@ const StrategicObjective = forwardRef<
           option: item[key],
         };
       });
-      console.log("formatted", formatted);
+
       setEnumerators(formatted);
     }
   }, [campaign]);
@@ -80,7 +80,7 @@ const StrategicObjective = forwardRef<
           strategicObjective: typeof value === "string" ? value : value.option,
         })
       );
-      console.log("Saving Strategic Objective:", value);
+
       // next()
       return true;
       // Call any API or dispatch action here
@@ -90,7 +90,7 @@ const StrategicObjective = forwardRef<
   const [selectedObjective, setSelectedObjective] = useState<any>("");
   const [customObjective, setCustomObjective] = useState<any>("");
   const handleObjectiveSelect = (objective: any) => {
-    console.log("handleObjectiveSelect", objective);
+
     setValue(objective);
     setSelectedObjective(objective);
     setCustomObjective(""); // Clear text field when option is selected
@@ -100,7 +100,7 @@ const StrategicObjective = forwardRef<
     (state: RootState) => state?.campaign
   );
   useEffect(() => {
-    console.log("camapaignState?.strategicObjective",camapaignState?.strategicObjective)
+  
     if (camapaignState?.strategicObjective && enumerators.length > 0) {
       const selected = enumerators.find(
         (item: { option: string }) =>

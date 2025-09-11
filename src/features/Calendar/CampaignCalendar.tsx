@@ -65,7 +65,7 @@ const CampaignCalendar: React.FC = () => {
     renderData();
   }, []);
   let campaignState: any = useSelector((state: RootState) => state.campaign);
-  console.log(campaignState, "campaignState");
+
 
   const renderData = async () => {
     const data: any = await supabase
@@ -73,7 +73,7 @@ const CampaignCalendar: React.FC = () => {
       .select("*")
       .eq("campaignId", id)
       .single();
-    console.log("renderData",data.data);
+
     const campaignStructureSummary = data?.data?.campaignStructureSummary;
     dispatch(
       setGeneratedCampaignstructure({
@@ -101,10 +101,10 @@ const CampaignCalendar: React.FC = () => {
       typeof campaignData === "string"
         ? JSON.parse(campaignData)
         : campaignData;
-    console.log("data", data);
+
     const campaign = data?.["campaign Structure"];
 
-    console.log("campaign", campaign);
+
 
     if (campaign?.weeks) {
       setCampaignWeeks(campaign?.weeks);

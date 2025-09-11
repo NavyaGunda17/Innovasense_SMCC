@@ -56,7 +56,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
     }, []);
 
     useEffect(() => {
-      console.log("generatedFileSummary", generatedFileSummary);
+
     }, [generatedFileSummary]);
     useEffect(() => {
       setHasGenerated(!!campaignState?.generatedCampaignGoal?.trim());
@@ -68,7 +68,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
         .select("*")
         .eq("campaignId", campaignState?.campaignId)
         .single();
-      console.log("setGeneretedFileSummary", data);
+
       dispatch(
         setGeneretedFileSummary({
           generatedFileSummary: data?.data?.clientFiles,

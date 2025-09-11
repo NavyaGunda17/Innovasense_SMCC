@@ -141,7 +141,7 @@ const RegenerateAssistant: React.FC<RegenerateAssistantProps> = ({
   schedule,
   onRegenerate,
 }) => {
-  console.log("RegenerateAssistantProps", schedule);
+
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
   const [selectedContentType, setSelectedContentType] = useState<string>("");
@@ -165,7 +165,7 @@ const RegenerateAssistant: React.FC<RegenerateAssistantProps> = ({
         index: p.index,
       })
     );
-    console.log("platformDateMap", platformDateMap);
+
     platformDateMap[platform] = Array.from(new Set(postDates));
   });
 

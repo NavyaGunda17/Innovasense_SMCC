@@ -78,8 +78,7 @@ const CampaignList = () => {
     },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log("values", values);
-
+    
       handleCreate(values);
       resetForm();
     },
@@ -115,7 +114,7 @@ const CampaignList = () => {
       // [ { output: { companyId: "1", campaignId: "21", status: "success" } } ]
       const campaignId = data[0]?.output?.campaignId;
 
-      console.log("Campaign ID:", campaignId);
+    
       dispatch(setCampaignID({ campaignId: campaignId }));
 
       // showSuccessToast('Webhook triggered successfully');
@@ -158,7 +157,7 @@ const CampaignList = () => {
     brandName: string;
   }) => {
     setShowLoader(true);
-    console.log("handleCreate", values);
+  
     dispatch(campaignDetails(values));
     campaignWebhook(values);
   };
@@ -247,7 +246,7 @@ const CampaignList = () => {
       .select("*")
       .eq("companyId", companyId) // Filter by companyId
       .order("createdAt", { ascending: false }); // Sort by latest first
-    console.log(data.data);
+  
     setCampaignList(data.data);
   };
 

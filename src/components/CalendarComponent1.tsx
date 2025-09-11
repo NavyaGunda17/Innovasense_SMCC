@@ -72,7 +72,7 @@ export const CalendarComponent1: React.FC<Props> = ({
   campaignWeeks,
   handleViewCampaign,
 }) => {
-  console.log("campaignWeeks", campaignWeeks);
+
 
   const [showLoader, setShowLoader] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -125,7 +125,7 @@ export const CalendarComponent1: React.FC<Props> = ({
     // renderData()
     setShowLoader(true);
     const keyToFind = `week_${weekNumber}`;
-    console.log("keyToFind", keyToFind);
+
   //   if (campaignState?.campaignMasterArticle.length > 0) {
   //     const index = campaignState?.campaignMasterArticle.findIndex(
   //       (obj: any) => keyToFind in obj
@@ -207,13 +207,9 @@ export const CalendarComponent1: React.FC<Props> = ({
       .select("*")
       .eq("campaignId", campaignState?.campaignId)
       .single();
-    console.log(data.data);
+
     const campaignStructureSummary = data?.data?.campaignStructureSummary;
-    // console.log(
-    //   "calendar componet",
-    //   campaignStructureSummary,
-    //   data?.data?.campaignStructureJson
-    // );
+   
     dispatch(
       setGeneratedCampaignstructure({
         campaignStructureSummary: campaignStructureSummary,
@@ -239,7 +235,7 @@ export const CalendarComponent1: React.FC<Props> = ({
   };
   useEffect(() => {
     renderData();
-    console.log("calendar componet", campaignWeeks);
+   
   }, []);
 
 // Slow moving animation
@@ -263,7 +259,7 @@ const slowMotion = keyframes`
                 filter: `campaignId=eq.${campaignState.campaignId}`,
               },
               (payload) => {
-                console.log("Row updated:", payload);
+              
                 const updatedData: any = payload.new;
                 renderData();
                
@@ -272,7 +268,7 @@ const slowMotion = keyframes`
             )
             .subscribe((status) => {
               if (status === "SUBSCRIBED") {
-                console.log("✅ Subscribed to row changes");
+              
                  renderData();
               } else if (status === "CHANNEL_ERROR") {
                 console.error("❌ Error subscribing to row");
@@ -285,7 +281,7 @@ const slowMotion = keyframes`
   
       const handleVisibility = () => {
         if (document.visibilityState === "visible") {
-          console.log("🔄 Tab activated — refreshing connection");
+        
           if (channel) supabase.removeChannel(channel);
           subscribeRole();
         }

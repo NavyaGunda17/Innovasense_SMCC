@@ -179,11 +179,11 @@ const PostList: React.FC = () => {
   }, [campaignStateWeekEvent, campaignStateMarticleJson]);
 
   useEffect(() => {
-    console.log("weekDetails updated:", weekDetails);
+
   }, [weekDetails]);
 
   useEffect(() => {
-    console.log("postList updated:", postList);
+
   }, [postList]);
 
   const transformMasterArtickeJSON = () => {
@@ -235,7 +235,7 @@ const PostList: React.FC = () => {
             generatePostModal.productImage
           );
         } catch (error) {
-          console.error("Error converting image to base64:", error);
+     
           showErrorToast("Error processing the image");
           return;
         }
@@ -272,7 +272,7 @@ const PostList: React.FC = () => {
       showSuccessToast("Post generation initiated successfully");
       renderData();
     } catch (error) {
-      console.error("Error triggering webhook:", error);
+     
       showErrorToast("Error generating post");
     }
   };
@@ -326,14 +326,14 @@ const PostList: React.FC = () => {
           : "Publishing post initiated successfully"
       );
     } catch (error) {
-      console.error("Error triggering webhook:", error);
+
       showErrorToast(
         isScheduled ? "Error in canceling publish" : "Error in publishing post"
       );
     }
   };
   const renderData = async () => {
-    console.log("New data fetched from render DAta");
+
     try {
       const { data, error } = await supabase
         .from("postList")
@@ -343,26 +343,23 @@ const PostList: React.FC = () => {
         .eq("week", weekId);
 
       if (error) {
-        console.error("Error fetching data:", error);
+
         return;
       }
 
-      console.log("New data fetched:", data);
+
 
       // Update postList state
       setPostList(data || []);
-      console.log("New data fetched After set stae", data);
+
       // Only proceed if we have platforms data
       if (weekDetails?.platforms && data) {
-        console.log(
-          "Before combining - weekDetails.platforms:",
-          weekDetails.platforms
-        );
+       
         const combinedSchedule = combineScheduleWithPosts(
           data,
           weekDetails.platforms
         );
-        console.log("After combining - combinedSchedule:", combinedSchedule);
+     
 
         // Update weekDetails with new schedule
         setWeekDetails((prev: any) =>
@@ -387,7 +384,7 @@ const PostList: React.FC = () => {
     let channel: any;
 
     const subscribeRole = async () => {
-      console.log("Setting up realtime listener for campaignId:", campaignId);
+   
       if (!campaignId) return;
 
       try {
@@ -397,7 +394,7 @@ const PostList: React.FC = () => {
         }
 
         // Enable debugging for Supabase client
-        console.log("Current Supabase config:", supabase.realtime);
+     
 
         channel = supabase
           .channel("posts-channel-" + campaignId)
@@ -518,7 +515,7 @@ const PostList: React.FC = () => {
     Object.entries(platforms).forEach(([platformKey, platformData]) => {
       const scheduledPosts = platformData["Post Schedule"] || [];
 
-      console.log("platformData", platformData);
+
 
       const postListKey = toCamelCase(platformKey);
       const generatedPosts = postListData?.[postListKey] || [];
@@ -534,7 +531,7 @@ const PostList: React.FC = () => {
         const generated = postListData.find(
           (gen: any) => Number(gen.postIndex) === Number(scheduledPost.index)
         );
-        console.log("generated", generated);
+
 
         return {
           ...scheduledPost,
@@ -656,7 +653,7 @@ const regeneratingPostsRef = useRef<{ [key: string]: boolean }>({});
     file?: string;
     url?: string;
   }) => {
-    console.log("Regenerating:", data);
+
      const postKey = data.platforms[0] + "-" + data.selectedPosts; // 👈 unique key for loader
     showInfoToast(
       "Be mindful that image & video generation might take few moments."
@@ -665,17 +662,7 @@ const regeneratingPostsRef = useRef<{ [key: string]: boolean }>({});
     try {
       
     setActivePostKey(postKey);
-      // regeneratingPostsRef.current[postKey] = true; // ✅ mark this post as regenerating
-
-      console.log(
-        "dataaaaa",
-        campaignId,
-        data.command,
-        weekId,
-        data.contentType,
-        data.platforms[0],
-        data.selectedPosts
-      );
+ 
 
       let binaryData: string | false = "";
 
@@ -719,7 +706,7 @@ const regeneratingPostsRef = useRef<{ [key: string]: boolean }>({});
           }),
         }
       );
-      console.log("Regenerating response:", response);
+
 
       const result = await response.json();
 
@@ -738,7 +725,7 @@ const regeneratingPostsRef = useRef<{ [key: string]: boolean }>({});
       // setActivePostKey(null); // clear active post
       showInfoToast("Content regeneration initiated successfully");
     } catch (error) {
-      console.error("Error triggering webhook:", error);
+
       renderData();
       showErrorToast("Error during regeneration");
       delete regeneratingPostsRef.current[postKey]; // ✅ cleanup
@@ -770,8 +757,7 @@ const [editedPosts, setEditedPosts] = useState<Record<string, { date?: string; t
   const { postKey, field } = editField;
   const updatedValue = editedPosts[postKey]?.[field];
 
-  console.log("Saving for postKey:", postKey, "Field:", field, "Value:", updatedValue);
-    console.log("editedPosts",editedPosts)
+
 
     const extractData = postKey.split("-")
     const platformName = extractData[0]
@@ -797,7 +783,7 @@ const response = await fetch(
         }
       );
 
-console.log("response",response)
+
 
 
 };
@@ -808,9 +794,6 @@ const handleCancel = () => {
 
   const { postKey,field } = editField;
     const updatedValue = editedPosts[postKey]?.[field];
-
-    console.log("cancel for postKey:", postKey, "Field:", field, "Value:", updatedValue);
-    console.log("editedPosts",editedPosts)
 
   // remove unsaved edits for this post
   setEditedPosts((prev) => {

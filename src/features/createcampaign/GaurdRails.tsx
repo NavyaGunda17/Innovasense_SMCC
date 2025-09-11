@@ -49,7 +49,7 @@ const GaurdRails = forwardRef<GaurdRailsHandle, GaurdRailsProps>(
             gaurdRails: selectedRules,
           })
         );
-        console.log("selectedRules", selectedRules);
+
         return true;
         // next();
       },

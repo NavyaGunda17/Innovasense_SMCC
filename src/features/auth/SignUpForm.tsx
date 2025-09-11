@@ -62,7 +62,7 @@ const SignUpForm: React.FC = () => {
   const handleFormSubmit = async (
     values:any
   ) => {
-    console.log("values",values)
+
     const { organization, userName, password, re_password } = values;
   
     if (password !== re_password) {
@@ -77,11 +77,7 @@ const SignUpForm: React.FC = () => {
       .ilike('companyName', organization.toLowerCase())
       .limit(1);
   
-    // if (companyCheckError) {
-    //   console.error('Error checking company:', companyCheckError);
-    //   alert('Failed to check company');
-    //   return;
-    // }
+
   
     let companyId: string;
   
@@ -97,7 +93,7 @@ const SignUpForm: React.FC = () => {
         .single();
   
       if (companyInsertError) {
-        console.error('Error inserting company:', companyInsertError);
+ 
         showErrorToast('Failed to create company');
         return;
       }
@@ -113,7 +109,7 @@ const SignUpForm: React.FC = () => {
   .eq('userName', userName) // Make sure field name matches Supabase column
   .limit(1);
 
-console.log("existingUser",existingUser)
+
 
 if (existingUser && existingUser.length > 0) {
   showErrorToast('Username already exists. Please use a different username.');

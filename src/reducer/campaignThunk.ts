@@ -8,7 +8,7 @@ export const fetchCampaignEnumerations = createAsyncThunk(
       .from('campaignEnumerators')
       .select('*')
 
-      console.log("data, error",data, error)
+
     if (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

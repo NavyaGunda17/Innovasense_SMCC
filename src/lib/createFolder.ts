@@ -7,8 +7,7 @@ import { useSelector } from "react-redux";
 
 
 export const createJobFolder = async (folderName: string,companyName:string) => {
-      
-    console.log("companyName",companyName)
+
     // Step 1: Create a small dummy Blob (can't be 0 bytes)
     const dummyFile = new Blob(['folder init'], { type: 'text/plain' });
     // Step 2: Upload dummy file to folder path
@@ -26,8 +25,7 @@ export const createJobFolder = async (folderName: string,companyName:string) => 
   };
 
   export const renderFiles = async (folderName: string, companyName: any) => {
-    console.log("companyName:", companyName);
-    console.log("folderName:", folderName);
+ 
   
     const { data, error } = await supabase.storage
       .from(companyName)

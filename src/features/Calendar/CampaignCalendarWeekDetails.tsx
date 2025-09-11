@@ -117,7 +117,7 @@ useEffect(()=>{
       campaignStateAll?.campaignMasterArticle && campaignStateAll?.campaignMasterArticle?.length > 0
     ) {
       const keyToFind = `week_${weekId}`;
-      console.log("campaignStateAll.campaignMasterArticle.",campaignStateAll.campaignMasterArticle,keyToFind)
+     
       const index = campaignStateAll.campaignMasterArticle.findIndex(
         (obj: any) => keyToFind in obj
       );
@@ -129,7 +129,7 @@ useEffect(()=>{
       }
     }
 
-    console.log("campaignMasterArticleJson",campaignStateAll.campaignMasterArticleJson)
+
   }, [ campaignStateAll?.campaignMasterArticle]);
 
   const transformMasterArtickeJSON = () => {
@@ -147,7 +147,7 @@ useEffect(()=>{
 
     try {
       const rawJsonString = campaignStateMarticleJson[foundIndex][keyName];
-      console.log("rawJsonString",rawJsonString)
+
       const parsed = JSON.parse(rawJsonString);
       const parsedWeek = { weekKey: keyName, ...parsed };
 
@@ -207,14 +207,14 @@ masterArticleRef.current  = campaignMasterArticleJson
                   filter: `campaignId=eq.${campaignId}`,
                 },
                 (payload:any) => {
-                  console.log("Row updated:", payload);
+               
                   const updatedData: any = payload.new;
                   // renderData();
                    if (
 payload.new?.campaignMasterArticleJson &&
       payload.new?.campaignMasterArticleJson !== masterArticleRef.current
     ) {
-      console.log("📝 campaignMasterArticleJSON changed:", updatedData.campaignMasterArticleJSON);
+   
       renderData();
       alreadyApprovedRef.current = false
       setTimeout(()=>{

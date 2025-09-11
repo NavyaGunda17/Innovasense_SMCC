@@ -14,7 +14,7 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const { pathname ,hash} = location;
-  console.log("pathname",pathname)
+
   const { isLoggingOut } = useLayoutAnimation();
   const isLoginPage = pathname === "/login";
 

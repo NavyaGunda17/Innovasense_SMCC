@@ -236,7 +236,7 @@ const RegenerateAssistant: React.FC<RegenerateAssistantProps> = ({ schedule, onR
 
   // Get available content types based on selected posts
   const getAvailableContentTypes = () => {
-    console.log("selectedPosts",selectedPosts)
+
     if (selectedPosts.length === 0) return [];
     
     const uniqueTypes = Array.from(new Set(selectedPosts.map(post => post.type)));
@@ -298,7 +298,7 @@ const RegenerateAssistant: React.FC<RegenerateAssistantProps> = ({ schedule, onR
                   const postCount = schedule?.[platformId]?.length || 0;
 
                   const platformPosts = schedule?.[platformId] || [];
-                  console.log("schedule?.[platformId]?",schedule?.[platformId])
+        
                   const hasValidUrl = platformPosts.some((post) =>
     (post as any)?.url && (post as any).url.trim() !== ""
   );

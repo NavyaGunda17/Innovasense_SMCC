@@ -129,7 +129,7 @@ setInitialCampaignValues: (state, action) => {
       state,
       action: PayloadAction<{ startDate:string,campaignDuration: any}>
     ) => {
- console.log("Reducer called with:", action.payload);
+
       state.campaignDuration = action.payload.campaignDuration;
         state.startDate = action.payload.startDate;
     },
@@ -148,7 +148,7 @@ setInitialCampaignValues: (state, action) => {
       state,
       action: PayloadAction<{ gaurdRails: Array<any>}>
     ) => {
-      console.log("gaurdRails",action.payload.gaurdRails)
+ 
       state.guardrails = action.payload.gaurdRails;
     },
      setCampaignWeeksEvent: (
@@ -178,7 +178,7 @@ setInitialCampaignValues: (state, action) => {
         state.error = null;
       })
       .addCase(fetchCampaignEnumerations.fulfilled, (state, action) => {
-        console.log("action",action)
+
         state.enumerations = action.payload;
       })
       .addCase(fetchCampaignEnumerations.rejected, (state, action) => {

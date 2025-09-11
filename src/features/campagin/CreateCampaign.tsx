@@ -31,7 +31,7 @@ const CreateCampaign = () => {
   const { id } = useParams();
 
   const location = useLocation()
-  console.log("campaign id",id)
+
   const { showErrorToast} = useError()
   const { showSuccessToast} = useSuccess()
   const [isPlaying, setIsPlaying] = useState(true);
@@ -40,7 +40,7 @@ const CreateCampaign = () => {
 
 
   const campaignState = useSelector((state: RootState) => state.campaign);
-   console.log(campaignState,"campaignState")
+
   
   const companyId = useSelector((state: RootState) => state.auth.companyId);
   const [ showCampaignGoal, setShowCampaignGoal] = useState(false)
@@ -82,7 +82,7 @@ const dispatch = useDispatch()
   .eq('campaignId', id) 
   .single();
 
-  console.log("renderCampaignDetials",data)
+
   dispatch(campaignDetails({
     campaignName:data?.data?.campaignName,
     targetMarket: data?.data?.targetMarket,
@@ -179,7 +179,6 @@ setActiveTab(tab)
      setShowGeneratedCampaognGoal(false)
   }
   useEffect(()=>{
-    console.log("showCampaignGoal,showcmapiagnStructure,showKnowledgeBase",showCampaignGoal,showcmapiagnStructure,showKnowledgeBase,showGeneratedCampaognGoal)
   },[showCampaignGoal,showcmapiagnStructure,showKnowledgeBase,showCriteria,showGeneratedCampaognGoal])
   return (
     <>

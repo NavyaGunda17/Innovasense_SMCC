@@ -76,7 +76,7 @@ const CampaignGoal = () => {
     const templatelisy: any = template?.filter(
       (template: any) => template.enumName == "goalTemplates"
     );
-    console.log("templates", template, templatelisy);
+  
     if (templatelisy && templatelisy.length > 0) {
       setTemplateList(templatelisy[0].options);
     }
@@ -91,7 +91,7 @@ const CampaignGoal = () => {
   };
 
   let campaignState: any = useSelector((state: RootState) => state.campaign);
-  console.log(campaignState, "campaignState");
+
 
   const companyId = useSelector((state: RootState) => state.auth.companyId);
 
@@ -135,7 +135,7 @@ const CampaignGoal = () => {
       .select("*")
       .eq("campaignId", campaignState?.campaignId)
       .single();
-    console.log(data.data);
+
     const generatedCampaignGoal = data?.data?.campaignGoal;
     dispatch(
       setGeneratedCampaignGoal({ generatedCampaignGoal: generatedCampaignGoal })

@@ -48,7 +48,7 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
      useEffect(() => {
     const handleResize = () => setScreenHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
-      console.log("screenHeight",screenHeight)
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -100,7 +100,7 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
   useEffect(() => {}, [selectedKey]);
 
   const handleGeneraeGoal = (structure: any) => {
-    console.log("templateText",templateText)
+
     if(!templateText){
       showErrorToast("Please select the one of camapign goal. ")
       return;

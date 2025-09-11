@@ -26,7 +26,7 @@ interface GlobalCampaignDataProviderProps {
   const dispatch = useDispatch();
   const campaignId = useSelector((state: RootState) => state.campaign.campaignId);
   const [loaded, setLoaded] = useState(false);
- console.log("GlobalCampaignDataProvider",campaignId)
+
   useEffect(() => {
     if (!campaignId) return; // If no campaignId in redux, skip
 
@@ -36,7 +36,7 @@ interface GlobalCampaignDataProviderProps {
         .select("*")
         .eq("campaignId", campaignId)
         .single();
-        console.log("GlobalCampaignDataProvider",data)
+      
       if (data) {
         dispatch(campaignDetails({
           campaignName: data.campaignName,

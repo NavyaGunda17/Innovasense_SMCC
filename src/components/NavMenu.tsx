@@ -79,7 +79,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
   const campaign = useSelector(
     (state: RootState) => state.campaign.enumerations
   );
-  console.log("campaign", campaign);
+
   useEffect(() => {
     dispatch(fetchCampaignEnumerations());
   }, []);
@@ -91,7 +91,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
           item.objective.toLowerCase() === selectedMenu.toLowerCase()
       );
       setIndex(index);
-      console.log("selectedMenu", selectedMenu, index);
+   
     }
   }, [selectedMenu]);
 
@@ -160,7 +160,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
   };
 
   const handleSaveKnowledge = async () => {
-    console.log(campaignState, "handleSaveKnowledge");
+
     try {
       const response = await fetch("https://innovasense.app.n8n.cloud/webhook/smcc/brain", {
         method: 'POST',
@@ -299,7 +299,7 @@ const CarouselDropdown: React.FC<CarouselDropdownProps> = ({
   };
 
   const hanldeNextCalendar = () => {
-    console.log("sds");
+
     navigate(`/creatCampaign/${campaignId}#AIGeneratedBase`, {
       replace: false,
     });
@@ -379,12 +379,6 @@ useEffect(() => {
   campaignState?.initialCampaignValues?.campaignDuration,
   campaignState?.initialCampaignValues?.strategicObjective,
 ]);
-
-
-// useEffect(()=>{
-//   console.log("calendarModified",calendarModified)
-// },[calendarModified])
-
 
 
 

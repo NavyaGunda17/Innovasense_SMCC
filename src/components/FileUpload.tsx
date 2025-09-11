@@ -130,7 +130,7 @@ setUploadedFiles(campaignState.fileUpload)
 
       const files = Array.from(event.target.files || []);
       const validFiles = files.filter(validateFile);
-      console.log("validFiles",validFiles)
+     
 
       if (validFiles.length) {
         setIsUploading(true);
@@ -242,7 +242,7 @@ setUploadedFiles(campaignState.fileUpload)
           );
         });
         const base64Files = binaries.map(arrayBufferToBase64);
-        console.log("binaries", binaries);
+      
         dispatch(setFileUploads({ fileUpload: uploadedFiles }));
         const response = await fetch(
           "https://innovasense.app.n8n.cloud/webhook/smcc/brain",

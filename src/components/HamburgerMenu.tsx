@@ -222,7 +222,7 @@ const uniqueWeeks = Array.from(new Set(data.map((d: any) => d.week)));
   const handleItemClick = (itemName: any): void => {
     setActiveItem(itemName.name); // ✅ Set clicked item as active
 
-    console.log(`Clicked: ${itemName}`);
+
     if (
       itemName.name == "File Upload" ||
       itemName.name == "File Summary" ||

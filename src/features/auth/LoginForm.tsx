@@ -79,7 +79,7 @@ const { data: compnayMatch, error: companyError } = await supabase
 .eq('id', userMatch?.[0]?.companyId) 
 .limit(1);
 const formValues = { ...values, companyId: userMatch?.[0]?.companyId , companyName:compnayMatch?.[0]?.companyName};
-console.log("compnayMatch",compnayMatch,companyError)
+
 createOrganizationFolder(compnayMatch && compnayMatch[0].companyName)
 dispatch(login(formValues))
 // onLogin()

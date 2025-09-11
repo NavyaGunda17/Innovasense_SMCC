@@ -52,7 +52,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
   const template = useSelector(
     (state: RootState) => state.campaign.enumerations
   );
-  console.log("template", template);
+
   const [templateList, setTemplateList] = useState<any>([]);
   const dispatch = useDispatch<AppDispatch>();
   const campaignState: any = useSelector((state: RootState) => state.campaign);
@@ -169,7 +169,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
   const [generateGoal, setGeneratedGoal] = useState<any>("");
 
   useEffect(() => {
-    console.log("generateGoal", generateGoal);
+
   }, [generateGoal]);
 
   const handleSaveModifedGoal = () => {
@@ -212,7 +212,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
   };
 
   const handleNext = () => {
-    console.log("sds");
+
     navigate(`/creatCampaign/${campaignId}#Structure`, { replace: false });
   };
 
