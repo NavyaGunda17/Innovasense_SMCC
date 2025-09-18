@@ -301,7 +301,7 @@ const PostList: React.FC = () => {
           body: JSON.stringify({
             companyId,
             campaignId: campaignId,
-            intent: "Schedule Post",
+            intent: "Publish Post",
             content: {
               weekNumber: weekId,
               platform: platform,
