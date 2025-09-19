@@ -31,6 +31,7 @@ import { useSuccess } from '../../context/SuccessToastContext';
 import { useError } from '../../context/ErrorToastContext';
 import { login } from '../../reducer/authSlice';
 import { createOrganizationFolder } from '../../lib/createFolder';
+import WhiteLogo from "../../assests/white-logo.svg"
 
 const validationSchema = Yup.object({
   userName: Yup.string().required('UserName is required'),
@@ -267,7 +268,9 @@ dispatch(login(formValues))
        
           
        
-      
+      <Box sx={{position:"fixed",bottom:"30px",right:"30px"}}>
+        <img src={WhiteLogo} width={300} />
+      </Box>
       
     </Box>
   );

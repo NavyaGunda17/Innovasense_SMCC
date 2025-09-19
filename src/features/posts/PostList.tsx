@@ -41,6 +41,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { QueryBuilderOutlined } from "@mui/icons-material";
 import DateRangeIcon from '@mui/icons-material/DateRange';
+import VideoFileIcon from '@mui/icons-material/VideoFile';
+import PhotoCameraBackIcon from '@mui/icons-material/PhotoCameraBack';
+import CloseIcon from '@mui/icons-material/Close';
 // Types here (or import from separate file)
 type Post = {
   published: any;
@@ -1253,11 +1256,17 @@ const getDayFromDate = (dateStr: string): string => {
     },
   }}
             />
-            <IconButton color="primary" size="small" onClick={handleSave} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"10px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
-              <SaveIcon fontSize="small" />
+            <IconButton color="primary" size="small" onClick={handleSave} 
+             sx={{ background:"transparent",
+                  border:"0px solid rgb(177, 177, 180)",
+                  borderRadius:"2px","&:hover":{background:"rgb(177, 177, 180,0)"}}}>
+              <SaveIcon fontSize="small" sx={{color:"rgb(128 90 228)","&:hover":{color:"rgb(128 90 228)"}}} />
             </IconButton>
-            <IconButton color="error" size="small" onClick={handleCancel} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"5px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
-              <CancelIcon fontSize="small" />
+            <IconButton color="error" size="small" onClick={handleCancel} 
+           sx={{ background:"transparent",
+                  border:"0px solid rgb(177, 177, 180)",
+                  borderRadius:"2px","&:hover":{background:"rgb(177, 177, 180,0)"}}}>
+              <CancelIcon fontSize="small" sx={{color:"rgb(233 59 59)","&:hover":{color:"rgb(233 59 59)"}}} />
             </IconButton>
           </>
         ) : (
@@ -1272,11 +1281,13 @@ const getDayFromDate = (dateStr: string): string => {
               <IconButton
                 size="small"
                 onClick={() => setEditField({ postKey, field: "date" })}
-                sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"10px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}
+                sx={{ background:"transparent",
+                  border:"0px solid rgb(177, 177, 180)",
+                  borderRadius:"2px","&:hover":{background:"rgb(177, 177, 180,0)"}}}
               >
-                <EditIcon fontSize="small" />
+                <EditIcon fontSize="small" sx={{color:"rgb(177, 177, 180)","&:hover":{color:"white"}}} />
               </IconButton>
-            </Tooltip> :<></>
+            </Tooltip> :<><Box sx={{height:"30px"}}></Box></>
           }
           
           </>
@@ -1326,11 +1337,19 @@ const getDayFromDate = (dateStr: string): string => {
     step: 1, // allows seconds
   }}
             />
-            <IconButton color="primary" size="small" onClick={handleSave} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"10x","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
-              <SaveIcon fontSize="small" />
+
+
+            <IconButton color="primary" size="small" onClick={handleSave} 
+     sx={{ background:"transparent",
+                  border:"0px solid rgb(177, 177, 180)",
+                  borderRadius:"2px","&:hover":{background:"rgb(177, 177, 180,0)"}}}>
+              <SaveIcon fontSize="small"  sx={{color:"rgb(128 90 228)","&:hover":{color:"rgb(128 90 228)"}}} />
             </IconButton>
-            <IconButton color="error" size="small" onClick={handleCancel} sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"2px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}>
-              <CancelIcon fontSize="small" />
+            <IconButton color="error" size="small" onClick={handleCancel} 
+            sx={{ background:"transparent",
+                  border:"0px solid rgb(177, 177, 180)",
+                  borderRadius:"2px","&:hover":{background:"rgb(177, 177, 180,0)"}}}>
+              <CancelIcon fontSize="small" sx={{color:"rgb(233 59 59)","&:hover":{color:"rgb(233 59 59)"}}} />
             </IconButton>
           </>
         ) : (
@@ -1345,14 +1364,16 @@ const getDayFromDate = (dateStr: string): string => {
               {post.time}
             </Typography> */}
             {!post.published ?  <Tooltip title="Edit Time">
-              <IconButton
+             <IconButton
                 size="small"
                 onClick={() => setEditField({ postKey, field: "time" })}
-                sx={{ background:"rgb(107, 115, 255)",borderRadius:"2px",color:"white",ml:"0px","&:hover":{background:"rgb(107, 115, 255,0.7)"}}}
+                sx={{ background:"transparent",
+                  border:"0px solid rgb(177, 177, 180)",
+                  borderRadius:"2px","&:hover":{background:"rgb(177, 177, 180,0)"}}}
               >
-                <EditIcon fontSize="small" />
+                <EditIcon fontSize="small" sx={{color:"rgb(177, 177, 180)","&:hover":{color:"white"}}} />
               </IconButton>
-            </Tooltip> :<></>}
+            </Tooltip> :<><Box sx={{height:"30px"}}></Box></>}
            
           </>
         )}
@@ -1360,8 +1381,9 @@ const getDayFromDate = (dateStr: string): string => {
 
 
                           <Box sx={{mt:1}}>
+                          
                             {/* <Typography variant="body2">
-                              📅{" "}
+                             }{" "}
                               <strong>
                                 {post.day}, {post.date}
                               </strong>
@@ -1370,7 +1392,7 @@ const getDayFromDate = (dateStr: string): string => {
                               🕒 <strong>{post.time}</strong>
                             </Typography> */}
                             <Typography variant="body2">
-                              📝 <strong style={{marginLeft:"10px"}}>{post.mediaType}</strong>
+                             {post.mediaType == "video" ?<VideoFileIcon  sx={{verticalAlign:"middle"}}/> : <PhotoCameraBackIcon  sx={{verticalAlign:"middle"}} />} <strong style={{marginLeft:"5px"}}>{post.mediaType}</strong>
                             </Typography>
                           </Box>
 
@@ -1390,8 +1412,38 @@ const getDayFromDate = (dateStr: string): string => {
                               ))}
                             </Box>
                           )}
+                          {
+                            post.url && post.scheduled && 
+                            <Chip label= {
+                            (post.url && post.scheduled && post.published) ? "Published" : "Queued" }
+                            sx={{background:"#b5b5b5",color:"#404040",mt: 2 ,mr:2,borderRadius:"8px"}} />
+                          }
 
-                          {post.url && (
+                           {
+                            post.url && post.scheduled && !post.published && 
+                            <>
+                          
+                             <AppButton
+                                sx={{ mt: 2 ,p:"2px 10px",borderWidth:"1px"}}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // Handle publish/cancel based on scheduled status
+                                  publishPerPost(platformKey, idx + 1);
+                                  setAnchorEl({
+                                    ...anchorEl,
+                                    [postKey]: null,
+                                  });
+                                }}
+                                disabled={post.published}
+                                variantType="secondary"
+                              >
+                                  <CloseIcon  sx={{mr:"5px"}}/>
+                              Cancel Post
+                              </AppButton>
+                              </>
+                          }
+
+                          {post.url && !post.published && !post.scheduled && (
                             <>
                               <AppButton
                                 sx={{ mt: 2 }}
@@ -1404,13 +1456,14 @@ const getDayFromDate = (dateStr: string): string => {
                                     [postKey]: null,
                                   });
                                 }}
-                                disabled={post.published}
+                                // disabled={post.published}
                               >
-                                {post.published
+                                Publish
+                                {/* {post.published
                                   ? "Published"
                                   : post.scheduled
                                   ? "Cancel Scheduled Post"
-                                  : "Publish"}
+                                  : "Publish"} */}
                               </AppButton>
                             </>
                           )}

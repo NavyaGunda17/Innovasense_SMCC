@@ -6,7 +6,7 @@ import TopControls from "../components/TopControl";
 import { Box } from "@mui/material";
 import picture from "../assests/lady1.png"
 import ChatHint from "../components/PersonChatUI";
-
+import WhiteLogo from "../assests/white-logo.svg"
 interface MainLayoutProps {
   children: ReactNode;
 }
@@ -117,7 +117,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 {children}
               </main>
-             
+                
+      <Box sx={{position:"fixed",bottom:"60px",right:"60px"}}>
+        <img src={WhiteLogo} width={170} />
+      </Box>
+      
             </div>
           )}
         </div>

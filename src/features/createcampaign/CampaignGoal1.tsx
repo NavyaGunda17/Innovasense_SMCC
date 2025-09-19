@@ -358,7 +358,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                     background: "#6B73FF",
                     borderRadius: "4px",
                     position: "absolute",
-                    right: "20px",
+                    right: "30px",
                     top: "20px",
                     zIndex:9,
                     "&.MuiIconButton-root:hover": {
