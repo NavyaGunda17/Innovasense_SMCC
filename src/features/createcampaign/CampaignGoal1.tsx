@@ -33,6 +33,7 @@ import AnimatedLoader from "../../components/AnimatedLoader";
 import { useNavigate } from "react-router-dom";
 
 import SendIcon from "@mui/icons-material/Send";
+import oneAIStar from "../../assests/oneAIStar.svg"
 
 type CamapignGoal1Props = {
   handleShowCampaignstrure: () => void;
@@ -257,100 +258,131 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column" ,width:"100%"}}>
           <Box sx={{ position: "relative", overflow: "hidden",width:"100%" }}>
-            <Box
-              className="campaign-detail-rectangle"
-              sx={{
-                width:"100%",
-                maxWidth:"93vw",
-                maxHeight: screenHeight<1000 ? "50vh":"60vh",
-                padding: "16px", // limit height
-                overflowY: "auto", // enable scroll
-                scrollbarWidth: "none",
-                background: "#e2e2e2 !important",
-                borderRadius:"0px"
+         
+
+<Box
+  className="campaign-detail-rectangle"
+  sx={{
+    width: "60vw",
+    margin: "auto",
+    maxWidth: "93vw",
+    maxHeight: screenHeight < 1000 ? "50vh" : "60vh",
+    position: "relative",
+    background: "#f9f7f1", // similar to your image background
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius:"16px"
+  }}
+>
+  {/* Border frame */}
+  <Box
+    sx={{
+      position: "absolute",
+      top: "16px",
+      left: "16px",
+      right: "16px",
+      bottom: "16px",
+      border: "1px solid #a870b8",
+      pointerEvents: "none", // so it won’t block content
+      zIndex: 2,
+    }}
+  >
+    {/* Decorative star at bottom center */}
+    <Box
+      sx={{
+        position: "absolute",
+        bottom: "-10px", // move outside border slightly
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "18px",
+        color: "#333",
+        background: "#f9f7f1",
+        px: 1,
+      }}
+    >
+      <img src={oneAIStar} width={20}/>
+    </Box>
+  </Box>
+
+  {/* Scrollable content */}
+  <Box
+    sx={{
+      width: "100%",
+      height: "100%",
+      overflowY: "auto",
+     
+      zIndex: 1,
+      scrollbarWidth: "none",
+      "&::-webkit-scrollbar": { display: "none" },
+    }}
+  >
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="generated"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3 }}
+        style={{
+          position: "relative",
+          margin: "auto",
+        }}
+      >
+        {!editGoal ? (
+          <div data-color-mode="light">
+            <MDEditor
+              value={generateGoal}
+              onChange={(value) => setGeneratedGoal(value || "")}
+              preview="edit"
+              height=   { screenHeight < 1000 ? "50vh" : "60vh"}
+              hideToolbar={false}
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
               }}
-            >
-              <AnimatePresence mode="wait">
-                {
-                  <motion.div
-                    key="generated"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ position: "relative",width:'60vw',margin:"auto" }}
-                  >
-                    {!editGoal ? (
-                      <div data-color-mode="light">
-                        <MDEditor
-                          value={generateGoal}
-                          onChange={(value) => setGeneratedGoal(value || "")}
-                          preview="edit"
-                          height={300}
-                          hideToolbar={false}
-                          style={{
-                            backgroundColor: "transparent",
-                            border: "none",
-                          }}
-                          textareaProps={{
-                            placeholder: "Generated campaign goal",
-                            style: {
-                              backgroundColor: "transparent",
-                              color: "#2e2e2e",
-                            },
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <Box
-                        sx={{
-                          borderRadius: "8px",
-                          // backgroundColor: '#fafafa',
-                          padding: 2,
-                          minHeight: "120px",
-                          // border: '1px solid #ccc',
-                          fontSize: "14px",
-                          // color: '#2e2e2e',
-                          whiteSpace: "pre-wrap",
-                          //      color: "white",
-                          // borderRadius: 2,
-                          lineHeight: 1.7,
-                          "& strong": { color: "#2e2e2e" },
-                          "& h1, & h2, & h3": { color: "#1d34a0" },
-                          "& ul, & ol": { color: "#2e2e2e" },
-                          "& p": { color: "#2e2e2e" ,margin:"0px"},
-                          "& li strong": { color: "#1d34a0" },
-                          "& blockquote": {
-                            borderLeft: "4px solid #ccc",
-                            pl: 2,
-                            color: "#ccc",
-                            fontStyle: "italic",
-                          },
-                          "& hr": {
-                            borderColor: "#444",
-                          },
-                        }}
-                      >
-                        <ReactMarkdown>
-                          {/* <br>
-
-<br/>
-
-<br />
-
-<br />
-
-<br ></br> */}
-                          {generateGoal?.replace(/<br\s*\/?>/gi, "\n")}
-                        </ReactMarkdown>
-                      </Box>
-                    )}
-                  </motion.div>
-                }
-              </AnimatePresence>
-            </Box>
-
-            {editGoal && (
+              textareaProps={{
+                placeholder: "Generated campaign goal",
+                style: {
+                  backgroundColor: "transparent",
+                  color: "#2e2e2e",
+                },
+              }}
+            />
+          </div>
+        ) : (
+          <Box
+            sx={{
+              padding: 2,
+              minHeight: "120px",
+              fontSize: "14px",
+              lineHeight: 1.7,
+              whiteSpace: "pre-wrap",
+              "& strong": { color: "#2e2e2e" },
+              "& h1, & h2, & h3": { color: "#1d34a0" },
+              "& ul, & ol": { color: "#2e2e2e" },
+              "& p": { color: "#2e2e2e", margin: "0px" },
+              "& li strong": { color: "#1d34a0" },
+              "& blockquote": {
+                borderLeft: "4px solid #ccc",
+                pl: 2,
+                color: "#ccc",
+                fontStyle: "italic",
+              },
+              "& hr": {
+                borderColor: "#444",
+              },
+            }}
+          >
+            <ReactMarkdown>
+              {generateGoal?.replace(/<br\s*\/?>/gi, "\n")}
+            </ReactMarkdown>
+          </Box>
+        )}
+      </motion.div>
+    </AnimatePresence>
+  </Box>
+     {editGoal && (
               <Tooltip title="Edit Generated Goal">
                 <IconButton
                   onClick={handleEditCampaignGoal}
@@ -359,7 +391,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                     borderRadius: "4px",
                     position: "absolute",
                     right: "30px",
-                    top: "20px",
+                    top: "30px",
                     zIndex:9,
                     "&.MuiIconButton-root:hover": {
                       background: "#6B73FF",
@@ -375,8 +407,8 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
               <Box
                 sx={{
                   position: "absolute",
-                  right: "20px",
-                  top: "20px",
+                  right: "30px",
+                  top: "30px",
                   display: "flex",
                   gap: 1,
                   zIndex:9
@@ -415,6 +447,9 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
                 </Tooltip>
               </Box>
             )}
+</Box>
+
+         
           </Box>
         </Box>
       </Box>

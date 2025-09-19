@@ -40,7 +40,7 @@ const StrategicObjective = forwardRef<
 
   useEffect(() => {
     const data: any = campaign?.filter(
-      (campaign) => campaign.enumName == "strategicObjective"
+      (campaign:any) => campaign.enumName == "strategicObjective"
     );
     if (data && data.length > 0) {
       const formatted = data[0].options.map((item: any, index: number) => {

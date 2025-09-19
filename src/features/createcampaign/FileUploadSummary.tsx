@@ -18,6 +18,8 @@ import ReactMarkdown from "react-markdown";
 import AnimatedLoader from "../../components/AnimatedLoader";
 import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
+import oneAIStar from "../../assests/oneAIStar.svg"
+
 
 type CamapignGoal1Props = {
   is3DTransitioning?: boolean;
@@ -157,17 +159,56 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
               <Box
                 className="campaign-detail-rectangle"
                 sx={{
-                  width:"100%",
+                 width: "60%",
+    margin: "auto",
                     maxWidth:"93vw",
                   maxHeight: screenHeight<1000 ? "50vh":"60vh",
                   p: 3,
                   overflowY: "auto",
                   scrollbarWidth: "none",
-                  background: "#e2e2e2 !important",
-                   borderRadius:"0px"
+                  background: "#f9f7f1 !important",
+                      borderRadius:"16px"
                 }}
               >
-               
+                 <Box
+    sx={{
+      position: "absolute",
+      top: "16px",
+      left: "16px",
+      right: "16px",
+      bottom: "16px",
+      border: "1px solid #a870b8",
+      pointerEvents: "none", // so it won’t block content
+      zIndex: 2,
+    }}
+  >
+    {/* Decorative star at bottom center */}
+    <Box
+      sx={{
+        position: "absolute",
+        bottom: "-10px", // move outside border slightly
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "18px",
+        color: "#333",
+        background: "#f9f7f1",
+        px: 1,
+      }}
+    >
+      <img src={oneAIStar} width={20}/>
+    </Box>
+  </Box>
+  <Box
+    sx={{
+      width: "100%",
+      height: "100%",
+      overflowY: "auto",
+     
+      zIndex: 1,
+      scrollbarWidth: "none",
+      "&::-webkit-scrollbar": { display: "none" },
+    }}
+  >
                 <AnimatePresence mode="wait">
                   <motion.div
                     key="generated"
@@ -211,8 +252,9 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                     </Box>
                   </motion.div>
                 </AnimatePresence>
-               
+               </Box>
               </Box>
+              
             </Box>
           </Box>
         </Box>

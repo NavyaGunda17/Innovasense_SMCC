@@ -15,6 +15,7 @@ import {
 } from "../../reducer/campaignSlice";
 import { useDispatch } from "react-redux";
 import AnimatedLoader from "../../components/AnimatedLoader";
+import oneAIStar from "../../assests/oneAIStar.svg"
 
 
 const CampaignStructure = () => {
@@ -126,44 +127,84 @@ const CampaignStructure = () => {
             </Typography> */}
         <Box
           sx={{
-              
+              width:"60vw",
+               margin: "auto",
                 maxWidth:"93vw",
             maxHeight: screenHeight<1000 ? "50vh":"60vh",
-            overflowY: "auto",
+            position:"relative",
             scrollbarWidth: "none",
-            background: "#e2e2e2 !important",
+            background: "#f9f7f1 !important",
             p: 3,
-            pt: 0,
-            borderRadius: "0px",
+          
+            display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius:"16px 16px 0px 0px"
+             
           }}
         >
+          {/* Border frame */}
+  <Box
+    sx={{
+      position: "absolute",
+      top: "16px",
+      left: "16px",
+      right: "16px",
+      bottom: "16px",
+      border: "1px solid #a870b8",
+      pointerEvents: "none", // so it won’t block content
+      zIndex: 2,
+    }}
+  >
+    {/* Decorative star at bottom center */}
+    <Box
+      sx={{
+        position: "absolute",
+        bottom: "-10px", // move outside border slightly
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "18px",
+        color: "#333",
+        background: "#f9f7f1",
+        px: 1,
+      }}
+    >
+      <img src={oneAIStar} width={20}/>
+    </Box>
+  </Box>
          
+           <Box
+    sx={{
+    
+      maxHeight: screenHeight<1000 ? "45vh":"55vh",
+      overflowY: "auto",
+      scrollbarWidth: "none",
+      "&::-webkit-scrollbar": { display: "none" },
+      p: 3,
+      zIndex: 1,
+    }}
+  >
           <Box
-            sx={{
-              color: "#2e2e2e",
-              // backgroundColor: '#121212',
-              // p: 3,
-                 fontSize: "14px",
-              width:'60vw',margin:"auto",
-              borderRadius: 2,
-              lineHeight: 1.7,
-              //  whiteSpace: 'pre-wrap',
-              "& strong": { color: "#2e2e2e" },
-              "& h1, & h2, & h3": { color: "#1d34a0" },
-              "& ul, & ol": { color: "#2e2e2e" },
-              "& p": { color: "#2e2e2e" },
-              "& li strong": { color: "#1d34a0" },
-              "& blockquote": {
-                borderLeft: "4px solid #ccc",
-                pl: 2,
-                color: "#ccc",
-                fontStyle: "italic",
-              },
-
-              "& hr": {
-                borderColor: "#444",
-              },
-            }}
+             sx={{
+      color: "#2e2e2e",
+      fontSize: "14px",
+     
+      margin: "auto",
+      borderRadius: 2,
+      lineHeight: 1.7,
+      "& strong": { color: "#2e2e2e" },
+      "& h1, & h2, & h3": { color: "#1d34a0" },
+      "& ul, & ol": { color: "#2e2e2e" },
+      "& p": { color: "#2e2e2e" },
+      "& li strong": { color: "#1d34a0" },
+      "& blockquote": {
+        borderLeft: "4px solid #ccc",
+        pl: 2,
+        color: "#ccc",
+        fontStyle: "italic",
+      },
+      "& hr": { borderColor: "#444" },
+    }}
           >
             <ReactMarkdown>
               {campaignState?.campaignStructureSummary?.replace(/<br\s*\/?>/gi, "\n\n")}
@@ -171,8 +212,9 @@ const CampaignStructure = () => {
              
             </ReactMarkdown>
           </Box>
+          </Box>
         </Box>
-<Box sx={{background:"#9f9f9f",padding:"10px"}}>
+<Box sx={{background:"#9f9f9f",padding:"10px 25px",width:"60vw", margin: " auto", borderRadius:" 0px 0px 16px 16px" }}>
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2,width:'60vw',margin:"auto" }}>
           <textarea
          
