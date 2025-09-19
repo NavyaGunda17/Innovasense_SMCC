@@ -216,7 +216,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    style={{position: "relative",width:'60vw',margin:"auto"  }}
+                    style={{position: "relative",margin:"auto"  }}
                   >
                     <Box
                       sx={{
