@@ -16,6 +16,8 @@ import {
 import { CalendarComponent1 } from "../../components/CalendarComponent1";
 import HamburgerMenu from "../../components/HamburgerMenu";
 import TopControls from "../../components/TopControl";
+import BreadCrumnb from "../../components/BreadCrumb";
+import HouseRoundedIcon from '@mui/icons-material/HouseRounded';
 
 // Setup date-fns localizer
 type Platform = "LinkedIn" | "Instagram" | "TikTok";
@@ -155,7 +157,7 @@ const CampaignCalendar: React.FC = () => {
             // borderRight: "1px solid rgb(84 85 87)",
             p: "20px",
             pr:"0px",
-            display:"flex",gap:6
+            display:"flex",gap:2,alignItems:"center"
           }}
 
         >
@@ -163,12 +165,13 @@ const CampaignCalendar: React.FC = () => {
             sx={{
               fontSize: "16px",
               color: "white",
-              cursor:"pointer"
+              cursor:"pointer",
+              lineHeight:"normal"
             }}
             onClick={() => navigate('/campaignList')}
           >
-          
-            Campaign List
+          <HouseRoundedIcon sx={{fontSize:"30px"}} />
+            {/* Campaign List */}
           </Typography>
 
           <Typography
@@ -182,7 +185,10 @@ const CampaignCalendar: React.FC = () => {
           </Typography>
         </Box>
 
-         <HamburgerMenu />
+         {/* <HamburgerMenu /> */}
+           <Box >
+                            <BreadCrumnb />
+                          </Box>
 </Box>
 
 

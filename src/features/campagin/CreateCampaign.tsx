@@ -22,7 +22,8 @@ import { logout } from "../../reducer/authSlice";
 import TopControls from "../../components/TopControl";
 import HamburgerMenu from "../../components/HamburgerMenu";
 import CampaignGoalTemplate from "../createcampaign/CampaignGoalTemplate";
-
+import BreadCrumnb from "../../components/BreadCrumb";
+import HouseRoundedIcon from '@mui/icons-material/HouseRounded';
 
 const CreateCampaign = () => {
   const campaignName = useSelector(
@@ -211,7 +212,7 @@ setActiveTab(tab)
             // borderRight: "1px solid rgb(84 85 87)",
             p: "20px",
             pr:"0px",
-            display:"flex",gap:6
+           display:"flex",gap:2,alignItems:"center"
           }}
 
         >
@@ -219,12 +220,12 @@ setActiveTab(tab)
             sx={{
               fontSize: "16px",
               color: "white",
-              cursor:"pointer"
+              cursor:"pointer", lineHeight:"normal"
             }}
             onClick={() => naviagte('/campaignList')}
           >
-          
-            Campaign List
+            <HouseRoundedIcon sx={{fontSize:"30px"}} />
+            {/* Campaign List */}
           </Typography>
 
           <Typography
@@ -237,15 +238,20 @@ setActiveTab(tab)
             {campaignName}
           </Typography>
         </Box>
-         <HamburgerMenu />
+         {/* <HamburgerMenu /> */}
+         <Box sx={{  }}>
+                   <BreadCrumnb />
+                 </Box>
 </Box>
 
-<Box sx={{position:"absolute",width:"94%",textAlign:"center"}}>
-  {showcmapiagnStructure &&   <Typography
-              sx={{ color: "white", fontSize: "28px", fontWeight: "bold" , fontFamily: 'Orbitron, sans-serif'}}
-            >
-              Generated Campaign Structure
-            </Typography>}
+<Box sx={{}}>
+  {showcmapiagnStructure &&  <></>
+  //  <Typography
+  //             sx={{ color: "white", fontSize: "28px", fontWeight: "bold" , fontFamily: 'Orbitron, sans-serif'}}
+  //           >
+  //             Generated Campaign Structure
+  //           </Typography>
+            }
  
 </Box>
 {/* logout */}
@@ -278,7 +284,7 @@ setActiveTab(tab)
       }
 
        {showGeneratedCampaognGoal  && 
-      <Box >
+      <Box sx={{height:"80vh",display:'flex',alignItems:"center",justifyContent:"center"}}>
       {/* <CampaignGoal /> */}
       <CampaignGoal1  handleShowCampaignstrure={handleshowCampaignGenerated}/>
    

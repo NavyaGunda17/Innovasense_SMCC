@@ -24,6 +24,7 @@ import CustomModal from "../../components/CustomModal";
 import AnimatedLoader from "../../components/AnimatedLoader";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PostList from "../posts/PostList";
+import HouseRoundedIcon from '@mui/icons-material/HouseRounded';
 
 type ContentItem = {
   day: string;
@@ -369,7 +370,7 @@ setShowLoader(false)
                     // borderRight: "1px solid rgb(84 85 87)",
                     p: "20px",
                     pr:"0px",
-                    display:"flex",gap:6
+                   display:"flex",gap:2,alignItems:"center"
                   }}
         
                 >
@@ -377,12 +378,12 @@ setShowLoader(false)
                     sx={{
                       fontSize: "16px",
                       color: "white",
-                      cursor:"pointer"
+                      cursor:"pointer", lineHeight:"normal"
                     }}
                     onClick={() => navigate('/campaignList')}
                   >
-                  
-                    Campaign List
+                    <HouseRoundedIcon sx={{fontSize:"30px"}} />
+                    {/* Campaign List */}
                   </Typography>
         
                   <Typography
@@ -395,7 +396,7 @@ setShowLoader(false)
                    {campaignStateAll.campaignName}
                   </Typography>
                 </Box>
-         <HamburgerMenu />
+         {/* <HamburgerMenu /> */}
 </Box>
 
 
@@ -433,6 +434,8 @@ setShowLoader(false)
           Week {weekId}: {weekDetails.theme}
         </Typography>
         <Box sx={{display:"flex",gap:2}}>
+           <AppButton variantType="secondary" onClick={()=> navigate(`/campaignCalendar/${campaignId}`)} sx={{minWidth:"fit-content",height:"max-content"}}> Back to Calendar</AppButton>
+
  <AppButton variantType="secondary" onClick={()=> setMoreDetails(true)} sx={{minWidth:"fit-content",height:"max-content"}}> View Master Article</AppButton>
              {/* <AppButton
         variant="contained"

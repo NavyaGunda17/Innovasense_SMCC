@@ -1063,6 +1063,7 @@ const getDayFromDate = (dateStr: string): string => {
                           {post?.url ? (
                             post.mediaType === "video" ? (
                               <video
+                              key="main-video"
                                 src={post.url}
                                 autoPlay
                                 muted

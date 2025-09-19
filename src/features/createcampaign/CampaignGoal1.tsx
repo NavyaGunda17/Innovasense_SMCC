@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 
 import SendIcon from "@mui/icons-material/Send";
 import oneAIStar from "../../assests/oneAIStar.svg"
+import loader from "../../assests/loading-v2.gif";
 
 type CamapignGoal1Props = {
   handleShowCampaignstrure: () => void;
@@ -230,18 +231,19 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
       <Box
         sx={{
           display: "flex",
-          width: "inherit",
-          gap: "20px",
-          justifyContent: "space-between",
-          flexDirection: "column",
+          justifyContent:"center",
+          gap: 2,
+         
+          flexDirection: "row",
           alignItems: "center",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+           
             alignItems: "center",
+             flexDirection:"column"
           }}
         >
           <Typography
@@ -250,28 +252,38 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
               mb: 1,
               color: "white",
               fontFamily: "Orbitron, sans-serif",
-              fontSize: "24px",
+              fontSize: "2.75rem",
             }}
           >
-            Generated Campaign Goal
+            Generated <br />Campaign <br />Goal
           </Typography>
+           <img
+                    src={loader}
+                    style={{
+                      width: "200px",
+                      height: "auto",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" ,width:"100%"}}>
-          <Box sx={{ position: "relative", overflow: "hidden",width:"100%" }}>
+  
          
 
 <Box
   className="campaign-detail-rectangle"
   sx={{
-    width: "60vw",
-    margin: "auto",
-    maxWidth: "93vw",
+    // width: "60vw",
+    // margin: "auto",
+    // maxWidth: "93vw",
     maxHeight: screenHeight < 1000 ? "50vh" : "60vh",
-    position: "relative",
+      p: 3,
+    // position: "relative",
     background: "#f9f7f1", // similar to your image background
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "center",
     borderRadius:"16px"
   }}
 >
@@ -450,8 +462,7 @@ const CampaignGoal1: React.FC<CamapignGoal1Props> = ({
 </Box>
 
          
-          </Box>
-        </Box>
+        
       </Box>
 
       {!(hasGenerated && campaignState?.generatedCampaignGoal) ? (

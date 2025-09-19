@@ -61,12 +61,12 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
 
     useEffect(() => {
       if (campaign && campaign.length > 0) {
-        const segment = campaign.find((c) => c.enumName === "segment");
+        const segment = campaign.find((c:any) => c.enumName === "segment");
         const demographics = campaign.find(
-          (c) => c.enumName === "demographics"
+          (c:any) => c.enumName === "demographics"
         );
         const psychographics = campaign.find(
-          (c) => c.enumName === "psychographics"
+          (c:any) => c.enumName === "psychographics"
         );
 
         if (segment) setSegmentList(formatData(segment.options));
@@ -208,9 +208,9 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
               is3DTransitioning ? "transitioning-3d" : ""
             } ${transitionPhase !== "idle" ? `phase-${transitionPhase}` : ""} `}
             sx={{
-              width: "auto !important",
-              minWidth: "auto !important",
-              maxWidth: "auto !important",
+              // width: "auto !important",
+              // minWidth: "auto !important",
+              // maxWidth: "auto !important",
               display: "flex",
               flexDirection: "row",
               gap: 4,
@@ -218,7 +218,7 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
               overflowY: "auto",
             }}
           >
-            <Box>
+            <Box sx={{ flex: 1  }}>
               <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
                 Who they are
               </Typography>
@@ -243,7 +243,7 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
                 ))}
               </div>
             </Box>
-            <Box>
+            <Box sx={{ flex: 1  }}>
               <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
                 Age groups
               </Typography>
@@ -272,7 +272,7 @@ const TargetSegments = forwardRef<TargetSegmentsHandle, TargetSegmentsProps>(
                 ))}
               </div>
             </Box>
-            <Box>
+            <Box sx={{ flex: 1   }}>
               <Typography sx={{ fontSize: "18px", textAlign: "center", mb: 2 }}>
                 How they think/behave
               </Typography>

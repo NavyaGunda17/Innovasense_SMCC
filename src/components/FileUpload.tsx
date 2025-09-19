@@ -311,7 +311,7 @@ setUploadedFiles(campaignState.fileUpload)
                   fontFamily: "Orbitron, sans-serif",
                 }}
               >
-                {title}
+             Upload <br /> Guidelines
               </Typography>
               {/* <Typography sx={{
             color: 'rgba(255, 255, 255, 0.7)',

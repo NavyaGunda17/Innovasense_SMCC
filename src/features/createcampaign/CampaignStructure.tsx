@@ -16,7 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import AnimatedLoader from "../../components/AnimatedLoader";
 import oneAIStar from "../../assests/oneAIStar.svg"
-
+import loader from "../../assests/loading-v2.gif";
 
 const CampaignStructure = () => {
   let campaignState: any = useSelector((state: RootState) => state.campaign);
@@ -111,7 +111,7 @@ const CampaignStructure = () => {
           justifyContent: "center",
         }}
       >
-          <Box sx={{ display: "flex", gap: 2 ,justifyContent:"flex-end",width:'60vw',margin:"auto",mb:2}}>
+          <Box sx={{ display: "none", gap: 2 ,justifyContent:"flex-end",width:'60vw',margin:"auto",mb:2}}>
           {/* <AppButton sx={{width:"max-content"}} variantType="secondary" onClick ={handleregenerateStruture}>Regenerate Struture</AppButton> */}
           <AppButton
             sx={{ width: "max-content" }}
@@ -120,14 +120,43 @@ const CampaignStructure = () => {
             Approve Structure
           </AppButton>
         </Box>
+        <Box sx={{display:"flex",justifyContent:"center",alignItems:"center",gap:2}}>
+          <Box>
+   <Typography
+              sx={{ color: "white",  fontSize: "2.75rem", fontWeight: "bold" , fontFamily: 'Orbitron, sans-serif'}}
+            >
+              Generated <br />Campaign <br /> Structure
+            </Typography>
+         <img
+          src={loader}
+          style={{
+            width: "200px",
+            height: "auto",
+            maxWidth: "100%",
+            objectFit: "contain",
+            display: "block",
+          }}
+        />
+        </Box>
+     
         {/* <Typography
               sx={{ color: "white", fontSize: "28px", fontWeight: "bold" , fontFamily: 'Orbitron, sans-serif'}}
             >
               Generated Campaign Strcuture:{" "}
             </Typography> */}
+            <Box>
+              <Box sx={{ display: "flex", gap: 2 ,justifyContent:"flex-end",margin:"auto",mb:2}}>
+          {/* <AppButton sx={{width:"max-content"}} variantType="secondary" onClick ={handleregenerateStruture}>Regenerate Struture</AppButton> */}
+          <AppButton
+            sx={{ width: "max-content" }}
+            onClick={() => handleApproveStructure()}
+          >
+            Approve Structure
+          </AppButton>
+        </Box>
         <Box
           sx={{
-              width:"60vw",
+              width:"55vw",
                margin: "auto",
                 maxWidth:"93vw",
             maxHeight: screenHeight<1000 ? "50vh":"60vh",
@@ -214,8 +243,8 @@ const CampaignStructure = () => {
           </Box>
           </Box>
         </Box>
-<Box sx={{background:"#9f9f9f",padding:"10px 25px",width:"60vw", margin: " auto", borderRadius:" 0px 0px 16px 16px" }}>
-        <Box sx={{ display: "flex", flexDirection: "row", gap: 2,width:'60vw',margin:"auto" }}>
+<Box sx={{background:"#9f9f9f",padding:"10px 25px",width:"55vw", margin: " auto", borderRadius:" 0px 0px 16px 16px" }}>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2,margin:"auto" }}>
           <textarea
          
             value={command}
@@ -251,7 +280,10 @@ const CampaignStructure = () => {
           </AppButton>
         </Box>
       </Box>
+       </Box>
       </Box>
+      </Box>
+      
       
       {showLoader && <AnimatedLoader />}
     </>

@@ -32,6 +32,7 @@ import FileUpload, { FileUploadHandle } from "./FileUpload";
 import FileUploadSummary from "../features/createcampaign/FileUploadSummary";
 import { useError } from "../context/ErrorToastContext";
 import { selectIsGenerateEnabled } from "../selectors/campaignSelectors";
+import BreadCrumnb from "./BreadCrumb";
 const items = [
   {
     title: "File Upload",
@@ -394,7 +395,7 @@ useEffect(() => {
     >
       <Box
         sx={{
-          display: "flex",
+          display: "none",
           justifyContent: "center",
           width: "100%",
           mb: 4,
@@ -474,8 +475,10 @@ useEffect(() => {
             </React.Fragment>
           ))}
         </Box>
+      
       </Box>
-      <Box sx={{ position: "relative" }}>
+        
+      <Box sx={{ position: "relative",display:"flex",justifyContent:"center",height:"80vh",flexDirection:"column",alignItems:"center" }}>
         {items[index].title == "File Upload" && (
           <FileUpload
             ref={fileUploadRef}
@@ -534,7 +537,7 @@ useEffect(() => {
             width: "100%",
             mt: 4,
             mb: 2,
-            paddingRight: "100px",
+            // paddingRight: "100px",
             
           }}
         >

@@ -19,7 +19,7 @@ import AnimatedLoader from "../../components/AnimatedLoader";
 import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
 import oneAIStar from "../../assests/oneAIStar.svg"
-
+import loader from "../../assests/loading-v2.gif";
 
 type CamapignGoal1Props = {
   is3DTransitioning?: boolean;
@@ -116,10 +116,9 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
         <Box
           sx={{
             display: "flex",
-            width: "96vw",
-          
-            justifyContent: "space-between",
-            flexDirection: "column",
+           
+             gap: 2,
+            flexDirection: "row",
             alignItems: "center",
           }}
         >
@@ -128,40 +127,37 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
+             
               alignItems: "center",
+              flexDirection:"column"
              
             }}
           >
             <Typography
               sx={{
-                fontWeight: 600,
-                mb: 1,
                 color: "white",
-                fontFamily: "Orbitron, sans-serif",
-                fontSize: "24px",
-                position: "fixed",
-                top: "67px",
-                left: "0",
-                right: "0",
-                margin: "auto",
-                display: "inline-table",
-                 width:"90%",
-                 textAlign:"center"
+                  fontSize: "2.75rem",
+                  fontWeight: "500",
+                  margin: "0 0 2rem 0",
+                  letterSpacing: "0.02em",
+                  lineHeight: "1.1",
+                  textShadow: "none",
+                  textAlign: "left",
+                  fontFamily: "Orbitron, sans-serif",
               }}
             >
-              Generated Summary
+              Generated<br /> Summary
             </Typography>
+              <img src={loader} style={{ width: "200px" }} />
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column" ,width:"100%"}}>
-                   <Box sx={{ position: "relative", overflow: "hidden",width:"100%" }}>
+     
               <Box
                 className="campaign-detail-rectangle"
                 sx={{
-                 width: "60%",
+                //  width: "60%",
     margin: "auto",
-                    maxWidth:"93vw",
+                    // maxWidth:"93vw",
                   maxHeight: screenHeight<1000 ? "50vh":"60vh",
                   p: 3,
                   overflowY: "auto",
@@ -255,8 +251,7 @@ const FileUploadSummary = forwardRef<FileUploadHandle, CamapignGoal1Props>(
                </Box>
               </Box>
               
-            </Box>
-          </Box>
+           
         </Box>
 
 

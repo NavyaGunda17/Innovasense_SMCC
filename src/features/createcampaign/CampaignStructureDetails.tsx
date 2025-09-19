@@ -34,6 +34,8 @@ import AiVariablesCards from "./AiVariable";
 import { useNavigate } from "react-router-dom";
 import AnimatedLoader from "../../components/AnimatedLoader";
 import AI_lgo from "../../assests/AI_logo.png"
+import BreadCrumnb from "../../components/BreadCrumb"
+import loader from "../../assests/loading-v2.gif";
 
 type CampaignStructureDetailsProps = {
   handleShowCampaoignGoal: () => void;
@@ -202,15 +204,19 @@ const CampaignStructureDetails: React.FC<CampaignStructureDetailsProps> = ({
 
   return (
     <>
+
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           gap: 2,
+          flexDirection:"row",
+          mt:2,
+          height:"80vh"
         }}
       >
-         
+         <Box sx={{display:"flex",flexDirection:"column"}}>
         <Typography
           sx={{
             color: "white",
@@ -229,7 +235,18 @@ const CampaignStructureDetails: React.FC<CampaignStructureDetailsProps> = ({
           Brand Strategy
          
         </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+         <img
+                    src={loader}
+                    style={{
+                      width: "200px",
+                      height: "auto",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
+                  </Box>
+       <Box>
           <AiVariablesCards />
           <Box sx={{ mt: 5 }}>
             <textarea
@@ -300,8 +317,9 @@ const CampaignStructureDetails: React.FC<CampaignStructureDetailsProps> = ({
 
             </Box>
           </Box>
+          </Box>
         </Box>
-      </Box>
+     
 
       <Box sx={{ m: 4, gap: 2, display: "flex" }}>
         {/* {saveKnowledge ? 

@@ -248,7 +248,7 @@ const CampaignGoalTemplate: React.FC<CamapignGoal1Props> = ({
   };
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box sx={{ mb: 4,height:"80vh",margin:"auto",display:"flex",flexDirection:"column",justifyContent:"center" }}>
       <Box
         sx={{
           display: "flex",

@@ -85,6 +85,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className={`main-app ${mainAppClass}`} style={{ height: "100vh" }}>
           {!isLoginPage && (
             <div className="flex flex-col" style={{ height: "100vh" }}>
+              
               <Box
                 sx={{
                   position: "fixed",
