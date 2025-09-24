@@ -17,6 +17,7 @@ import {
   Checkbox,
   FormControlLabel,
   Tooltip,
+  Alert,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
@@ -39,7 +40,7 @@ import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
-import { QueryBuilderOutlined } from "@mui/icons-material";
+import { InfoOutlined, QueryBuilderOutlined } from "@mui/icons-material";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import VideoFileIcon from '@mui/icons-material/VideoFile';
 import PhotoCameraBackIcon from '@mui/icons-material/PhotoCameraBack';
@@ -417,6 +418,7 @@ const PostList: React.FC = () => {
   platforms.forEach((platform) => {
     const key = platform + "-" + (Number(updatedPost.postIndex)-1);
     const url = updatedPost[platform.toLocaleLowerCase()]?.url;
+    const published = updatedPost[platform.toLocaleLowerCase()]?.published
 
     // Only stop loader if this post/platform was regenerating AND url exists
     if (regeneratingPostsRef.current[key] && url) {
@@ -540,6 +542,7 @@ const PostList: React.FC = () => {
           ...scheduledPost,
           url: generated?.[postListKey]?.url || "",
           time: generated?.[postListKey]?.time || scheduledPost?.time,
+           date: generated?.[postListKey]?.date || scheduledPost?.date,
           caption: generated?.[postListKey]?.caption || "",
           hashtags: generated?.[postListKey]?.hashtags || "",
           published: generated?.[postListKey]?.published ?? false,
@@ -774,7 +777,7 @@ const response = await fetch(
           body: JSON.stringify({
             companyId,
             campaignId: campaignId,
-            intent: "Schedule post",
+            intent: "Publish post",
             content: {
               weekNumber:weekId,
               platform:platformName,
@@ -827,6 +830,19 @@ const handleTimeChange = (postKey: string, value: string) => {
 const getDayFromDate = (dateStr: string): string => {
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", { weekday: "long" });
+};
+
+
+const isDatePassed = (dateString:any) => {
+  if (!dateString) return false;
+  const postDate = new Date(dateString);
+  const today = new Date();
+
+  // normalize times so only date is compared
+  postDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  return postDate < today; // true if date is before today
 };
 
   return (
@@ -952,7 +968,13 @@ const getDayFromDate = (dateStr: string): string => {
                             </Button>
                           )}
                           */}
-                          {!post?.published && (
+                             
+                          {
+                          !isDatePassed(editedPosts[postKey]?.date || post.date) &&
+  (
+    !post?.published ||
+    (typeof post.published === "string" && post.published.includes("limit"))
+  ) && (
                             <IconButton
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1216,6 +1238,59 @@ const getDayFromDate = (dateStr: string): string => {
                             />
                           )}
 
+{isDatePassed(editedPosts[postKey]?.date || post.date) && <Box
+  sx={{
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 1.5,
+    p: 2,
+    mt: 2,
+    mb:2,
+    borderRadius: 2,
+    background: "linear-gradient(90deg, rgba(33,150,243,0.1), rgba(33,150,243,0.05))",
+    border: "1px solid rgba(33,150,243,0.3)",
+  }}
+>
+  <InfoOutlined sx={{ color: "primary.main", mt: "2px" }} />
+  <Typography
+    variant="body2"
+    sx={{ color: "primary.main", fontWeight: 500, lineHeight: 1.5 }}
+  >
+    Date of this post has already passed.{" "}
+    <Typography
+      component="span"
+      variant="body2"
+      sx={{ fontWeight: 600, color: "primary.dark" }}
+    >
+      To publish this post, please update the date to a future day.
+    </Typography>
+  </Typography>
+</Box>
+}
+
+
+{typeof post.published === "string" && post.published.includes("limit") && <Box
+  sx={{
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 1.5,
+    p: 2,
+    mt: 2,
+    mb:2,
+    borderRadius: 2,
+    background: "linear-gradient(90deg, rgba(33,150,243,0.1), rgba(33,150,243,0.05))",
+    border: "1px solid rgba(33,150,243,0.3)",
+  }}
+>
+  <InfoOutlined sx={{ color: "primary.main",verticalAlign:"middle" }} />
+  <Typography
+    variant="body2"
+    sx={{ color: "primary.main", fontWeight: 500, }}
+  >
+   Daily Limit Exceeded to publish {" "}
+  </Typography>
+</Box>
+}
 
  <Box sx={{ display: "flex", alignItems: "center" }}>
    <DateRangeIcon sx={{mr:"10px"}}/> 
@@ -1277,7 +1352,7 @@ const getDayFromDate = (dateStr: string): string => {
            {getDayFromDate(editedPosts[postKey]?.date || post.date)} , {editedPosts[postKey]?.date || post.date}
             </Typography>
           </>
-          {!post.published ? 
+          {(!post.published  || typeof post.published === "string") ? 
             <Tooltip title="Edit Date">
               <IconButton
                 size="small"
@@ -1364,7 +1439,7 @@ const getDayFromDate = (dateStr: string): string => {
             {/* <Typography variant="body2" sx={{ color: "white" }}>
               {post.time}
             </Typography> */}
-            {!post.published ?  <Tooltip title="Edit Time">
+            {(!post.published  || typeof post.published === "string")?  <Tooltip title="Edit Time">
              <IconButton
                 size="small"
                 onClick={() => setEditField({ postKey, field: "time" })}
@@ -1414,7 +1489,7 @@ const getDayFromDate = (dateStr: string): string => {
                             </Box>
                           )}
                           {
-                            post.url && post.scheduled && 
+                            post.url && post.scheduled  && 
                             <Chip label= {
                             (post.url && post.scheduled && post.published) ? "Published" : "Queued" }
                             sx={{background:"#b5b5b5",color:"#404040",mt: 2 ,mr:2,borderRadius:"8px"}} />
@@ -1444,7 +1519,7 @@ const getDayFromDate = (dateStr: string): string => {
                               </>
                           }
 
-                          {post.url && !post.published && !post.scheduled && (
+                          {post.url && !post.scheduled && (
                             <>
                               <AppButton
                                 sx={{ mt: 2 }}
@@ -1458,6 +1533,9 @@ const getDayFromDate = (dateStr: string): string => {
                                   });
                                 }}
                                 // disabled={post.published}
+
+                                      disabled={isDatePassed(editedPosts[postKey]?.date || post.date)}
+
                               >
                                 Publish
                                 {/* {post.published

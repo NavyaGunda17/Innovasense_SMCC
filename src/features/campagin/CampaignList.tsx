@@ -503,6 +503,7 @@ const CampaignList = () => {
                   xs: "repeat(auto-fill, minmax(300px, 1fr))",
                 }
               : "none",
+          gridAutoRows: "minmax(max-content, auto)",
           gap: 3,
           width: "80vw",
           mt: 2,
