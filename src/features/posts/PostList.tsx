@@ -543,6 +543,7 @@ const PostList: React.FC = () => {
           url: generated?.[postListKey]?.url || "",
           time: generated?.[postListKey]?.time || scheduledPost?.time,
            date: generated?.[postListKey]?.date || scheduledPost?.date,
+            prompt: generated?.[postListKey]?.prompt || scheduledPost?.prompt,
           caption: generated?.[postListKey]?.caption || "",
           hashtags: generated?.[postListKey]?.hashtags || "",
           published: generated?.[postListKey]?.published ?? false,
